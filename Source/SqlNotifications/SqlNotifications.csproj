@@ -53,15 +53,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Tracker\ITracker.cs" />
     <Compile Include="Tracker\Notifications.cs" />
     <Compile Include="Tracker\NotificationTracker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tracker\Tracker.cs" />
+    <Compile Include="Tracker\ChangeTrackingBasedTracker.cs" />
     <Compile Include="Wire\AbstractNotification.cs" />
     <Compile Include="Wire\INotification.cs" />
     <Compile Include="Wire\INotificationSetup.cs" />
-    <Compile Include="Wire\IPublishingNotifications.cs" />
-    <Compile Include="Wire\NLogPublisher.cs" />
     <Compile Include="Wire\StandardNotificationSetup.cs" />
   </ItemGroup>
   <ItemGroup />

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reactive.Disposables;
 using System.Threading;
 using Krowiorsch.Dojo.Wire;
+using LandauMedia.Tracker;
 using NLog;
 
 namespace Krowiorsch.Dojo
@@ -13,25 +14,21 @@ namespace Krowiorsch.Dojo
         static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         readonly string _connectionString;
-        readonly IPublishingNotifications _publishing;
         readonly IEnumerable<INotification> _notificationTypes;
 
         Thread _workerThread;
 
-        IEnumerable<Tracker> _trackers;
-        IDictionary<INotification, long> _trackingIds = new Dictionary<INotification, long>(); 
+        IEnumerable<ChangeTrackingBasedTracker> _trackers;
 
-        public NotificationTracker(string connectionString, IPublishingNotifications publishing, IEnumerable<INotification> notificationTypes)
+        public NotificationTracker(string connectionString, IEnumerable<INotification> notificationTypes)
         {
             _connectionString = connectionString;
-            _publishing = publishing;
             _notificationTypes = notificationTypes;
         }
 
         public IDisposable Start()
         {
-            _trackers = _notificationTypes.Select(n => new Tracker(_connectionString, n, _publishing)).ToList();
-            _trackingIds = _trackers.ToDictionary(t => t.Notification, t => t.GetInitialId());
+            _trackers = _notificationTypes.Select(n => new ChangeTrackingBasedTracker(_connectionString, n)).ToList();
 
             _workerThread = new Thread(StartTracking);
             _workerThread.Start();
@@ -53,8 +50,7 @@ namespace Krowiorsch.Dojo
                 {
                     foreach (var tracker in _trackers)
                     {
-                        var newId = tracker.TrackOnce(_trackingIds[tracker.Notification]);
-                        _trackingIds[tracker.Notification] = newId;
+                        tracker.TrackingChanges();
                     }
 
                     Thread.Sleep(1000);

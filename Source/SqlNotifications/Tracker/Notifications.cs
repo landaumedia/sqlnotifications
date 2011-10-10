@@ -1,7 +1,7 @@
 ﻿using Krowiorsch.Dojo.Wire;
 using LandauMedia.Wire;
 
-namespace Krowiorsch.Dojo
+namespace LandauMedia.Tracker
 {
     public static class Notifications
     {

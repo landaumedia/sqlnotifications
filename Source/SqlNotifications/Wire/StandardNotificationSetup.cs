@@ -2,15 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Krowiorsch.Dojo;
-using Krowiorsch.Dojo.Wire;
+using LandauMedia.Wire;
 
-namespace LandauMedia.Wire
+namespace Krowiorsch.Dojo.Wire
 {
     public class StandardNotificationSetup : INotificationSetup
     {
         string _connectionString;
-        IPublishingNotifications _publishing;
         IEnumerable<INotification> _notificationTypes;
 
         string _trackerType;
@@ -46,15 +44,9 @@ namespace LandauMedia.Wire
             return this;
         }
 
-        public INotificationSetup PublishingTo(IPublishingNotifications publishing)
-        {
-            _publishing = publishing;
-            return this;
-        }
-
         public NotificationTracker Build()
         {
-            return new NotificationTracker(_connectionString, _publishing, _notificationTypes);
+            return new NotificationTracker(_connectionString, _notificationTypes);
         }
     }
 }

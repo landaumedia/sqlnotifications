@@ -3,6 +3,7 @@ using System.Data.SqlClient;
 using System.Reflection;
 using Krowiorsch.Dojo;
 using Krowiorsch.Dojo.Wire;
+using LandauMedia.Tracker;
 
 namespace SqlNotifications.Demo
 {
@@ -12,10 +13,9 @@ namespace SqlNotifications.Demo
 
         static void Main(string[] args)
         {
-            var notificationTracker = Notifications.WireUp()
+            var notificationTracker = LandauMedia.Tracker.Notifications.WireUp()
                 .ForDatabase(connectionString)
                 .WithNotificationsOfAssembly(Assembly.GetExecutingAssembly())
-                .PublishingTo(new NLogPublisher())
                 .Build();
 
             using (notificationTracker.Start())

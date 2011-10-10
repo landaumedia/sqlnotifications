@@ -9,6 +9,10 @@ namespace Krowiorsch.Dojo.Wire
         string KeyColumn { get; }
         Type IdType { get; }
 
-        IEnumerable<string> IntrestedInUpdatedColums { get; } 
+        IEnumerable<string> IntrestedInUpdatedColums { get; }
+
+        void OnInsert(INotification notification, string id, IEnumerable<string> updatedColumns);
+        void OnUpdate(INotification notification, string id, IEnumerable<string> updatedColumns);
+        void OnDelete(INotification notification, string id, IEnumerable<string> updatedColumns);
     }
 }

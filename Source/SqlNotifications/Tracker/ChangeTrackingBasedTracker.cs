@@ -1,31 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Text;
-using System.Threading;
 using Krowiorsch.Dojo.Wire;
 
-namespace Krowiorsch.Dojo
+namespace LandauMedia.Tracker
 {
-    public class Tracker
+    public class ChangeTrackingBasedTracker : ITracker
     {
         readonly string _connectionString;
-        readonly IPublishingNotifications _publisher;
 
-        public Tracker(string connectionString, INotification notification, IPublishingNotifications publisher)
+        long _lastId;
+
+        public ChangeTrackingBasedTracker(string connectionString, INotification notification)
         {
             _connectionString = connectionString;
             Notification = notification;
-            _publisher = publisher;
         }
 
         public INotification Notification { get; internal set; }
 
-        public long TrackOnce(long lastCheckId)
+        public void TrackingChanges()
         {
-            string hasChanged = BuildCheckColumnsStatement();
-
             string checkChange = string.Format(@"SELECT CT.Id, CT.SYS_CHANGE_OPERATION, {2} CT.SYS_CHANGE_COLUMNS, CT.SYS_CHANGE_CONTEXT
                 FROM [{0}] AS P RIGHT OUTER JOIN CHANGETABLE(CHANGES [{0}], @lastId) AS CT ON P.Id = CT.[{1}]", 
                 Notification.Table, 
@@ -38,7 +33,7 @@ namespace Krowiorsch.Dojo
 
                 using (SqlCommand command = new SqlCommand(checkChange, connection))
                 {
-                    command.Parameters.AddWithValue("@lastId", lastCheckId);
+                    command.Parameters.AddWithValue("@lastId", _lastId);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -46,20 +41,20 @@ namespace Krowiorsch.Dojo
                             switch (reader.GetString(1).ToUpper())
                             {
                                 case "U":
-                                    _publisher.OnUpdate(Notification, reader.GetSqlValue(0).ToString(), ParseUpdated(reader));
+                                    Notification.OnUpdate(Notification, reader.GetSqlValue(0).ToString(), ParseUpdated(reader));
                                     break;
                                 case "I":
-                                    _publisher.OnInsert(Notification, reader.GetSqlValue(0).ToString(), ParseUpdated(reader));
+                                    Notification.OnInsert(Notification, reader.GetSqlValue(0).ToString(), ParseUpdated(reader));
                                     break;
                                 case "D":
-                                    _publisher.OnDelete(Notification, reader.GetSqlValue(0).ToString(), ParseUpdated(reader));
+                                    Notification.OnDelete(Notification, reader.GetSqlValue(0).ToString(), ParseUpdated(reader));
                                     break;
                             }
                         }
                     }
                 }
 
-                return GetLastId(connection);
+                _lastId = GetLastId(connection);
             }
         }
 
@@ -71,6 +66,8 @@ namespace Krowiorsch.Dojo
             string isChangeTrackingEnabled =
                 string.Format(@"SELECT COUNT(*) FROM sys.change_tracking_tables a 
                     INNER JOIN sys.tables b ON a.object_id = b.object_id WHERE b.name = '{0}';", Notification.Table);
+
+            _lastId = GetInitialId();
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {

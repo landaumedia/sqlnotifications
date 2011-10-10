@@ -14,8 +14,6 @@ namespace LandauMedia.Wire
 
         INotificationSetup UseTimestampBased();
 
-        INotificationSetup PublishingTo(IPublishingNotifications publishing);
-
         NotificationTracker Build();
     }
 }

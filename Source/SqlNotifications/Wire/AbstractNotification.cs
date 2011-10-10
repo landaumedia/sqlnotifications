@@ -52,5 +52,9 @@ namespace Krowiorsch.Dojo.Wire
         {
             get { return _intrestedUpdateColumns; }
         }
+
+        public abstract void OnInsert(INotification notification, string id, IEnumerable<string> updatedColumns);
+        public abstract void OnUpdate(INotification notification, string id, IEnumerable<string> updatedColumns);
+        public abstract void OnDelete(INotification notification, string id, IEnumerable<string> updatedColumns);
     }
 }

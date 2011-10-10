@@ -7,7 +7,7 @@ using Machine.Specifications;
 
 namespace LandauMedia
 {
-    [Subject(typeof(Tracker))]
+    [Subject(typeof(Tracker.ChangeTrackingBasedTracker))]
     public class When_Tracker
     {
          

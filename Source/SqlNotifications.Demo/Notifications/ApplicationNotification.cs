@@ -26,5 +26,20 @@ namespace Krowiorsch.Dojo
         {
             get { return Enumerable.Empty<string>(); }
         }
+
+        public void OnInsert(INotification notification, string id, IEnumerable<string> updatedColumns)
+        {
+            Console.WriteLine("I" + id);
+        }
+
+        public void OnUpdate(INotification notification, string id, IEnumerable<string> updatedColumns)
+        {
+            Console.WriteLine("U" + id);
+        }
+
+        public void OnDelete(INotification notification, string id, IEnumerable<string> updatedColumns)
+        {
+            Console.WriteLine("D " + id);
+        }
     }
 }
