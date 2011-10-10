@@ -1,5 +1,4 @@
-﻿using System;
-using Krowiorsch.Dojo.Wire;
+﻿using Krowiorsch.Dojo.Wire;
 
 namespace Krowiorsch.Dojo
 {

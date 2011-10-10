@@ -61,9 +61,7 @@
     <Compile Include="Wire\NLogPublisher.cs" />
     <Compile Include="Wire\StandardNotificationSetup.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Updates\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
