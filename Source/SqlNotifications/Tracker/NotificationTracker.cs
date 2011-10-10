@@ -1,12 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Disposables;
 using System.Threading;
 using Krowiorsch.Dojo.Wire;
+using NLog;
 
 namespace Krowiorsch.Dojo
 {
     public class NotificationTracker
     {
+        static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         readonly string _connectionString;
         readonly IPublishingNotifications _publishing;
         readonly IEnumerable<INotification> _notificationTypes;
@@ -23,33 +28,42 @@ namespace Krowiorsch.Dojo
             _notificationTypes = notificationTypes;
         }
 
-        public void Start()
+        public IDisposable Start()
         {
             _trackers = _notificationTypes.Select(n => new Tracker(_connectionString, n, _publishing)).ToList();
             _trackingIds = _trackers.ToDictionary(t => t.Notification, t => t.GetInitialId());
 
-
             _workerThread = new Thread(StartTracking);
             _workerThread.Start();
+
+            return Disposable.Create(() => _workerThread.Abort());
         }
 
         private void StartTracking()
         {
-            // Prepare
-            foreach (var tracker in _trackers)
+            try
             {
-                tracker.Prepare();
-            }
-
-            while (true)
-            {
+                // Prepare
                 foreach (var tracker in _trackers)
                 {
-                    var newId = tracker.TrackOnce(_trackingIds[tracker.Notification]);
-                    _trackingIds[tracker.Notification] = newId;
+                    tracker.Prepare();
                 }
 
-                Thread.Sleep(1000);
+                while (true)
+                {
+                    foreach (var tracker in _trackers)
+                    {
+                        var newId = tracker.TrackOnce(_trackingIds[tracker.Notification]);
+                        _trackingIds[tracker.Notification] = newId;
+                    }
+
+                    Thread.Sleep(1000);
+                }
+            }
+            catch (ThreadAbortException)
+            {
+                Logger.Debug(() => "Tracking Thread aborted");
+                return;
             }
         }
     }

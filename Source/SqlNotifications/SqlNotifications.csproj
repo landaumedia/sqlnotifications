@@ -43,6 +43,9 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Reactive">
+      <HintPath>..\..\packages\Rx-Main.1.0.10621\lib\Net4\System.Reactive.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -50,12 +53,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Notifications.cs" />
-    <Compile Include="Notifications\ApplicationNotification.cs" />
-    <Compile Include="Notifications\UserNotification.cs" />
-    <Compile Include="NotificationTracker.cs" />
+    <Compile Include="Tracker\Notifications.cs" />
+    <Compile Include="Tracker\NotificationTracker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tracker.cs" />
+    <Compile Include="Tracker\Tracker.cs" />
     <Compile Include="Wire\AbstractNotification.cs" />
     <Compile Include="Wire\INotification.cs" />
     <Compile Include="Wire\INotificationSetup.cs" />

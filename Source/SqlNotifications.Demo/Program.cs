@@ -12,23 +12,22 @@ namespace SqlNotifications.Demo
 
         static void Main(string[] args)
         {
-
-
             var notificationTracker = Notifications.WireUp()
                 .ForDatabase(connectionString)
                 .WithNotificationsOfAssembly(Assembly.GetExecutingAssembly())
                 .PublishingTo(new NLogPublisher())
                 .Build();
 
-            notificationTracker.Start();
-
-            var readLine = string.Empty;
-
-            while((readLine = Console.ReadLine()) != "quit")
+            using (notificationTracker.Start())
             {
-                if (readLine.StartsWith("u"))
+                string readLine;
+
+                while ((readLine = Console.ReadLine()) != "quit")
                 {
-                    UpdateUser();
+                    if (readLine.StartsWith("u"))
+                    {
+                        UpdateUser();
+                    }
                 }
             }
         }

@@ -2,14 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Krowiorsch.Dojo;
+using Krowiorsch.Dojo.Wire;
 
-namespace Krowiorsch.Dojo.Wire
+namespace LandauMedia.Wire
 {
     public class StandardNotificationSetup : INotificationSetup
     {
         string _connectionString;
         IPublishingNotifications _publishing;
         IEnumerable<INotification> _notificationTypes;
+
+        string _trackerType;
 
         public INotificationSetup ForDatabase(string connectionString)
         {
@@ -27,6 +31,18 @@ namespace Krowiorsch.Dojo.Wire
                 .Select(t => (INotification)Activator.CreateInstance(t))
                 .ToList();
 
+            return this;
+        }
+
+        public INotificationSetup UseChangeTracking()
+        {
+            _trackerType = "changetracking";
+            return this;
+        }
+
+        public INotificationSetup UseTimestampBased()
+        {
+            _trackerType = "timestamp";
             return this;
         }
 
