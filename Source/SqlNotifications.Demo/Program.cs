@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Data.SqlClient;
 using System.Reflection;
-using Krowiorsch.Dojo;
-using Krowiorsch.Dojo.Wire;
-using LandauMedia.Tracker;
 
 namespace SqlNotifications.Demo
 {
@@ -29,6 +26,11 @@ namespace SqlNotifications.Demo
                     {
                         UpdateUser();
                     }
+
+                    if (readLine.StartsWith("i"))
+                    {
+                        InsertUser();
+                    }
                 }
             }
         }
@@ -40,6 +42,21 @@ namespace SqlNotifications.Demo
             using (SqlConnection connection = new SqlConnection(connectionString))
             using (SqlCommand command = new SqlCommand(updateUserCommand, connection))
             {
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+        }
+
+        static void InsertUser()
+        {
+            string updateUserCommand = "INSERT INTO [User] ([Username],[Description]) VALUES (@1, @2)";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = new SqlCommand(updateUserCommand, connection))
+            {
+                command.Parameters.AddWithValue("@1", new Guid().ToString());
+                command.Parameters.AddWithValue("@2", "Description");
+
                 connection.Open();
                 command.ExecuteScalar();
             }
