@@ -33,13 +33,13 @@ namespace LandauMedia.Wire
             return this;
         }
 
-        public INotificationSetup UseChangeTracking()
+        public INotificationSetup UseDefaultChangeTracking()
         {
             _trackerType = "changetracking";
             return this;
         }
 
-        public INotificationSetup UseTimestampBased()
+        public INotificationSetup UseDefaultTimestampBased()
         {
             _trackerType = "timestamp";
             return this;

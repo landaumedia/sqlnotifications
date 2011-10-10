@@ -5,6 +5,7 @@ using System.Reactive.Disposables;
 using System.Threading;
 using Krowiorsch.Dojo.Wire;
 using LandauMedia.Tracker;
+using LandauMedia.Wire;
 using NLog;
 
 namespace Krowiorsch.Dojo

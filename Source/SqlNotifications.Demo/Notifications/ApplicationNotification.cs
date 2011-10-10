@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Krowiorsch.Dojo.Wire;
+using LandauMedia.Wire;
 
 namespace Krowiorsch.Dojo
 {

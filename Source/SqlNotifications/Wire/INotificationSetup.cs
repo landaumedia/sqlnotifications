@@ -9,9 +9,9 @@ namespace LandauMedia.Wire
 
         INotificationSetup WithNotificationsOfAssembly(Assembly aseembly);
 
-        INotificationSetup UseChangeTracking();
+        INotificationSetup UseDefaultChangeTracking();
 
-        INotificationSetup UseTimestampBased();
+        INotificationSetup UseDefaultTimestampBased();
 
         NotificationTracker Build();
     }

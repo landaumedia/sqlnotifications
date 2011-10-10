@@ -2,6 +2,7 @@
 using System.Data.SqlClient;
 using System.Text;
 using Krowiorsch.Dojo.Wire;
+using LandauMedia.Wire;
 
 namespace LandauMedia.Tracker
 {

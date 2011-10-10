@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Krowiorsch.Dojo.Wire
+namespace LandauMedia.Wire
 {
     public interface INotification
     {

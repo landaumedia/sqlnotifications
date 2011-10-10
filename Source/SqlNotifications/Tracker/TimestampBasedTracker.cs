@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Data.SqlClient;
 using System.Linq;
-using Krowiorsch.Dojo.Wire;
+using LandauMedia.Wire;
 
 namespace LandauMedia.Tracker
 {
@@ -12,6 +12,8 @@ namespace LandauMedia.Tracker
         string _timestampField;
 
         long _lastTimestamp;
+
+        readonly Hashtable _lastseenIds = new Hashtable();
 
         public INotification Notification { get; internal set; }
 
@@ -41,9 +43,17 @@ namespace LandauMedia.Tracker
                 }
             }
 
-            foreach(var entry in list)
+            foreach (var entry in list)
             {
-                Notification.OnUpdate(Notification, entry.ToString(), Enumerable.Empty<string>());
+                if (_lastseenIds.Contains(entry))
+                {
+                    Notification.OnUpdate(Notification, entry.ToString(), Enumerable.Empty<string>());
+                }
+                else
+                {
+                    Notification.OnInsert(Notification, entry.ToString(), Enumerable.Empty<string>());
+                    _lastseenIds.Add(entry, entry);
+                }
             }
 
             _lastTimestamp = GetLastTimestamp();
@@ -60,6 +70,7 @@ namespace LandauMedia.Tracker
                 throw new InvalidOperationException("requested Table has no timestamp field");
 
             _lastTimestamp = GetLastTimestamp();
+            InitializeHashTable();
         }
 
         private static object ReadFromReader(SqlDataReader reader, Type t)
@@ -90,13 +101,34 @@ namespace LandauMedia.Tracker
             using (SqlCommand command = new SqlCommand(selectTimestamp, connection))
             {
                 connection.Open();
-                
+
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
                     reader.Read();
                     return reader.GetInt64(0);
                 }
+            }
+        }
 
+        private void InitializeHashTable()
+        {
+            string select = string.Format("SELECT {0} FROM [{1}]", Notification.KeyColumn, Notification.Table);
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            using (SqlCommand command = new SqlCommand(select, connection))
+            {
+                connection.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (!reader.HasRows)
+                        return;
+
+                    while (reader.Read())
+                    {
+                        var value = ReadFromReader(reader, Notification.IdType);
+                        _lastseenIds.Add(value, value);
+                    }
+                }
             }
         }
 

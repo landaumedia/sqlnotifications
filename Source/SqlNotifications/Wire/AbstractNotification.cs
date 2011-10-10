@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using LandauMedia.Wire;
 
 namespace Krowiorsch.Dojo.Wire
 {
