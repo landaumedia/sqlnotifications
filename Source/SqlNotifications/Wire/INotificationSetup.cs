@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using Krowiorsch.Dojo;
-using Krowiorsch.Dojo.Wire;
 
 namespace LandauMedia.Wire
 {

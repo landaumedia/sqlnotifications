@@ -16,14 +16,17 @@ namespace Krowiorsch.Dojo
         readonly string _connectionString;
         readonly IEnumerable<INotification> _notificationTypes;
 
+        readonly string _defaultTrackingType;
+
         Thread _workerThread;
 
         IEnumerable<ChangeTrackingBasedTracker> _trackers;
 
-        public NotificationTracker(string connectionString, IEnumerable<INotification> notificationTypes)
+        public NotificationTracker(string connectionString, IEnumerable<INotification> notificationTypes, string defaultTrackingType)
         {
             _connectionString = connectionString;
             _notificationTypes = notificationTypes;
+            _defaultTrackingType = defaultTrackingType;
         }
 
         public IDisposable Start()

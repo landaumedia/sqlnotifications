@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using LandauMedia.Wire;
+using Krowiorsch.Dojo;
+using Krowiorsch.Dojo.Wire;
 
-namespace Krowiorsch.Dojo.Wire
+namespace LandauMedia.Wire
 {
     public class StandardNotificationSetup : INotificationSetup
     {
@@ -46,7 +47,7 @@ namespace Krowiorsch.Dojo.Wire
 
         public NotificationTracker Build()
         {
-            return new NotificationTracker(_connectionString, _notificationTypes);
+            return new NotificationTracker(_connectionString, _notificationTypes, _trackerType);
         }
     }
 }
