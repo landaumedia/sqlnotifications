@@ -7,15 +7,9 @@ namespace LandauMedia.Tracker
 {
     public class ChangeTrackingBasedTracker : ITracker
     {
-        readonly string _connectionString;
+        string _connectionString;
 
         long _lastId;
-
-        public ChangeTrackingBasedTracker(string connectionString, INotification notification)
-        {
-            _connectionString = connectionString;
-            Notification = notification;
-        }
 
         public INotification Notification { get; internal set; }
 
@@ -58,8 +52,11 @@ namespace LandauMedia.Tracker
             }
         }
 
-        public void Prepare()
+        public void Prepare(string connectionString, INotification notification)
         {
+            _connectionString = connectionString;
+            Notification = notification;
+
             string updateNotifications = 
                 string.Format(@"ALTER TABLE [{0}] ENABLE CHANGE_TRACKING WITH (TRACK_COLUMNS_UPDATED = ON);", Notification.Table);
 

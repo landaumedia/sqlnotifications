@@ -20,7 +20,7 @@ namespace Krowiorsch.Dojo
 
         Thread _workerThread;
 
-        IEnumerable<ChangeTrackingBasedTracker> _trackers;
+        IEnumerable<ITracker> _trackers;
 
         public NotificationTracker(string connectionString, IEnumerable<INotification> notificationTypes, string defaultTrackingType)
         {
@@ -31,7 +31,7 @@ namespace Krowiorsch.Dojo
 
         public IDisposable Start()
         {
-            _trackers = _notificationTypes.Select(n => new ChangeTrackingBasedTracker(_connectionString, n)).ToList();
+            _trackers = _notificationTypes.Select(BuildAndPrepareTracker).ToList();
 
             _workerThread = new Thread(StartTracking);
             _workerThread.Start();
@@ -43,12 +43,6 @@ namespace Krowiorsch.Dojo
         {
             try
             {
-                // Prepare
-                foreach (var tracker in _trackers)
-                {
-                    tracker.Prepare();
-                }
-
                 while (true)
                 {
                     foreach (var tracker in _trackers)
@@ -64,6 +58,27 @@ namespace Krowiorsch.Dojo
                 Logger.Debug(() => "Tracking Thread aborted");
                 return;
             }
+        }
+
+        private ITracker BuildAndPrepareTracker(INotification notification)
+        {
+            ITracker tracker;
+
+            if (_defaultTrackingType == "changetracking")
+            {
+                tracker = new ChangeTrackingBasedTracker();
+            }
+            else if (_defaultTrackingType == "timestamp")
+            {
+                tracker = new TimestampBasedTracker();
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException("notification");
+            }
+            
+            tracker.Prepare(_connectionString, notification);
+            return tracker;
         }
     }
 }

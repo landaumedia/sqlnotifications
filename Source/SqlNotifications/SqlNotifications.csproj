@@ -58,6 +58,7 @@
     <Compile Include="Tracker\NotificationTracker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tracker\ChangeTrackingBasedTracker.cs" />
+    <Compile Include="Tracker\TimestampBasedTracker.cs" />
     <Compile Include="Wire\AbstractNotification.cs" />
     <Compile Include="Wire\INotification.cs" />
     <Compile Include="Wire\INotificationSetup.cs" />
