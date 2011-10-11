@@ -6,6 +6,7 @@ namespace LandauMedia.Wire
     public interface INotification
     {
         string Table { get; }
+        string Schema { get; }
         string KeyColumn { get; }
         Type IdType { get; }
 

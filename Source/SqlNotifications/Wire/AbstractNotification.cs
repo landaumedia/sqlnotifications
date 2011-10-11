@@ -6,14 +6,25 @@ namespace LandauMedia.Wire
     public abstract class AbstractNotification : INotification
     {
         string _tableName;
+        string _schemaName;
         string _keyColum;
         string _trackingType;
         Type _id;
         readonly IList<string> _intrestedUpdateColumns = new List<string>();
 
+        protected AbstractNotification()
+        {
+            _schemaName = "dbo";
+        }
+
         protected void SetTable(string tableName)
         {
             _tableName = tableName;
+        }
+
+        protected void SetSchema(string schema)
+        {
+            _schemaName = schema;
         }
 
         protected void SetKeyColumn(string keyColum)
@@ -40,6 +51,11 @@ namespace LandauMedia.Wire
         public string Table
         {
             get { return _tableName; }
+        }
+
+        public string Schema
+        {
+            get { return _schemaName; }
         }
 
         public string KeyColumn

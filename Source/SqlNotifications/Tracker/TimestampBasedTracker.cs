@@ -24,11 +24,12 @@ namespace LandauMedia.Tracker
 
         public void TrackingChanges()
         {
-            string statement = string.Format("SELECT {0} FROM [{1}] WHERE CONVERT(bigint, {2}) > {3}",
+            string statement = string.Format("SELECT {0} FROM [{4}].[{1}] WHERE CONVERT(bigint, {2}) > {3}",
                 Notification.KeyColumn,
                 Notification.Table,
                 _timestampField,
-                _versionStorage.Load(_key));
+                _versionStorage.Load(_key), 
+                Notification.Schema);
 
             ArrayList list = new ArrayList();
 
@@ -134,7 +135,7 @@ namespace LandauMedia.Tracker
 
         private void InitializeHashTable()
         {
-            string select = string.Format("SELECT {0} FROM [{1}]", Notification.KeyColumn, Notification.Table);
+            string select = string.Format("SELECT {1} FROM [{0}].[{2}]", Notification.Schema, Notification.KeyColumn, Notification.Table);
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             using (SqlCommand command = new SqlCommand(select, connection))
