@@ -67,7 +67,7 @@ namespace LandauMedia.Tracker
 
         public void Prepare(string connectionString, INotification notification, IVersionStorage stroage, TrackerOptions options)
         {
-            Logger.Info(() => "Preparing timestampbased Notification");
+            Logger.Debug(() => "Preparing timestampbased Notification");
 
             _key = notification.GetType().FullName + "_" + GetType().FullName;
 
@@ -94,6 +94,8 @@ namespace LandauMedia.Tracker
             }
 
             _versionStorage.Store(_key, timestamp);
+
+            Logger.Debug(() => "Finished Prepare for timestampbased Notification");
         }
 
         private static object ReadFromReader(SqlDataReader reader, Type t)
