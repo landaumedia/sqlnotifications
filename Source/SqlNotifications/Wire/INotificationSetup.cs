@@ -6,7 +6,7 @@ namespace LandauMedia.Wire
 {
     public interface INotificationSetup
     {
-        INotificationSetup ForDatabase(string connectionString);
+        INotificationSetup Database(string connectionString);
 
         INotificationSetup WithNotificationsOfAssembly(Assembly aseembly);
 

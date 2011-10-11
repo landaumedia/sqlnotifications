@@ -15,7 +15,7 @@ namespace LandauMedia.Wire
 
         string _trackerType;
 
-        public INotificationSetup ForDatabase(string connectionString)
+        public INotificationSetup Database(string connectionString)
         {
             _connectionString = connectionString;
             return this;
