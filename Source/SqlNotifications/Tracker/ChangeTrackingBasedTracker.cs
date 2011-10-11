@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Text;
 using LandauMedia.Storage;
 using LandauMedia.Wire;
@@ -15,8 +16,6 @@ namespace LandauMedia.Tracker
         IVersionStorage _versionStorage;
         TrackerOptions _options;
         string _key;
-
-        ulong _lastId;
 
         public INotification Notification { get; internal set; }
 
@@ -77,8 +76,7 @@ namespace LandauMedia.Tracker
                 string.Format(@"SELECT COUNT(*) FROM sys.change_tracking_tables a 
                     INNER JOIN sys.tables b ON a.object_id = b.object_id WHERE b.name = '{0}';", Notification.Table);
 
-            _lastId = _options.InitializeToCurrentVersion ? GetInitialId() : 0;
-            _versionStorage.Store(_key, _lastId);
+            _versionStorage.Store(_key, _options.InitializeToCurrentVersion ? GetInitialId() : 0);
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -99,11 +97,10 @@ namespace LandauMedia.Tracker
 
         private IEnumerable<string> ParseUpdated(SqlDataReader reader)
         {
-            foreach (string columns in Notification.IntrestedInUpdatedColums)
-            {
-                bool isChanged = reader.GetInt32(reader.GetOrdinal(string.Format("HasChanged{0}", columns))) ==  1;
-                if (isChanged) yield return columns;
-            }
+            return from columns in Notification.IntrestedInUpdatedColums
+                let isChanged = reader.GetInt32(reader.GetOrdinal(string.Format("HasChanged{0}", columns))) ==  1
+                where isChanged
+                select columns;
         }
 
         public ulong GetInitialId()
