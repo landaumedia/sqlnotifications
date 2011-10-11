@@ -12,11 +12,15 @@ namespace SqlNotifications.Demo
 
         static void Main(string[] args)
         {
+
+            Func<Type, object> factory = Activator.CreateInstance;
+
             var notificationTracker = Notify.For()
                 .Database(connectionString)
                 .WithNotificationsOfAssembly(Assembly.GetExecutingAssembly())
                 .UseDefaultTimestampBased()
                 .WithVersionStorage(new FilebasedVersionStorage("versions.storage"))
+                .WithNotificationFactory(factory)
                 .Build();
 
             using (notificationTracker.Start())

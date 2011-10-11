@@ -24,12 +24,12 @@ namespace LandauMedia.Tracker
 
         public void TrackingChanges()
         {
-            string statement = string.Format("SELECT {0} FROM [{4}].[{1}] WHERE CONVERT(bigint, {2}) > {3}",
+            string statement = string.Format("SELECT {0} FROM [{1}].[{2}] WHERE CONVERT(bigint, {3}) > {4}",
                 NotificationSetup.KeyColumn,
+                NotificationSetup.Schema,
                 NotificationSetup.Table,
                 _timestampField,
-                _versionStorage.Load(_key), 
-                NotificationSetup.Schema);
+                _versionStorage.Load(_key));
 
             ArrayList list = new ArrayList();
 
@@ -159,11 +159,11 @@ namespace LandauMedia.Tracker
 
         private string GetTimestampFieldOrNull()
         {
-            string existTimestampField = @"select col.name
-                from sysobjects obj inner join syscolumns col on obj.id = col.id inner join systypes types on col.xtype = types.xtype
-                where obj.name = '@TableName' and types.name='timestamp'";
+            string existTimestampField = @"SELECT Column_Name FROM INFORMATION_SCHEMA.COLUMNS
+                WHERE DATA_TYPE = 'timestamp' AND TABLE_SCHEMA='@Schema' and TABLE_NAME='@TableName'";
 
             existTimestampField = existTimestampField.Replace("@TableName", NotificationSetup.Table);
+            existTimestampField = existTimestampField.Replace("@Schema", NotificationSetup.Schema);
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             using (SqlCommand command = new SqlCommand(existTimestampField, connection))

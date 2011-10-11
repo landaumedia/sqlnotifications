@@ -69,7 +69,7 @@ namespace LandauMedia.Storage
             {
                 foreach(var pair in values)
                 {
-                    writer.Write(pair.Key + "=" + pair.Value);
+                    writer.WriteLine(pair.Key + "=" + pair.Value);
                 }
             }
         }
