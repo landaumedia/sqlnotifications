@@ -3,15 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using LandauMedia.Storage;
-using LandauMedia.Tracker;
+using LandauMedia.Wire;
 
-namespace LandauMedia.Wire
+namespace LandauMedia.Tracker
 {
     public class StandardTrackerSetup : ITrackerSetup
     {
         string _connectionString;
         IEnumerable<INotificationSetup> _notificationTypes;
         IVersionStorage _storage;
+
+        Func<Type, object> _notificationFactory;
+
+        Assembly _souceAssembly;
 
         string _trackerType;
 
@@ -21,15 +25,10 @@ namespace LandauMedia.Wire
             return this;
         }
 
-        public ITrackerSetup WithNotificationsOfAssembly(Assembly aseembly)
+        public ITrackerSetup WithNotificationsOfAssembly(Assembly assembly)
         {
-            Type n = typeof (INotificationSetup);
+            _souceAssembly = assembly;
 
-            _notificationTypes = aseembly.GetTypes()
-                .Where(n.IsAssignableFrom)
-                .Where(t => !t.IsAbstract && !t.IsInterface)
-                .Select(t => (INotificationSetup)Activator.CreateInstance(t))
-                .ToList();
 
             return this;
         }
@@ -52,12 +51,35 @@ namespace LandauMedia.Wire
             return this;
         }
 
+        public ITrackerSetup WithNotificationFactory(Func<Type, object> notificationFactory)
+        {
+            _notificationFactory = notificationFactory;
+            return this;
+        }
+
         public NotificationTracker Build()
         {
             if (_storage == null)
                 throw new InvalidOperationException("No Storage Defined");
 
+            Type n = typeof(INotificationSetup);
+
+            _notificationTypes = _souceAssembly.GetTypes()
+                .Where(n.IsAssignableFrom)
+                .Where(t => !t.IsAbstract && !t.IsInterface)
+                .Select(Create)
+                .ToList();
+
             return new NotificationTracker(_connectionString, _notificationTypes, _trackerType, _storage);
+        }
+
+        private INotificationSetup Create(Type t)
+        {
+            if (_notificationFactory == null)
+                return (INotificationSetup)Activator.CreateInstance(t);
+
+            return (INotificationSetup)_notificationFactory(t);
+
         }
     }
 }

@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>LandauMedia</RootNamespace>
-    <AssemblyName>SqlNotifications</AssemblyName>
+    <AssemblyName>CommandCenter.SqlNotifications</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>

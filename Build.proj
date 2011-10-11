@@ -7,7 +7,7 @@
     <BinaryOutputPath>$(MSBuildProjectDirectory)\build</BinaryOutputPath>
     <PackagePath>$(MSBuildProjectDirectory)\Packages</PackagePath>
 
-    <AssemblyName>SqlNotifications.dll</AssemblyName>
+    <AssemblyName>CommandCenter.SqlNotifications.dll</AssemblyName>
 
     <BinaryOutputDebug>$(BinaryOutputPath)\Debug\SqlNotifications</BinaryOutputDebug>
     <BinaryOutputRelease>$(BinaryOutputPath)\Release\SqlNotifications</BinaryOutputRelease>

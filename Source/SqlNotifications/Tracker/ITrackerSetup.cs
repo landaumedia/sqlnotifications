@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using LandauMedia.Storage;
 
 namespace LandauMedia.Tracker
@@ -14,6 +15,8 @@ namespace LandauMedia.Tracker
         ITrackerSetup UseDefaultTimestampBased();
 
         ITrackerSetup WithVersionStorage(IVersionStorage storage);
+
+        ITrackerSetup WithNotificationFactory(Func<Type, object> notificationFactory);
 
         NotificationTracker Build();
     }
