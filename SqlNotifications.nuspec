@@ -2,12 +2,12 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>LandauMedia.CommandCenter.SqlNotifications</id>
-    <version>$VERSION$</version>
+    <version>0.0.0</version>
     <authors>Christian Krowiorsch</authors>
     <owners>Christian Krowiorsch</owners>
     <iconUrl>http://content.dev.local/cm32.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description></description>
+    <description>Bibliothek zum verarbeiten von Änderungen in der Datenbank</description>
     <tags>LandauMedia CommandCenter</tags>
     <dependencies>
       <dependency id="nlog" version="[2.0.0,)" />

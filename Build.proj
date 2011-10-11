@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build" ToolsVersion="4.0">
+
+  <PropertyGroup>
+    <SourceFolder>$(MSBuildProjectDirectory)\Source</SourceFolder>
+    
+    <BinaryOutputPath>$(MSBuildProjectDirectory)\build</BinaryOutputPath>
+    <PackagePath>$(MSBuildProjectDirectory)\Packages</PackagePath>
+
+    <AssemblyName>SqlNotifications.dll</AssemblyName>
+
+    <BinaryOutputDebug>$(BinaryOutputPath)\Debug\SqlNotifications</BinaryOutputDebug>
+    <BinaryOutputRelease>$(BinaryOutputPath)\Release\SqlNotifications</BinaryOutputRelease>
+    <BinaryOutputTests>$(BinaryOutputPath)\Tests</BinaryOutputTests>
+
+    <ArtifactDirectory>$(BinaryOutputPath)\Artifacts</ArtifactDirectory>
+    <StyleCopEnabled>true</StyleCopEnabled>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <NUnitToolPath>$(PackagePath)\NUnit.2.5.10.11092\tools</NUnitToolPath>
+    <MSpecToolPath>$(PackagePath)\Machine.Specifications.0.4.24.0\tools</MSpecToolPath>
+    <MSpecToJUnitPath>$(PackagePath)\MSpecToJUnit\MSpecToJUnit.xlt</MSpecToJUnitPath>
+    <SVNToolPath>$(PackagePath)\Subversion\</SVNToolPath>
+    <StyleCopyToolPath>$(PackagePath)\StyleCop</StyleCopyToolPath>
+    <FxCopToolPath>$(PackagePath)\FxCop</FxCopToolPath>
+    <MSBuildCommunityTasksPath>$(PackagePath)\msBuild</MSBuildCommunityTasksPath>
+    <SVNToolPath>$(PackagePath)\Subversion\</SVNToolPath>
+    <ExtensionTasksPath>$(PackagePath)\MSBuild.Extension\</ExtensionTasksPath>
+  
+</PropertyGroup>
+
+  <PropertyGroup Label="Nuget">
+    <NuGetLocalFeed>c:\daten\NugetFeed</NuGetLocalFeed>
+    <NuGetLandaumediaFeed>\\artus\8 EDV\8-2 Entwicklung\NuGet</NuGetLandaumediaFeed>
+
+    <NuGetDirectory>$(BinaryOutputPath)\Nuget</NuGetDirectory>
+    <NuGetPackageDirectory>$(BinaryOutputPath)\NuGetPackage</NuGetPackageDirectory>
+    <NuGetSpecFile>$(MSBuildProjectDirectory)\SqlNotifications.nuspec</NuGetSpecFile>
+    <NuGetToolPath>$(PackagePath)\Nuget\</NuGetToolPath>
+  </PropertyGroup>
+
+  <!-- Deployment settings -->
+  <!--log@dev.local-->
+  <PropertyGroup>
+    <Project_Name>FacebookExport</Project_Name>
+    <Deploy_InformationMailRecipients>log@dev.local</Deploy_InformationMailRecipients>
+    <Deploy_To Condition="$(Deploy_To) == ''"></Deploy_To>
+    <Deploy_ConfigurationSystem Condition="$(Deploy_ConfigurationSystem) == ''">unknown</Deploy_ConfigurationSystem>
+
+    <DeploymentSourcePath>$(BinaryOutputRelease)</DeploymentSourcePath>
+
+  </PropertyGroup>
+
+  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets" />
+  <Import Project="$(ExtensionTasksPath)MSBuild.ExtensionPack.tasks" />
+  <UsingTask AssemblyFile="$(StyleCopyToolPath)\Microsoft.StyleCop.dll" TaskName="StyleCopTask"/>
+
+
+  <Target Name="Run_Hudson" DependsOnTargets="Rebuild;Test" />
+  <Target Name="Run_Hudson_CodeAnalysis" DependsOnTargets="" />
+
+  <Target Name="Rebuild" DependsOnTargets="Clean;Build_Release" />
+
+  <Target Name="Build" DependsOnTargets="">
+    <MSBuild Projects="$(SourceFolder)\Searcher.Client\Searcher.Client.csproj"
+        RebaseOutputs="true"
+        Properties="Configuration=Debug;OutputPath=$(BinaryOutputDebug)" />
+  </Target>
+
+  <Target Name="Build" DependsOnTargets="">
+    <MSBuild Projects="$(SourceFolder)\SqlNotifications\SqlNotifications.csproj"
+        RebaseOutputs="true"
+        Properties="Configuration=Debug;OutputPath=$(BinaryOutputDebug)" />
+  </Target>
+  <Target Name="Build_Release">
+    <MSBuild Projects="$(SourceFolder)\SqlNotifications\SqlNotifications.csproj"
+        RebaseOutputs="true"
+        Properties="Configuration=Release;OutputPath=$(BinaryOutputRelease)" />
+  </Target>
+
+  <Target Name="Clean">
+    <RemoveDir Directories="$(BinaryOutputPath)" />
+    <RemoveDir Directories="$(ArtifactDirectory)" />
+  </Target>
+
+  
+  <Target Name="Deploy_Production">
+    <MSBuild Projects="$(MSBuildProjectFile)"
+         Targets="Deploy"
+         Properties="Deploy_ConfigurationSystem=Production;Deploy_to=\\Social01\Daten\Services\Production\" />
+  </Target>
+
+  <Target Name="Deploy_Testing">
+    <MSBuild Projects="$(MSBuildProjectFile)"
+         Targets="Deploy"
+         Properties="Deploy_ConfigurationSystem=Testing;SendDeploymentMail=false;Deploy_to=\\Web20Testing01\Daten\Services\Testing\" />
+  </Target>
+
+  <Target Name="Deploy_Staging">
+    <MSBuild Projects="$(MSBuildProjectFile)"
+         Targets="Deploy"
+         Properties="Deploy_ConfigurationSystem=Staging;Deploy_to=\\Web20Staging01\Daten\Services\Staging\" />
+  </Target>
+
+  <Target Name="Deploy" DependsOnTargets="Clean;BuildService_Release" Condition="$(Deploy_ConfigurationSystem) != ''">
+
+    <CreateItem Include="$(BinaryOutputRelease)\**\*" Exclude="$(BinaryOutputRelease)\App*.config" >
+      <Output TaskParameter="Include" ItemName="DeploymentFiles" />
+    </CreateItem>
+    
+    <Copy SourceFiles="@(DeploymentFiles)"
+					DestinationFolder="$(Deploy_To)CommandCenter.Searcher\%(RecursiveDir)">
+    </Copy>
+
+    <MSBuild.ExtensionPack.Framework.Assembly TaskAction="GetInfo" NetAssembly="$(BinaryOutputRelease)\$(AssemblyName)">
+      <Output TaskParameter="OutputItems" ItemName="Info"/>
+    </MSBuild.ExtensionPack.Framework.Assembly>
+
+    <Copy SourceFiles="$(BinaryOutputRelease)\App.$(Deploy_ConfigurationSystem).config"
+        DestinationFiles="$(Deploy_To)\$(AssemblyName).config" />
+
+    <Mail SmtpServer="dev.local"
+        Condition="$(SendDeploymentMail)!='false'"
+				To="$(Deploy_InformationMailRecipients)"
+				Subject="Command Center Searcher (Version: %(Info.Version))"
+				Body ="Configuration: System:$(Deploy_ConfigurationSystem)"
+				From="Web20Sender@landaumedia.de"/>
+  </Target>
+
+
+  <Target Name="Build_Tests">
+    <CreateItem Include="$(SourceFolder)\*.Tests*\*.csproj">
+      <Output TaskParameter="Include" ItemName="TestProjects" />
+    </CreateItem>
+
+    <MSBuild Projects="@(TestProjects)"
+			RebaseOutputs="true"
+			Properties="Configuration=Debug;OutputPath=$(BinaryOutputTests)" />
+  </Target>
+
+  <!-- start testing (used by hudson) -->
+  <Target Name="Test" DependsOnTargets="Build_Tests;Prepare">
+    <CreateItem Include="$(BinaryOutputTests)\*.Tests.dll">
+      <Output TaskParameter="Include" ItemName="TestAssembly" />
+    </CreateItem>
+
+    <PropertyGroup>
+      <AdditionalSettings>--xml "$(ArtifactDirectory)\mspec-results.xml" --html "$(ArtifactDirectory)\mspec-results.html"</AdditionalSettings>
+      <MSpecCommand>
+        $(MSpecToolPath)\mspec-x86-clr4.exe $(AdditionalSettings) @(TestAssembly,' ')
+      </MSpecCommand>
+    </PropertyGroup>
+    <Exec Command="$(MSpecCommand)" 
+          WorkingDirectory="$(BinaryOutputTests)"
+          IgnoreExitCode="true"
+          ContinueOnError="true"/>
+
+    <XslTransformation  XmlInputPaths="$(ArtifactDirectory)\mspec-results.xml"
+                        XslInputPath="$(MSpecToJUnitPath)"
+                        OutputPaths="$(ArtifactDirectory)\junit-results.xml"/>
+    
+  </Target>
+
+  <Target Name="Prepare">
+    <MakeDir Directories="$(ArtifactDirectory)" />
+  </Target>
+
+
+  <Target Name="Nuget">
+    <MakeDir Directories="$(NuGetDirectory)" />
+    <MakeDir Directories="$(NuGetPackageDirectory)" />
+
+    <MSBuild Projects="$(SourceFolder)\SqlNotifications\SqlNotifications.csproj"
+			RebaseOutputs="true"
+			Properties="Configuration=Release;OutputPath=$(NuGetDirectory)\lib\net40" />
+
+    <GetAssemblyIdentity AssemblyFiles="$(NuGetDirectory)\lib\net40\$(AssemblyName)">
+      <Output TaskParameter="Assemblies" ItemName="AssemblyInfo"/>
+    </GetAssemblyIdentity>
+<!--
+    <XmlUpdate
+      Prefix="n"
+      Namespace="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd"
+      XmlFileName="$(NuGetSpecFile)"
+      XPath="//n:package/n:metadata/n:version"
+			Value="%(AssemblyInfo.Version)" />-->
+
+    <Exec Command="&quot;$(NuGetToolPath)Nuget.exe&quot; pack &quot;$(NuGetSpecFile)&quot; /OutputDirectory &quot;$(NuGetPackageDirectory)&quot; -version %(AssemblyInfo.Version)" />
+  </Target>
+
+
+  <Target Name="DeployToLocalNuget" DependsOnTargets="Clean;Nuget">
+
+    <ItemGroup>
+      <NugetPackages Include="$(NuGetPackageDirectory)\*.nupkg"/>
+    </ItemGroup>
+
+    <Error Condition="Exists(@(NugetPackages->'$(NuGetLocalFeed)\%(FileName)%(Extension)', '%0D%0A'))" Text="Version already Deployed" />
+    <Copy SourceFiles="@(NugetPackages)" DestinationFolder="$(NuGetLocalFeed)" />
+  </Target>
+
+  <Target Name="DeployToLandaumediaNuGet" DependsOnTargets="Clean;Nuget">
+
+    <ItemGroup>
+      <NugetPackages Include="$(NuGetPackageDirectory)\*.nupkg"/>
+    </ItemGroup>
+
+    <Error Condition="Exists(@(NugetPackages->'$(NuGetLandaumediaFeed)\%(FileName)%(Extension)', '%0D%0A'))" Text="Version already Deployed" />
+    <Copy SourceFiles="@(NugetPackages)" DestinationFolder="$(NuGetLandaumediaFeed)" />
+  </Target>
+
+</Project>
+
