@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using LandauMedia.Wire;
 
-namespace LandauMedia.Wire
+namespace LandauMedia.Storage
 {
     public class FilebasedVersionStorage : IVersionStorage
     {

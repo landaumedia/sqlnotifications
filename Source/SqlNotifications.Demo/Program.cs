@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.SqlClient;
 using System.Reflection;
+using LandauMedia.Storage;
 using LandauMedia.Wire;
 
 namespace SqlNotifications.Demo

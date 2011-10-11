@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using LandauMedia.Storage;
 using LandauMedia.Wire;
 using Machine.Specifications;
 
@@ -14,9 +15,6 @@ namespace LandauMedia.Version
     {
         Because of = () =>
             _sut.Store("test", 1);
-
-        It should_have_created_the_file = () =>
-            _file.Exists.ShouldBeTrue();
 
         It should_restore_the__value_of_one = () =>
             _sut.Load("test").ShouldEqual<ulong>(1);

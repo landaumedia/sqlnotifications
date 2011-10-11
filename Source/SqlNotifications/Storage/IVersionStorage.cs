@@ -1,4 +1,4 @@
-﻿namespace LandauMedia.Wire
+﻿namespace LandauMedia.Storage
 {
     public interface IVersionStorage
     {

@@ -54,11 +54,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Storage\DatabaseVersionStorage.cs" />
     <Compile Include="Tracker\ITracker.cs" />
     <Compile Include="Tracker\TrackerFactory.cs" />
     <Compile Include="Tracker\TrackerOptions.cs" />
-    <Compile Include="Wire\FilebasedVersionStorage.cs" />
-    <Compile Include="Wire\IVersionStorage.cs" />
+    <Compile Include="Storage\FilebasedVersionStorage.cs" />
+    <Compile Include="Storage\IVersionStorage.cs" />
     <Compile Include="Wire\Notifications.cs" />
     <Compile Include="Tracker\NotificationTracker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
