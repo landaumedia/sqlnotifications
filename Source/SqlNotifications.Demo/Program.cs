@@ -22,6 +22,9 @@ namespace SqlNotifications.Demo
 
                 while ((readLine = Console.ReadLine()) != "quit")
                 {
+                    if (readLine == null)
+                        continue;
+
                     if (readLine.StartsWith("u"))
                     {
                         UpdateUser();

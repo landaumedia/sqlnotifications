@@ -3,11 +3,13 @@ using System.Collections;
 using System.Data.SqlClient;
 using System.Linq;
 using LandauMedia.Wire;
+using NLog;
 
 namespace LandauMedia.Tracker
 {
     public class TimestampBasedTracker : ITracker
     {
+        static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         string _connectionString;
         string _timestampField;
 
@@ -61,6 +63,8 @@ namespace LandauMedia.Tracker
 
         public void Prepare(string connectionString, INotification notification)
         {
+            Logger.Info(() => "Preparing timestampbased Notification");
+
             Notification = notification;
             _connectionString = connectionString;
 

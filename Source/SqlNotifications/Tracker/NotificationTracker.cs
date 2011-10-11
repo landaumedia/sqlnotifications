@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Threading;
-using Krowiorsch.Dojo.Wire;
 using LandauMedia.Tracker;
 using LandauMedia.Wire;
 using NLog;
@@ -63,21 +62,9 @@ namespace Krowiorsch.Dojo
 
         private ITracker BuildAndPrepareTracker(INotification notification)
         {
-            ITracker tracker;
+            ITracker tracker = TrackerFactory.BuildByName(
+                string.IsNullOrWhiteSpace(notification.TrackingType) ? _defaultTrackingType : notification.TrackingType);
 
-            if (_defaultTrackingType == "changetracking")
-            {
-                tracker = new ChangeTrackingBasedTracker();
-            }
-            else if (_defaultTrackingType == "timestamp")
-            {
-                tracker = new TimestampBasedTracker();
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("notification");
-            }
-            
             tracker.Prepare(_connectionString, notification);
             return tracker;
         }

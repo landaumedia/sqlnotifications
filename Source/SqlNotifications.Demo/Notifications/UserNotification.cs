@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Krowiorsch.Dojo.Wire;
 using LandauMedia.Wire;
 using NLog;
 
@@ -15,6 +14,7 @@ namespace SqlNotifications.Demo.Notifications
             SetTable("User");
             SetKeyColumn("Id");
             SetIdType<int>();
+            SetTrackingType("changetracking");
 
             IntrestedInColumn("Username");
             IntrestedInColumn("Description");

@@ -1,5 +1,4 @@
-﻿using Krowiorsch.Dojo.Wire;
-using LandauMedia.Wire;
+﻿using LandauMedia.Wire;
 
 namespace LandauMedia.Tracker
 {

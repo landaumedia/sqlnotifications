@@ -49,6 +49,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TrackerSpec.cs" />
     <Compile Include="TestSetups.cs" />
+    <Compile Include="Version\FilebasedVersionStorageSpec.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

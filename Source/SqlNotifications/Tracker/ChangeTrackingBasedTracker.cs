@@ -1,13 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
-using Krowiorsch.Dojo.Wire;
 using LandauMedia.Wire;
+using NLog;
 
 namespace LandauMedia.Tracker
 {
     public class ChangeTrackingBasedTracker : ITracker
     {
+        static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         string _connectionString;
 
         long _lastId;
@@ -55,6 +57,8 @@ namespace LandauMedia.Tracker
 
         public void Prepare(string connectionString, INotification notification)
         {
+            Logger.Info(() => "Preparing ChangeTrackingbased Notification");
+
             _connectionString = connectionString;
             Notification = notification;
 

@@ -9,6 +9,8 @@ namespace LandauMedia.Wire
         string KeyColumn { get; }
         Type IdType { get; }
 
+        string TrackingType { get; }
+
         IEnumerable<string> IntrestedInUpdatedColums { get; }
 
         void OnInsert(INotification notification, string id, IEnumerable<string> updatedColumns);
