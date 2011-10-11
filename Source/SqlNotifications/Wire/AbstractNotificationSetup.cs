@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace LandauMedia.Wire
 {
-    public abstract class AbstractNotification : INotification
+    public abstract class AbstractNotificationSetup : INotificationSetup
     {
         string _tableName;
         string _schemaName;
@@ -12,7 +12,7 @@ namespace LandauMedia.Wire
         Type _id;
         readonly IList<string> _intrestedUpdateColumns = new List<string>();
 
-        protected AbstractNotification()
+        protected AbstractNotificationSetup()
         {
             _schemaName = "dbo";
         }
@@ -84,8 +84,6 @@ namespace LandauMedia.Wire
             get { return _intrestedUpdateColumns; }
         }
 
-        public abstract void OnInsert(INotification notification, string id, IEnumerable<string> updatedColumns);
-        public abstract void OnUpdate(INotification notification, string id, IEnumerable<string> updatedColumns);
-        public abstract void OnDelete(INotification notification, string id, IEnumerable<string> updatedColumns);
+        public abstract INotification Notification { get; }
     }
 }

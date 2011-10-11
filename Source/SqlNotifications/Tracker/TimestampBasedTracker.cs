@@ -20,16 +20,16 @@ namespace LandauMedia.Tracker
 
         readonly Hashtable _lastseenIds = new Hashtable();
 
-        public INotification Notification { get; internal set; }
+        public INotificationSetup NotificationSetup { get; internal set; }
 
         public void TrackingChanges()
         {
             string statement = string.Format("SELECT {0} FROM [{4}].[{1}] WHERE CONVERT(bigint, {2}) > {3}",
-                Notification.KeyColumn,
-                Notification.Table,
+                NotificationSetup.KeyColumn,
+                NotificationSetup.Table,
                 _timestampField,
                 _versionStorage.Load(_key), 
-                Notification.Schema);
+                NotificationSetup.Schema);
 
             ArrayList list = new ArrayList();
 
@@ -44,7 +44,7 @@ namespace LandauMedia.Tracker
 
                     while (reader.Read())
                     {
-                        list.Add(ReadFromReader(reader, Notification.IdType));
+                        list.Add(ReadFromReader(reader, NotificationSetup.IdType));
                     }
                 }
             }
@@ -53,11 +53,11 @@ namespace LandauMedia.Tracker
             {
                 if (_lastseenIds.Contains(entry))
                 {
-                    Notification.OnUpdate(Notification, entry.ToString(), Enumerable.Empty<string>());
+                    NotificationSetup.Notification.OnUpdate(NotificationSetup, entry.ToString(), Enumerable.Empty<string>());
                 }
                 else
                 {
-                    Notification.OnInsert(Notification, entry.ToString(), Enumerable.Empty<string>());
+                    NotificationSetup.Notification.OnInsert(NotificationSetup, entry.ToString(), Enumerable.Empty<string>());
                     _lastseenIds.Add(entry, entry);
                 }
             }
@@ -65,13 +65,13 @@ namespace LandauMedia.Tracker
             _versionStorage.Store(_key, GetLastTimestamp());
         }
 
-        public void Prepare(string connectionString, INotification notification, IVersionStorage stroage, TrackerOptions options)
+        public void Prepare(string connectionString, INotificationSetup notificationSetup, IVersionStorage stroage, TrackerOptions options)
         {
             Logger.Debug(() => "Preparing timestampbased Notification");
 
-            _key = notification.GetType().FullName + "_" + GetType().FullName;
+            _key = notificationSetup.GetType().FullName + "_" + GetType().FullName;
 
-            Notification = notification;
+            NotificationSetup = notificationSetup;
             _connectionString = connectionString;
             _options = options;
             _versionStorage = stroage;
@@ -137,7 +137,7 @@ namespace LandauMedia.Tracker
 
         private void InitializeHashTable()
         {
-            string select = string.Format("SELECT {1} FROM [{0}].[{2}]", Notification.Schema, Notification.KeyColumn, Notification.Table);
+            string select = string.Format("SELECT {1} FROM [{0}].[{2}]", NotificationSetup.Schema, NotificationSetup.KeyColumn, NotificationSetup.Table);
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             using (SqlCommand command = new SqlCommand(select, connection))
@@ -150,7 +150,7 @@ namespace LandauMedia.Tracker
 
                     while (reader.Read())
                     {
-                        var value = ReadFromReader(reader, Notification.IdType);
+                        var value = ReadFromReader(reader, NotificationSetup.IdType);
                         _lastseenIds.Add(value, value);
                     }
                 }
@@ -163,7 +163,7 @@ namespace LandauMedia.Tracker
                 from sysobjects obj inner join syscolumns col on obj.id = col.id inner join systypes types on col.xtype = types.xtype
                 where obj.name = '@TableName' and types.name='timestamp'";
 
-            existTimestampField = existTimestampField.Replace("@TableName", Notification.Table);
+            existTimestampField = existTimestampField.Replace("@TableName", NotificationSetup.Table);
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             using (SqlCommand command = new SqlCommand(existTimestampField, connection))

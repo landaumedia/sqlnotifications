@@ -1,21 +1,26 @@
-﻿using System.Reflection;
-using LandauMedia.Storage;
-using LandauMedia.Tracker;
+﻿using System;
+using System.Collections.Generic;
 
 namespace LandauMedia.Wire
 {
     public interface INotificationSetup
     {
-        INotificationSetup Database(string connectionString);
+        string Table { get; }
+        string Schema { get; }
+        string KeyColumn { get; }
+        Type IdType { get; }
 
-        INotificationSetup WithNotificationsOfAssembly(Assembly aseembly);
+        string TrackingType { get; }
 
-        INotificationSetup UseDefaultChangeTracking();
+        IEnumerable<string> IntrestedInUpdatedColums { get; }
 
-        INotificationSetup UseDefaultTimestampBased();
+        INotification Notification { get; }
+    }
 
-        INotificationSetup WithVersionStorage(IVersionStorage storage);
-
-        NotificationTracker Build();
+    public interface INotification
+    {
+        void OnInsert(INotificationSetup notificationSetup, string id, IEnumerable<string> updatedColumns);
+        void OnUpdate(INotificationSetup notificationSetup, string id, IEnumerable<string> updatedColumns);
+        void OnDelete(INotificationSetup notificationSetup, string id, IEnumerable<string> updatedColumns);
     }
 }

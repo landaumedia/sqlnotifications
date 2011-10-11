@@ -1,10 +1,12 @@
-﻿namespace LandauMedia.Wire
+﻿using LandauMedia.Tracker;
+
+namespace LandauMedia.Wire
 {
     public static class Notify
     {
-        public static INotificationSetup For()
+        public static ITrackerSetup For()
         {
-            return new StandardNotificationSetup();
+            return new StandardTrackerSetup();
         }
     }
 }

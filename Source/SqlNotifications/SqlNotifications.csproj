@@ -65,10 +65,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tracker\ChangeTrackingBasedTracker.cs" />
     <Compile Include="Tracker\TimestampBasedTracker.cs" />
-    <Compile Include="Wire\AbstractNotification.cs" />
-    <Compile Include="Wire\INotification.cs" />
+    <Compile Include="Wire\AbstractNotificationSetup.cs" />
     <Compile Include="Wire\INotificationSetup.cs" />
-    <Compile Include="Wire\StandardNotificationSetup.cs" />
+    <Compile Include="Tracker\ITrackerSetup.cs" />
+    <Compile Include="Tracker\StandardTrackerSetup.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

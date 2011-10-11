@@ -17,14 +17,14 @@ namespace LandauMedia.Tracker
         TrackerOptions _options;
         string _key;
 
-        public INotification Notification { get; internal set; }
+        public INotificationSetup NotificationSetup { get; internal set; }
 
         public void TrackingChanges()
         {
             string checkChange = string.Format(@"SELECT CT.Id, CT.SYS_CHANGE_OPERATION, {2} CT.SYS_CHANGE_COLUMNS, CT.SYS_CHANGE_CONTEXT
                 FROM [{0}] AS P RIGHT OUTER JOIN CHANGETABLE(CHANGES [{0}], @lastId) AS CT ON P.Id = CT.[{1}]", 
-                Notification.Table, 
-                Notification.KeyColumn,
+                NotificationSetup.Table, 
+                NotificationSetup.KeyColumn,
                 BuildCheckColumnsStatement());
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -41,13 +41,13 @@ namespace LandauMedia.Tracker
                             switch (reader.GetString(1).ToUpper())
                             {
                                 case "U":
-                                    Notification.OnUpdate(Notification, reader.GetSqlValue(0).ToString(), ParseUpdated(reader));
+                                    NotificationSetup.Notification.OnUpdate(NotificationSetup, reader.GetSqlValue(0).ToString(), ParseUpdated(reader));
                                     break;
                                 case "I":
-                                    Notification.OnInsert(Notification, reader.GetSqlValue(0).ToString(), ParseUpdated(reader));
+                                    NotificationSetup.Notification.OnInsert(NotificationSetup, reader.GetSqlValue(0).ToString(), ParseUpdated(reader));
                                     break;
                                 case "D":
-                                    Notification.OnDelete(Notification, reader.GetSqlValue(0).ToString(), ParseUpdated(reader));
+                                    NotificationSetup.Notification.OnDelete(NotificationSetup, reader.GetSqlValue(0).ToString(), ParseUpdated(reader));
                                     break;
                             }
                         }
@@ -58,23 +58,23 @@ namespace LandauMedia.Tracker
             }
         }
 
-        public void Prepare(string connectionString, INotification notification, IVersionStorage storage, TrackerOptions trackerOptions)
+        public void Prepare(string connectionString, INotificationSetup notificationSetup, IVersionStorage storage, TrackerOptions trackerOptions)
         {
             Logger.Info(() => "Preparing ChangeTrackingbased Notification");
 
-            _key = notification.GetType().FullName + "_" + GetType().FullName;
+            _key = notificationSetup.GetType().FullName + "_" + GetType().FullName;
 
             _connectionString = connectionString;
-            Notification = notification;
+            NotificationSetup = notificationSetup;
             _options = trackerOptions;
             _versionStorage = storage;
 
             string updateNotifications = 
-                string.Format(@"ALTER TABLE [{0}] ENABLE CHANGE_TRACKING WITH (TRACK_COLUMNS_UPDATED = ON);", Notification.Table);
+                string.Format(@"ALTER TABLE [{0}] ENABLE CHANGE_TRACKING WITH (TRACK_COLUMNS_UPDATED = ON);", NotificationSetup.Table);
 
             string isChangeTrackingEnabled =
                 string.Format(@"SELECT COUNT(*) FROM sys.change_tracking_tables a 
-                    INNER JOIN sys.tables b ON a.object_id = b.object_id WHERE b.name = '{0}';", Notification.Table);
+                    INNER JOIN sys.tables b ON a.object_id = b.object_id WHERE b.name = '{0}';", NotificationSetup.Table);
 
             _versionStorage.Store(_key, _options.InitializeToCurrentVersion ? GetInitialId() : 0);
 
@@ -97,7 +97,7 @@ namespace LandauMedia.Tracker
 
         private IEnumerable<string> ParseUpdated(SqlDataReader reader)
         {
-            return from columns in Notification.IntrestedInUpdatedColums
+            return from columns in NotificationSetup.IntrestedInUpdatedColums
                 let isChanged = reader.GetInt32(reader.GetOrdinal(string.Format("HasChanged{0}", columns))) ==  1
                 where isChanged
                 select columns;
@@ -117,11 +117,11 @@ namespace LandauMedia.Tracker
         {
             StringBuilder sb = new StringBuilder();
 
-            foreach (var colum in Notification.IntrestedInUpdatedColums)
+            foreach (var colum in NotificationSetup.IntrestedInUpdatedColums)
             {
                 sb.AppendLine(
                     string.Format("CHANGE_TRACKING_IS_COLUMN_IN_MASK(COLUMNPROPERTY(OBJECT_ID('{0}'), '{1}', 'ColumnId'), CT.SYS_CHANGE_COLUMNS) as HasChanged{1}, "
-                    , Notification.Table
+                    , NotificationSetup.Table
                     , colum));
             }
 

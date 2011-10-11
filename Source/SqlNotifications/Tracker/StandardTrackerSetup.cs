@@ -7,46 +7,46 @@ using LandauMedia.Tracker;
 
 namespace LandauMedia.Wire
 {
-    public class StandardNotificationSetup : INotificationSetup
+    public class StandardTrackerSetup : ITrackerSetup
     {
         string _connectionString;
-        IEnumerable<INotification> _notificationTypes;
+        IEnumerable<INotificationSetup> _notificationTypes;
         IVersionStorage _storage;
 
         string _trackerType;
 
-        public INotificationSetup Database(string connectionString)
+        public ITrackerSetup Database(string connectionString)
         {
             _connectionString = connectionString;
             return this;
         }
 
-        public INotificationSetup WithNotificationsOfAssembly(Assembly aseembly)
+        public ITrackerSetup WithNotificationsOfAssembly(Assembly aseembly)
         {
-            Type n = typeof (INotification);
+            Type n = typeof (INotificationSetup);
 
             _notificationTypes = aseembly.GetTypes()
                 .Where(n.IsAssignableFrom)
                 .Where(t => !t.IsAbstract && !t.IsInterface)
-                .Select(t => (INotification)Activator.CreateInstance(t))
+                .Select(t => (INotificationSetup)Activator.CreateInstance(t))
                 .ToList();
 
             return this;
         }
 
-        public INotificationSetup UseDefaultChangeTracking()
+        public ITrackerSetup UseDefaultChangeTracking()
         {
             _trackerType = "changetracking";
             return this;
         }
 
-        public INotificationSetup UseDefaultTimestampBased()
+        public ITrackerSetup UseDefaultTimestampBased()
         {
             _trackerType = "timestamp";
             return this;
         }
 
-        public INotificationSetup WithVersionStorage(IVersionStorage storage)
+        public ITrackerSetup WithVersionStorage(IVersionStorage storage)
         {
             _storage = storage;
             return this;

@@ -15,7 +15,7 @@ namespace LandauMedia.Tracker
         static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         readonly string _connectionString;
-        readonly IEnumerable<INotification> _notificationTypes;
+        readonly IEnumerable<INotificationSetup> _notificationTypes;
         readonly IVersionStorage _storage;
 
         readonly string _defaultTrackingType;
@@ -24,7 +24,7 @@ namespace LandauMedia.Tracker
 
         IEnumerable<ITracker> _trackers;
 
-        public NotificationTracker(string connectionString, IEnumerable<INotification> notificationTypes, string defaultTrackingType, IVersionStorage storage)
+        public NotificationTracker(string connectionString, IEnumerable<INotificationSetup> notificationTypes, string defaultTrackingType, IVersionStorage storage)
         {
             _connectionString = connectionString;
             _notificationTypes = notificationTypes;
@@ -44,6 +44,8 @@ namespace LandauMedia.Tracker
 
         private void StartTracking()
         {
+            Logger.Debug(() => string.Format("Start Tracking with {0} Trackers", _trackers.Count()));
+
             try
             {
                 while (true)
@@ -63,12 +65,12 @@ namespace LandauMedia.Tracker
             }
         }
 
-        private ITracker BuildAndPrepareTracker(INotification notification)
+        private ITracker BuildAndPrepareTracker(INotificationSetup notificationSetup)
         {
             ITracker tracker = TrackerFactory.BuildByName(
-                string.IsNullOrWhiteSpace(notification.TrackingType) ? _defaultTrackingType : notification.TrackingType);
+                string.IsNullOrWhiteSpace(notificationSetup.TrackingType) ? _defaultTrackingType : notificationSetup.TrackingType);
 
-            tracker.Prepare(_connectionString, notification, _storage, new TrackerOptions {InitializeToCurrentVersion = true});
+            tracker.Prepare(_connectionString, notificationSetup, _storage, new TrackerOptions {InitializeToCurrentVersion = true});
             return tracker;
         }
     }
