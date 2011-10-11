@@ -11,8 +11,11 @@ namespace LandauMedia.Tracker
         static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         string _connectionString;
+        IVersionStorage _versionStorage;
+        TrackerOptions _options;
+        string _key;
 
-        long _lastId;
+        ulong _lastId;
 
         public INotification Notification { get; internal set; }
 
@@ -30,7 +33,7 @@ namespace LandauMedia.Tracker
 
                 using (SqlCommand command = new SqlCommand(checkChange, connection))
                 {
-                    command.Parameters.AddWithValue("@lastId", _lastId);
+                    command.Parameters.AddWithValue("@lastId", _versionStorage.Load(_key));
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -51,16 +54,20 @@ namespace LandauMedia.Tracker
                     }
                 }
 
-                _lastId = GetLastId(connection);
+                _versionStorage.Store(_key, GetLastId(connection));
             }
         }
 
-        public void Prepare(string connectionString, INotification notification)
+        public void Prepare(string connectionString, INotification notification, IVersionStorage storage, TrackerOptions trackerOptions)
         {
             Logger.Info(() => "Preparing ChangeTrackingbased Notification");
 
+            _key = notification.GetType().FullName + "_" + GetType().FullName;
+
             _connectionString = connectionString;
             Notification = notification;
+            _options = trackerOptions;
+            _versionStorage = storage;
 
             string updateNotifications = 
                 string.Format(@"ALTER TABLE [{0}] ENABLE CHANGE_TRACKING WITH (TRACK_COLUMNS_UPDATED = ON);", Notification.Table);
@@ -69,7 +76,8 @@ namespace LandauMedia.Tracker
                 string.Format(@"SELECT COUNT(*) FROM sys.change_tracking_tables a 
                     INNER JOIN sys.tables b ON a.object_id = b.object_id WHERE b.name = '{0}';", Notification.Table);
 
-            _lastId = GetInitialId();
+            _lastId = _options.InitializeToCurrentVersion ? GetInitialId() : 0;
+            _versionStorage.Store(_key, _lastId);
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -97,7 +105,7 @@ namespace LandauMedia.Tracker
             }
         }
 
-        public long GetInitialId()
+        public ulong GetInitialId()
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -122,11 +130,11 @@ namespace LandauMedia.Tracker
             return sb.ToString();
         }
 
-        private long GetLastId(SqlConnection connection)
+        private ulong GetLastId(SqlConnection connection)
         {
             using (SqlCommand lastIdCommand = new SqlCommand("SELECT CHANGE_TRACKING_CURRENT_VERSION()", connection))
             {
-                return (long)lastIdCommand.ExecuteScalar();
+                return (ulong)lastIdCommand.ExecuteScalar();
             }
         }
     }

@@ -6,6 +6,6 @@ namespace LandauMedia.Tracker
     {
         INotification Notification { get; }
         void TrackingChanges();
-        void Prepare(string connectionString, INotification notification);
+        void Prepare(string connectionString, INotification notification, IVersionStorage storage, TrackerOptions trackerOptions);
     }
 }

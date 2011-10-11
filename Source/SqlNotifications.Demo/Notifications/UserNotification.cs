@@ -14,7 +14,7 @@ namespace SqlNotifications.Demo.Notifications
             SetTable("User");
             SetKeyColumn("Id");
             SetIdType<int>();
-            SetTrackingType("changetracking");
+            SetTrackingType("timestamp");
 
             IntrestedInColumn("Username");
             IntrestedInColumn("Description");

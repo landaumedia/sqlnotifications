@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.SqlClient;
 using System.Reflection;
+using LandauMedia.Wire;
 
 namespace SqlNotifications.Demo
 {
@@ -14,6 +15,7 @@ namespace SqlNotifications.Demo
                 .ForDatabase(connectionString)
                 .WithNotificationsOfAssembly(Assembly.GetExecutingAssembly())
                 .UseDefaultTimestampBased()
+                .WithVersionStorage(new FilebasedVersionStorage("versions.storage"))
                 .Build();
 
             using (notificationTracker.Start())

@@ -56,6 +56,7 @@
   <ItemGroup>
     <Compile Include="Tracker\ITracker.cs" />
     <Compile Include="Tracker\TrackerFactory.cs" />
+    <Compile Include="Tracker\TrackerOptions.cs" />
     <Compile Include="Wire\FilebasedVersionStorage.cs" />
     <Compile Include="Wire\IVersionStorage.cs" />
     <Compile Include="Wire\Notifications.cs" />

@@ -13,7 +13,7 @@ namespace LandauMedia.Wire
 
         INotificationSetup UseDefaultTimestampBased();
 
-        INotificationSetup SetVersionStroage(IVersionStorage storage);
+        INotificationSetup WithVersionStorage(IVersionStorage storage);
 
         NotificationTracker Build();
     }

@@ -45,7 +45,7 @@ namespace LandauMedia.Wire
             return this;
         }
 
-        public INotificationSetup SetVersionStroage(IVersionStorage storage)
+        public INotificationSetup WithVersionStorage(IVersionStorage storage)
         {
             _storage = storage;
             return this;

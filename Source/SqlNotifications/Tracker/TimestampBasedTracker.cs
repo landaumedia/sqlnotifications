@@ -13,7 +13,12 @@ namespace LandauMedia.Tracker
         string _connectionString;
         string _timestampField;
 
-        long _lastTimestamp;
+        ulong _lastTimestamp;
+
+        IVersionStorage _versionStorage;
+        TrackerOptions _options;
+        string _key;
+
 
         readonly Hashtable _lastseenIds = new Hashtable();
 
@@ -61,20 +66,33 @@ namespace LandauMedia.Tracker
             _lastTimestamp = GetLastTimestamp();
         }
 
-        public void Prepare(string connectionString, INotification notification)
+        public void Prepare(string connectionString, INotification notification, IVersionStorage stroage, TrackerOptions options)
         {
             Logger.Info(() => "Preparing timestampbased Notification");
 
+            _key = notification.GetType().FullName + "_" + GetType().FullName;
+
             Notification = notification;
             _connectionString = connectionString;
+            _options = options;
+            _versionStorage = stroage;
 
             _timestampField = GetTimestampFieldOrNull();
 
             if (_timestampField == null)
                 throw new InvalidOperationException("requested Table has no timestamp field");
 
-            _lastTimestamp = GetLastTimestamp();
-            InitializeHashTable();
+            if (_options.InitializeToCurrentVersion)
+            {
+                _lastTimestamp = GetLastTimestamp();
+                InitializeHashTable();
+            }
+            else
+            {
+                _lastTimestamp = 0;
+            }
+
+            _versionStorage.Store(_key, _lastTimestamp);
         }
 
         private static object ReadFromReader(SqlDataReader reader, Type t)
@@ -97,7 +115,7 @@ namespace LandauMedia.Tracker
             throw new ArgumentOutOfRangeException();
         }
 
-        private long GetLastTimestamp()
+        private ulong GetLastTimestamp()
         {
             const string selectTimestamp = "SELECT CONVERT(bigint, @@dbts)";
 
@@ -109,7 +127,7 @@ namespace LandauMedia.Tracker
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
                     reader.Read();
-                    return reader.GetInt64(0);
+                    return Convert.ToUInt64(reader.GetInt64(0));
                 }
             }
         }
