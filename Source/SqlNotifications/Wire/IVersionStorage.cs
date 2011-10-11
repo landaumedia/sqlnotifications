@@ -2,8 +2,8 @@
 {
     public interface IVersionStorage
     {
-        void Store(object version);
+        void Store(string key, ulong version);
 
-        object Load();
+        ulong Load(string key);
     }
 }

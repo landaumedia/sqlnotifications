@@ -9,13 +9,19 @@ using Machine.Specifications;
 namespace LandauMedia.Version
 {
     [Subject(typeof(FilebasedVersionStorage))]
-    public class When_store_a_int_object : With_version_storge_local_File_that_doesn_exist
+    public class When_store_a_int_1_with_key_test : With_version_storge_local_File_that_doesn_exist
     {
         Because of = () =>
-            _sut.Store(1);
+            _sut.Store("test", 1);
 
         It should_have_created_the_file = () =>
             _file.Exists.ShouldBeTrue();
+
+        It should_restore_the__value_of_one = () =>
+            _sut.Load("test").ShouldEqual<ulong>(1);
+
+        It should_restore_the_default_value_for_nonexisting_enties = () =>
+            _sut.Load("nonExisting").ShouldEqual<ulong>(0);
     }
 
     public class With_version_storge_local_File_that_doesn_exist
