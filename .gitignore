@@ -2,3 +2,4 @@ _Resharper*
 /SqlNotifications.suo
 Source/*/bin/*
 Source/*/obj/*
+Build/*
