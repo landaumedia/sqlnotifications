@@ -20,7 +20,6 @@ namespace LandauMedia.Tracker
         TrackerOptions _options;
         string _key;
 
-
         readonly Hashtable _lastseenIds = new Hashtable();
 
         public INotification Notification { get; internal set; }
