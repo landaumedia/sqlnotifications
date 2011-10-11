@@ -35,6 +35,9 @@ namespace LandauMedia.Wire
 
         public void Store(string key, ulong version)
         {
+            if (key.Contains("="))
+                throw new ArgumentException("key must not contain =");
+
             var keyvaluePairs = Read();
 
             if (keyvaluePairs.ContainsKey(key))
@@ -52,13 +55,16 @@ namespace LandauMedia.Wire
 
         public ulong Load(string key)
         {
+            if (key.Contains("="))
+                throw new ArgumentException("key must not contain =");
+
             var keyValuePairs = Read();
             return keyValuePairs.ContainsKey(key) ? keyValuePairs[key] : 0;
         }
 
         private void Write(IDictionary<string, ulong> values)
         {
-            using (StreamWriter writer = new StreamWriter(_storageFile.FullName, false))
+            using (StreamWriter writer = new StreamWriter(_storageFile.FullName, false, Encoding.Default))
             {
                 foreach(var pair in values)
                 {
