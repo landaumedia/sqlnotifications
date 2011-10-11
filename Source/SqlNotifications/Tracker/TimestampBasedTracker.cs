@@ -14,8 +14,6 @@ namespace LandauMedia.Tracker
         string _connectionString;
         string _timestampField;
 
-        ulong _lastTimestamp;
-
         IVersionStorage _versionStorage;
         TrackerOptions _options;
         string _key;
@@ -30,7 +28,7 @@ namespace LandauMedia.Tracker
                 Notification.KeyColumn,
                 Notification.Table,
                 _timestampField,
-                _lastTimestamp);
+                _versionStorage.Load(_key));
 
             ArrayList list = new ArrayList();
 
@@ -63,7 +61,7 @@ namespace LandauMedia.Tracker
                 }
             }
 
-            _lastTimestamp = GetLastTimestamp();
+            _versionStorage.Store(_key, GetLastTimestamp());
         }
 
         public void Prepare(string connectionString, INotification notification, IVersionStorage stroage, TrackerOptions options)
@@ -82,17 +80,19 @@ namespace LandauMedia.Tracker
             if (_timestampField == null)
                 throw new InvalidOperationException("requested Table has no timestamp field");
 
+
+            ulong timestamp;
             if (_options.InitializeToCurrentVersion)
             {
-                _lastTimestamp = GetLastTimestamp();
+                timestamp = GetLastTimestamp();
                 InitializeHashTable();
             }
             else
             {
-                _lastTimestamp = 0;
+                timestamp = 0;
             }
 
-            _versionStorage.Store(_key, _lastTimestamp);
+            _versionStorage.Store(_key, timestamp);
         }
 
         private static object ReadFromReader(SqlDataReader reader, Type t)
