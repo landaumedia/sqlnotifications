@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Threading;
-using LandauMedia.Tracker;
 using LandauMedia.Wire;
 using NLog;
 
-namespace Krowiorsch.Dojo
+namespace LandauMedia.Tracker
 {
     public class NotificationTracker
     {
@@ -15,6 +14,7 @@ namespace Krowiorsch.Dojo
 
         readonly string _connectionString;
         readonly IEnumerable<INotification> _notificationTypes;
+        readonly IVersionStorage _storage;
 
         readonly string _defaultTrackingType;
 
@@ -22,11 +22,12 @@ namespace Krowiorsch.Dojo
 
         IEnumerable<ITracker> _trackers;
 
-        public NotificationTracker(string connectionString, IEnumerable<INotification> notificationTypes, string defaultTrackingType)
+        public NotificationTracker(string connectionString, IEnumerable<INotification> notificationTypes, string defaultTrackingType, IVersionStorage storage)
         {
             _connectionString = connectionString;
             _notificationTypes = notificationTypes;
             _defaultTrackingType = defaultTrackingType;
+            _storage = storage;
         }
 
         public IDisposable Start()

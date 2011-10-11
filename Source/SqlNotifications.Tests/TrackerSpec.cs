@@ -1,5 +1,4 @@
-﻿using Krowiorsch.Dojo;
-using Machine.Specifications;
+﻿using Machine.Specifications;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable UnusedMember.Local

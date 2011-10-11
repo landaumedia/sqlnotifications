@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using Krowiorsch.Dojo;
+using LandauMedia.Tracker;
 
 namespace LandauMedia.Wire
 {
@@ -12,6 +12,8 @@ namespace LandauMedia.Wire
         INotificationSetup UseDefaultChangeTracking();
 
         INotificationSetup UseDefaultTimestampBased();
+
+        INotificationSetup SetVersionStroage(IVersionStorage storage);
 
         NotificationTracker Build();
     }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Krowiorsch.Dojo;
+using LandauMedia.Tracker;
 
 namespace LandauMedia.Wire
 {
@@ -10,6 +10,7 @@ namespace LandauMedia.Wire
     {
         string _connectionString;
         IEnumerable<INotification> _notificationTypes;
+        IVersionStorage _storage;
 
         string _trackerType;
 
@@ -44,9 +45,18 @@ namespace LandauMedia.Wire
             return this;
         }
 
+        public INotificationSetup SetVersionStroage(IVersionStorage storage)
+        {
+            _storage = storage;
+            return this;
+        }
+
         public NotificationTracker Build()
         {
-            return new NotificationTracker(_connectionString, _notificationTypes, _trackerType);
+            if (_storage == null)
+                throw new InvalidOperationException("No Storage Defined");
+
+            return new NotificationTracker(_connectionString, _notificationTypes, _trackerType, _storage);
         }
     }
 }
