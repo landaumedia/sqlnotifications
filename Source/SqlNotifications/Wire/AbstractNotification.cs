@@ -22,6 +22,12 @@ namespace LandauMedia.Wire
             _tableName = tableName;
         }
 
+        protected void SetSchemaAndTable(string tableName, string schema)
+        {
+            SetSchema(schema);
+            SetTable(tableName);
+        }
+
         protected void SetSchema(string schema)
         {
             _schemaName = schema;
