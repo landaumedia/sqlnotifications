@@ -12,8 +12,8 @@ namespace SqlNotifications.Demo
 
         static void Main(string[] args)
         {
-            var notificationTracker = LandauMedia.Tracker.Notify.WireUp()
-                .ForDatabase(connectionString)
+            var notificationTracker = Notify.For()
+                .Database(connectionString)
                 .WithNotificationsOfAssembly(Assembly.GetExecutingAssembly())
                 .UseDefaultTimestampBased()
                 .WithVersionStorage(new FilebasedVersionStorage("versions.storage"))

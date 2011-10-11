@@ -60,7 +60,7 @@
     <Compile Include="Tracker\TrackerOptions.cs" />
     <Compile Include="Storage\FilebasedVersionStorage.cs" />
     <Compile Include="Storage\IVersionStorage.cs" />
-    <Compile Include="Wire\Notifications.cs" />
+    <Compile Include="Wire\Notify.cs" />
     <Compile Include="Tracker\NotificationTracker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tracker\ChangeTrackingBasedTracker.cs" />
