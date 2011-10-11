@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>LandauMedia.CommandCenter.SqlNotifications</id>
+    <version>$VERSION$</version>
+    <authors>Christian Krowiorsch</authors>
+    <owners>Christian Krowiorsch</owners>
+    <iconUrl>http://content.dev.local/cm32.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description></description>
+    <tags>LandauMedia CommandCenter</tags>
+    <dependencies>
+      <dependency id="nlog" version="[2.0.0,)" />
+      <dependency id="Rx-Main" version="[1.0.0,)" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="build\nuget\lib\net40\SqlNotifications.dll" target="lib" />
+  </files>
+</package>
