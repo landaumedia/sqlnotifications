@@ -14,13 +14,6 @@ namespace LandauMedia.Wire
 
         IEnumerable<string> IntrestedInUpdatedColums { get; }
 
-        INotification Notification { get; }
-    }
-
-    public interface INotification
-    {
-        void OnInsert(INotificationSetup notificationSetup, string id, IEnumerable<string> updatedColumns);
-        void OnUpdate(INotificationSetup notificationSetup, string id, IEnumerable<string> updatedColumns);
-        void OnDelete(INotificationSetup notificationSetup, string id, IEnumerable<string> updatedColumns);
+        Type Notification { get; }
     }
 }

@@ -84,6 +84,6 @@ namespace LandauMedia.Wire
             get { return _intrestedUpdateColumns; }
         }
 
-        public abstract INotification Notification { get; }
+        public abstract Type Notification { get; }
     }
 }

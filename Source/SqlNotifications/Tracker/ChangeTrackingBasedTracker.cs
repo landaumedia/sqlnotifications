@@ -18,6 +18,7 @@ namespace LandauMedia.Tracker
         string _key;
 
         public INotificationSetup NotificationSetup { get; internal set; }
+        public INotification Notification { get; internal set; }
 
         public void TrackingChanges()
         {
@@ -41,13 +42,13 @@ namespace LandauMedia.Tracker
                             switch (reader.GetString(1).ToUpper())
                             {
                                 case "U":
-                                    NotificationSetup.Notification.OnUpdate(NotificationSetup, reader.GetSqlValue(0).ToString(), ParseUpdated(reader));
+                                    Notification.OnUpdate(NotificationSetup, reader.GetSqlValue(0).ToString(), ParseUpdated(reader));
                                     break;
                                 case "I":
-                                    NotificationSetup.Notification.OnInsert(NotificationSetup, reader.GetSqlValue(0).ToString(), ParseUpdated(reader));
+                                    Notification.OnInsert(NotificationSetup, reader.GetSqlValue(0).ToString(), ParseUpdated(reader));
                                     break;
                                 case "D":
-                                    NotificationSetup.Notification.OnDelete(NotificationSetup, reader.GetSqlValue(0).ToString(), ParseUpdated(reader));
+                                    Notification.OnDelete(NotificationSetup, reader.GetSqlValue(0).ToString(), ParseUpdated(reader));
                                     break;
                             }
                         }
@@ -58,7 +59,7 @@ namespace LandauMedia.Tracker
             }
         }
 
-        public void Prepare(string connectionString, INotificationSetup notificationSetup, IVersionStorage storage, TrackerOptions trackerOptions)
+        public void Prepare(string connectionString, INotificationSetup notificationSetup, INotification notification, IVersionStorage storage, TrackerOptions trackerOptions)
         {
             Logger.Info(() => "Preparing ChangeTrackingbased Notification");
 
@@ -66,6 +67,7 @@ namespace LandauMedia.Tracker
 
             _connectionString = connectionString;
             NotificationSetup = notificationSetup;
+            Notification = notification;
             _options = trackerOptions;
             _versionStorage = storage;
 

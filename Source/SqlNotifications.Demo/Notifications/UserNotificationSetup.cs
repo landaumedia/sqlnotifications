@@ -19,9 +19,9 @@ namespace SqlNotifications.Demo.Notifications
             IntrestedInColumn("Description");
         }
 
-        public override INotification Notification
+        public override Type Notification
         {
-            get { return new UserNotification(); }
+            get { return typeof(UserNotification); }
         }
     }
 

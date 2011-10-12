@@ -13,7 +13,7 @@ namespace SqlNotifications.Demo
         static void Main(string[] args)
         {
 
-            Func<Type, object> factory = Activator.CreateInstance;
+            Func<Type, INotification> factory = t => (INotification)Activator.CreateInstance(t);
 
             var notificationTracker = Notify.For()
                 .Database(connectionString)

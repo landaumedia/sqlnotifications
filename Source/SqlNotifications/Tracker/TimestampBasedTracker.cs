@@ -21,6 +21,7 @@ namespace LandauMedia.Tracker
         readonly Hashtable _lastseenIds = new Hashtable();
 
         public INotificationSetup NotificationSetup { get; internal set; }
+        public INotification Notification { get; internal set; }
 
         public void TrackingChanges()
         {
@@ -53,11 +54,11 @@ namespace LandauMedia.Tracker
             {
                 if (_lastseenIds.Contains(entry))
                 {
-                    NotificationSetup.Notification.OnUpdate(NotificationSetup, entry.ToString(), Enumerable.Empty<string>());
+                    Notification.OnUpdate(NotificationSetup, entry.ToString(), Enumerable.Empty<string>());
                 }
                 else
                 {
-                    NotificationSetup.Notification.OnInsert(NotificationSetup, entry.ToString(), Enumerable.Empty<string>());
+                    Notification.OnInsert(NotificationSetup, entry.ToString(), Enumerable.Empty<string>());
                     _lastseenIds.Add(entry, entry);
                 }
             }
@@ -65,15 +66,17 @@ namespace LandauMedia.Tracker
             _versionStorage.Store(_key, GetLastTimestamp());
         }
 
-        public void Prepare(string connectionString, INotificationSetup notificationSetup, IVersionStorage stroage, TrackerOptions options)
+        public void Prepare(string connectionString, INotificationSetup notificationSetup, INotification notification, IVersionStorage stroage, TrackerOptions options)
         {
             Logger.Debug(() => "Preparing timestampbased Notification");
 
             _key = notificationSetup.GetType().FullName + "_" + GetType().FullName;
 
             NotificationSetup = notificationSetup;
+            Notification = notification;
             _connectionString = connectionString;
             _options = options;
+            
             _versionStorage = stroage;
 
             _timestampField = GetTimestampFieldOrNull();

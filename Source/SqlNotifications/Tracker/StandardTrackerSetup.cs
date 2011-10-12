@@ -10,10 +10,9 @@ namespace LandauMedia.Tracker
     public class StandardTrackerSetup : ITrackerSetup
     {
         string _connectionString;
-        IEnumerable<INotificationSetup> _notificationTypes;
         IVersionStorage _storage;
 
-        Func<Type, object> _notificationFactory;
+        Func<Type, INotification> _notificationFactory;
 
         Assembly _souceAssembly;
 
@@ -51,7 +50,7 @@ namespace LandauMedia.Tracker
             return this;
         }
 
-        public ITrackerSetup WithNotificationFactory(Func<Type, object> notificationFactory)
+        public ITrackerSetup WithNotificationFactory(Func<Type, INotification> notificationFactory)
         {
             _notificationFactory = notificationFactory;
             return this;
@@ -64,22 +63,16 @@ namespace LandauMedia.Tracker
 
             Type n = typeof(INotificationSetup);
 
-            _notificationTypes = _souceAssembly.GetTypes()
+            IEnumerable<INotificationSetup>  notificationTypes = _souceAssembly.GetTypes()
                 .Where(n.IsAssignableFrom)
                 .Where(t => !t.IsAbstract && !t.IsInterface)
-                .Select(Create)
+                .Select(t => (INotificationSetup)Activator.CreateInstance(t))
                 .ToList();
 
-            return new NotificationTracker(_connectionString, _notificationTypes, _trackerType, _storage);
-        }
-
-        private INotificationSetup Create(Type t)
-        {
             if (_notificationFactory == null)
-                return (INotificationSetup)Activator.CreateInstance(t);
+                _notificationFactory = t => (INotification)Activator.CreateInstance(t);
 
-            return (INotificationSetup)_notificationFactory(t);
-
+            return new NotificationTracker(_connectionString, notificationTypes, _trackerType, _storage, _notificationFactory);
         }
     }
 }

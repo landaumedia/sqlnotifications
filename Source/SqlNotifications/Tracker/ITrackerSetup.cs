@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using LandauMedia.Storage;
+using LandauMedia.Wire;
 
 namespace LandauMedia.Tracker
 {
@@ -16,7 +17,7 @@ namespace LandauMedia.Tracker
 
         ITrackerSetup WithVersionStorage(IVersionStorage storage);
 
-        ITrackerSetup WithNotificationFactory(Func<Type, object> notificationFactory);
+        ITrackerSetup WithNotificationFactory(Func<Type, INotification> notificationFactory);
 
         NotificationTracker Build();
     }
