@@ -29,7 +29,7 @@ namespace LandauMedia.Tracker
             var toTimestamp = GetLastTimestamp();
 
 
-            string statement = string.Format("SELECT {0} FROM [{1}].[{2}] WHERE CONVERT(bigint, {3}) > {4} AND CONVERT(bigint, {3}) <= {5} AND ",
+            string statement = string.Format("SELECT {0} FROM [{1}].[{2}] WHERE CONVERT(bigint, {3}) > {4} AND CONVERT(bigint, {3}) <= {5} ",
                 NotificationSetup.KeyColumn,
                 NotificationSetup.Schema,
                 NotificationSetup.Table,

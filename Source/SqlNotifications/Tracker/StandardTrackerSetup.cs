@@ -14,6 +14,8 @@ namespace LandauMedia.Tracker
 
         Func<Type, INotification> _notificationFactory;
 
+        IEnumerable<Type> _types;
+
         Assembly _souceAssembly;
 
         string _trackerType;
@@ -24,11 +26,18 @@ namespace LandauMedia.Tracker
             return this;
         }
 
+
         public ITrackerSetup WithNotificationsOfAssembly(Assembly assembly)
         {
             _souceAssembly = assembly;
 
 
+            return this;
+        }
+
+        public ITrackerSetup WithNotifications(IEnumerable<Type> types)
+        {
+            _types = types.ToList();
             return this;
         }
 
@@ -63,9 +72,22 @@ namespace LandauMedia.Tracker
 
             Type n = typeof(INotificationSetup);
 
-            IEnumerable<INotificationSetup>  notificationTypes = _souceAssembly.GetTypes()
-                .Where(n.IsAssignableFrom)
-                .Where(t => !t.IsAbstract && !t.IsInterface)
+            IEnumerable<Type> setupTypes = Enumerable.Empty<Type>();
+
+            if (_souceAssembly != null)
+            {
+                setupTypes = setupTypes.Union(_souceAssembly.GetTypes()
+                    .Where(n.IsAssignableFrom)
+                    .Where(t => !t.IsAbstract && !t.IsInterface));
+            }
+
+            if (_types != null)
+            {
+                setupTypes = setupTypes.Union(_types);
+            }
+
+            IEnumerable<INotificationSetup>  notificationTypes = 
+                setupTypes
                 .Select(t => (INotificationSetup)Activator.CreateInstance(t))
                 .ToList();
 

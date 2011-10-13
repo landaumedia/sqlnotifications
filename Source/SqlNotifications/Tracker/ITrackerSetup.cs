@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using LandauMedia.Storage;
 using LandauMedia.Wire;
@@ -10,6 +11,8 @@ namespace LandauMedia.Tracker
         ITrackerSetup Database(string connectionString);
 
         ITrackerSetup WithNotificationsOfAssembly(Assembly aseembly);
+
+        ITrackerSetup WithNotifications(IEnumerable<Type> types);
 
         ITrackerSetup UseDefaultChangeTracking();
 
