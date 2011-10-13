@@ -9,7 +9,10 @@ namespace LandauMedia.Storage
 {
     public class FilebasedVersionStorage : IVersionStorage
     {
+        static object _lock = new object();
+
         readonly FileInfo _storageFile;
+
 
         public FilebasedVersionStorage(string storageFile)
             : this(new FileInfo(storageFile))
@@ -65,26 +68,32 @@ namespace LandauMedia.Storage
 
         private void Write(IDictionary<string, ulong> values)
         {
-            using (StreamWriter writer = new StreamWriter(_storageFile.FullName, false, Encoding.Default))
+            lock (_lock)
             {
-                foreach(var pair in values)
+                using (StreamWriter writer = new StreamWriter(_storageFile.FullName, false, Encoding.Default))
                 {
-                    writer.WriteLine(pair.Key + "=" + pair.Value);
+                    foreach (var pair in values)
+                    {
+                        writer.WriteLine(pair.Key + "=" + pair.Value);
+                    }
                 }
             }
         }
 
         private IDictionary<string, ulong> Read()
         {
-            using (StreamReader reader = new StreamReader(_storageFile.FullName, Encoding.Default))
+            lock(_lock)
             {
-                return reader.ReadToEnd().Split(new[] {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries)
-                    .Select(t =>
-                    {
-                        var strings = t.Split('=');
-                        return new {Key = strings[0], value = ulong.Parse(strings[1])};
-                    })
-                    .ToDictionary(t => t.Key, t => t.value);
+                using (StreamReader reader = new StreamReader(_storageFile.FullName, Encoding.Default))
+                {
+                    return reader.ReadToEnd().Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
+                        .Select(t =>
+                        {
+                            var strings = t.Split('=');
+                            return new { Key = strings[0], value = ulong.Parse(strings[1]) };
+                        })
+                        .ToDictionary(t => t.Key, t => t.value);
+                }    
             }
         }
     }

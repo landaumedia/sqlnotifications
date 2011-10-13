@@ -25,12 +25,17 @@ namespace LandauMedia.Tracker
 
         public void TrackingChanges()
         {
-            string statement = string.Format("SELECT {0} FROM [{1}].[{2}] WHERE CONVERT(bigint, {3}) > {4}",
+            var fromTimestamp = _versionStorage.Load(_key);
+            var toTimestamp = GetLastTimestamp();
+
+
+            string statement = string.Format("SELECT {0} FROM [{1}].[{2}] WHERE CONVERT(bigint, {3}) > {4} AND CONVERT(bigint, {3}) <= {5} AND ",
                 NotificationSetup.KeyColumn,
                 NotificationSetup.Schema,
                 NotificationSetup.Table,
                 _timestampField,
-                _versionStorage.Load(_key));
+                fromTimestamp,
+                toTimestamp);
 
             ArrayList list = new ArrayList();
 
@@ -63,7 +68,7 @@ namespace LandauMedia.Tracker
                 }
             }
 
-            _versionStorage.Store(_key, GetLastTimestamp());
+            _versionStorage.Store(_key, toTimestamp);
         }
 
         public void Prepare(string connectionString, INotificationSetup notificationSetup, INotification notification, IVersionStorage stroage, TrackerOptions options)
