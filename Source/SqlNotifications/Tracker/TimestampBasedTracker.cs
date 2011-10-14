@@ -115,7 +115,7 @@ namespace LandauMedia.Tracker
 
             _versionStorage.Store(_key, toTimestamp);
 
-            return listOfChangedRows.Count == bucketSize;
+            return true;
         }
 
         private static object ReadFromReader(SqlDataReader reader, Type t)
