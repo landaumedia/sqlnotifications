@@ -11,10 +11,9 @@ namespace LandauMedia.Tracker
     {
         string _connectionString;
         IVersionStorage _storage;
-
         Func<Type, INotification> _notificationFactory;
-
         IEnumerable<Type> _types;
+        TrackerOptions _trackerOptions;
 
         Assembly _souceAssembly;
 
@@ -65,6 +64,12 @@ namespace LandauMedia.Tracker
             return this;
         }
 
+        public ITrackerSetup WithDefaultTrackerOptions(TrackerOptions options)
+        {
+            _trackerOptions = options;
+            return this;
+        }
+
         public NotificationTracker Build()
         {
             if (_storage == null)
@@ -94,7 +99,7 @@ namespace LandauMedia.Tracker
             if (_notificationFactory == null)
                 _notificationFactory = t => (INotification)Activator.CreateInstance(t);
 
-            return new NotificationTracker(_connectionString, notificationTypes, _trackerType, _storage, _notificationFactory);
+            return new NotificationTracker(_connectionString, notificationTypes, _trackerType, _storage, _notificationFactory, _trackerOptions);
         }
     }
 }

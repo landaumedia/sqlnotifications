@@ -18,6 +18,8 @@ namespace LandauMedia.Tracker
         readonly IEnumerable<INotificationSetup> _notificationTypes;
         readonly IVersionStorage _storage;
 
+        readonly TrackerOptions _defaultTrackerOptions;
+
         Func<Type, INotification> _factory;
 
         readonly string _defaultTrackingType;
@@ -26,12 +28,13 @@ namespace LandauMedia.Tracker
 
         IEnumerable<ITracker> _trackers;
 
-        public NotificationTracker(string connectionString, IEnumerable<INotificationSetup> notificationTypes, string defaultTrackingType, IVersionStorage storage, Func<Type, INotification> factory)
+        public NotificationTracker(string connectionString, IEnumerable<INotificationSetup> notificationTypes, string defaultTrackingType, IVersionStorage storage, Func<Type, INotification> factory, TrackerOptions defaultTrackerOptions)
         {
             _connectionString = connectionString;
             _notificationTypes = notificationTypes;
             _defaultTrackingType = defaultTrackingType;
             _factory = factory;
+            _defaultTrackerOptions = defaultTrackerOptions;
             _storage = storage;
         }
 
@@ -73,7 +76,9 @@ namespace LandauMedia.Tracker
             ITracker tracker = TrackerFactory.BuildByName(
                 string.IsNullOrWhiteSpace(notificationSetup.TrackingType) ? _defaultTrackingType : notificationSetup.TrackingType);
 
-            tracker.Prepare(_connectionString, notificationSetup, _factory(notificationSetup.Notification), _storage, new TrackerOptions {InitializeToCurrentVersion = true});
+            TrackerOptions options = _defaultTrackerOptions ?? new TrackerOptions {InitializeToCurrentVersion = true};
+
+            tracker.Prepare(_connectionString, notificationSetup, _factory(notificationSetup.Notification), _storage, options);
             return tracker;
         }
     }

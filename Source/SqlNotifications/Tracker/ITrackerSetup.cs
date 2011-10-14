@@ -22,6 +22,8 @@ namespace LandauMedia.Tracker
 
         ITrackerSetup WithNotificationFactory(Func<Type, INotification> notificationFactory);
 
+        ITrackerSetup WithDefaultTrackerOptions(TrackerOptions options);
+
         NotificationTracker Build();
     }
 }
