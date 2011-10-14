@@ -25,51 +25,12 @@ namespace LandauMedia.Tracker
 
         public void TrackingChanges()
         {
-            var fromTimestamp = _versionStorage.Load(_key);
-            var toTimestamp = GetLastTimestamp();
-
-
-            string statement = string.Format("SELECT {0} FROM [{1}].[{2}] WHERE CONVERT(bigint, {3}) > {4} AND CONVERT(bigint, {3}) <= {5} ",
-                NotificationSetup.KeyColumn,
-                NotificationSetup.Schema,
-                NotificationSetup.Table,
-                _timestampField,
-                fromTimestamp,
-                toTimestamp);
-
-            ArrayList list = new ArrayList();
-
-            using (SqlConnection connection = new SqlConnection(_connectionString))
-            using (SqlCommand command = new SqlCommand(statement, connection))
+            while (TrackChangesForOneBucket(1000))
             {
-                connection.Open();
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-                    if (!reader.HasRows)
-                        return;
-
-                    while (reader.Read())
-                    {
-                        list.Add(ReadFromReader(reader, NotificationSetup.IdType));
-                    }
-                }
+                
             }
-
-            foreach (var entry in list)
-            {
-                if (_lastseenIds.Contains(entry))
-                {
-                    Notification.OnUpdate(NotificationSetup, entry.ToString(), Enumerable.Empty<string>());
-                }
-                else
-                {
-                    Notification.OnInsert(NotificationSetup, entry.ToString(), Enumerable.Empty<string>());
-                    _lastseenIds.Add(entry, entry);
-                }
-            }
-
-            _versionStorage.Store(_key, toTimestamp);
         }
+
 
         public void Prepare(string connectionString, INotificationSetup notificationSetup, INotification notification, IVersionStorage stroage, TrackerOptions options)
         {
@@ -104,6 +65,57 @@ namespace LandauMedia.Tracker
             _versionStorage.Store(_key, timestamp);
 
             Logger.Debug(() => "Finished Prepare for timestampbased Notification");
+        }
+
+        private bool TrackChangesForOneBucket(int bucketSize)
+        {
+            var fromTimestamp = _versionStorage.Load(_key);
+            var toTimestamp = GetLastTimestamp();
+
+
+            string statement = string.Format("SELECT TOP {6} {0} FROM [{1}].[{2}] WHERE CONVERT(bigint, {3}) > {4} AND CONVERT(bigint, {3}) <= {5} ORDER BY {3} ASC ",
+                NotificationSetup.KeyColumn,
+                NotificationSetup.Schema,
+                NotificationSetup.Table,
+                _timestampField,
+                fromTimestamp,
+                toTimestamp,
+                bucketSize);
+
+            ArrayList listOfChangedRows = new ArrayList();
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            using (SqlCommand command = new SqlCommand(statement, connection))
+            {
+                connection.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (!reader.HasRows)
+                        return false;
+
+                    while (reader.Read())
+                    {
+                        listOfChangedRows.Add(ReadFromReader(reader, NotificationSetup.IdType));
+                    }
+                }
+            }
+
+            foreach (var entry in listOfChangedRows)
+            {
+                if (_lastseenIds.Contains(entry))
+                {
+                    Notification.OnUpdate(NotificationSetup, entry.ToString(), Enumerable.Empty<string>());
+                }
+                else
+                {
+                    Notification.OnInsert(NotificationSetup, entry.ToString(), Enumerable.Empty<string>());
+                    _lastseenIds.Add(entry, entry);
+                }
+            }
+
+            _versionStorage.Store(_key, toTimestamp);
+
+            return listOfChangedRows.Count == bucketSize;
         }
 
         private static object ReadFromReader(SqlDataReader reader, Type t)
