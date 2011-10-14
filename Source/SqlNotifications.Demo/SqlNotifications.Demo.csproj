@@ -49,6 +49,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Scenarios\LocalUserWithDatabaseStorage\LocalUserWithDatabaseStorage.cs" />
+    <Compile Include="Scenarios\LocalUserWithDatabaseStorage\UserNotificationSetup.cs" />
     <Compile Include="Scenarios\LocalUser\LocalUserScenario.cs" />
     <Compile Include="Scenarios\LocalUser\UserNotificationSetup.cs" />
     <Compile Include="Program.cs" />
@@ -70,9 +72,7 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Notifications\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

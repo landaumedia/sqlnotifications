@@ -56,6 +56,10 @@
   <ItemGroup>
     <Compile Include="Storage\DatabaseVersionStorage.cs" />
     <Compile Include="Storage\InMemoryVersionStorage.cs" />
+    <Compile Include="Storage\SqlTasks\SqlObjectCreator.cs" />
+    <Compile Include="Storage\SqlTasks\SqlObjectExistenceChecker.cs" />
+    <Compile Include="Storage\SqlTasks\Sql.cs" />
+    <Compile Include="Storage\SqlTasks\SqlTasksBase.cs" />
     <Compile Include="Tracker\ITracker.cs" />
     <Compile Include="Tracker\TrackerFactory.cs" />
     <Compile Include="Tracker\TrackerOptions.cs" />
