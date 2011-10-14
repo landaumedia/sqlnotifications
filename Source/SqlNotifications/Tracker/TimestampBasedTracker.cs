@@ -25,7 +25,7 @@ namespace LandauMedia.Tracker
 
         public void TrackingChanges()
         {
-            while (TrackChangesForOneBucket(1000))
+            while (TrackChangesForOneBucket(_options.BucketSize))
             {
                 
             }
