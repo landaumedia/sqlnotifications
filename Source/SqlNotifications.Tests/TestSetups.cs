@@ -27,7 +27,7 @@ namespace LandauMedia
             var pathtodb = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Sample.mdf");
             
             _connectionstring =
-                string.Format(@"Data Source=.\SQLEXPRESS;AttachDbFilename={0};Integrated Security=True;User Instance=True", pathtodb);
+                string.Format(@"Data Source=(local);AttachDbFilename={0};Integrated Security=True;User Instance=True", pathtodb);
         };
     }
 
