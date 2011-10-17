@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.SqlClient;
 using LandauMedia.Storage;
+using LandauMedia.Tracker;
 using LandauMedia.Wire;
 
 namespace SqlNotifications.Demo.Scenarios.LocalUserWithDatabaseStorage
@@ -19,6 +20,7 @@ namespace SqlNotifications.Demo.Scenarios.LocalUserWithDatabaseStorage
                 .UseDefaultTimestampBased()
                 .WithVersionStorage(new DatabaseVersionStorage(connectionString))
                 .WithNotificationFactory(factory)
+                .WithDefaultTrackerOptions(new TrackerOptions() {InitializeToCurrentVersion = true, BucketSize = 3})
                 .Build();
 
             using (notificationTracker.Start())

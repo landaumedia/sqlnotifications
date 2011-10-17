@@ -15,5 +15,16 @@
 
 
         public int BucketSize { get; set; }
+
+        /// <summary>
+        /// gibt die TrackerOptions mit DefaultSetting zurück
+        /// </summary>
+        public static TrackerOptions Default
+        {
+            get
+            {
+                return new TrackerOptions();
+            }
+        }
     }
 }

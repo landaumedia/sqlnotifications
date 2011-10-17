@@ -54,13 +54,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exceptions\TableNotExistException.cs" />
     <Compile Include="Storage\DatabaseVersionStorage.cs" />
     <Compile Include="Storage\InMemoryVersionStorage.cs" />
-    <Compile Include="Storage\SqlTasks\SqlObjectCreator.cs" />
-    <Compile Include="Storage\SqlTasks\SqlObjectExistenceChecker.cs" />
-    <Compile Include="Storage\SqlTasks\Sql.cs" />
-    <Compile Include="Storage\SqlTasks\SqlTasksBase.cs" />
+    <Compile Include="Infrastructure\SqlTasks\SqlObjectCreator.cs" />
+    <Compile Include="Infrastructure\SqlTasks\SqlObjectExistenceChecker.cs" />
+    <Compile Include="Infrastructure\SqlTasks\Sql.cs" />
+    <Compile Include="Infrastructure\SqlTasks\SqlTasksBase.cs" />
     <Compile Include="Tracker\ITracker.cs" />
+    <Compile Include="Tracker\TimestampBased\TableFinder.cs" />
+    <Compile Include="Tracker\TimestampBased\TimestampFieldFinder.cs" />
     <Compile Include="Tracker\TrackerFactory.cs" />
     <Compile Include="Tracker\TrackerOptions.cs" />
     <Compile Include="Storage\FilebasedVersionStorage.cs" />
@@ -70,7 +73,7 @@
     <Compile Include="Tracker\NotificationTracker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tracker\ChangeTrackingBasedTracker.cs" />
-    <Compile Include="Tracker\TimestampBasedTracker.cs" />
+    <Compile Include="Tracker\TimestampBased\TimestampBasedTracker.cs" />
     <Compile Include="Wire\AbstractNotificationSetup.cs" />
     <Compile Include="Wire\INotificationSetup.cs" />
     <Compile Include="Tracker\ITrackerSetup.cs" />
@@ -78,9 +81,6 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <None Include="NLog.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

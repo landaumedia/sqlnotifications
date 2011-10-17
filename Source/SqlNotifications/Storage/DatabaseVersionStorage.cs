@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Data.SqlClient;
-using LandauMedia.Storage.SqlTasks;
+using LandauMedia.Infrastructure.SqlTasks;
 
 namespace LandauMedia.Storage
 {

@@ -1,6 +1,8 @@
-﻿using System.Data.SqlClient;
+﻿using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 
-namespace LandauMedia.Storage.SqlTasks
+namespace LandauMedia.Infrastructure.SqlTasks
 {
     public static class Sql
     {
@@ -26,10 +28,37 @@ namespace LandauMedia.Storage.SqlTasks
 
         public static void ExecuteCommand(this SqlConnection connection, string statement)
         {
+            connection.EnsureIsOpen();
+
             using (SqlCommand command = new SqlCommand(statement, connection))
             {
                 command.ExecuteNonQuery();
             }
         }
+
+        public static void EnsureIsOpen(this SqlConnection connection)
+        {
+            if (connection.State != ConnectionState.Open)
+                connection.Open();
+        }
+
+        public static void TryClose(this SqlConnection connection)
+        {
+            if (connection.State == ConnectionState.Open)
+            {
+                connection.Close();
+            }
+        }
+
+        public static T ExecuteSkalar<T>(this SqlConnection connection, string statement)
+        {
+            return new SqlTasksBase(connection).SkalarRead<T>(statement);
+        }
+
+        public static IEnumerable<T> ExecuteList<T>(this SqlConnection connection, string statement)
+        {
+            return new SqlTasksBase(connection).ListRead<T>(statement);
+        }
+        
     }
 }

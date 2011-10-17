@@ -1,6 +1,6 @@
 ﻿using System.Data.SqlClient;
 
-namespace LandauMedia.Storage.SqlTasks
+namespace LandauMedia.Infrastructure.SqlTasks
 {
     public class SqlObjectExistenceChecker
     {

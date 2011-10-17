@@ -1,8 +1,8 @@
 ﻿using System.Data.SqlClient;
 
-namespace LandauMedia.Storage.SqlTasks
+namespace LandauMedia.Infrastructure.SqlTasks
 {
-    public class SqlObjectCreator : SqlTasksBase
+    internal class SqlObjectCreator : SqlTasksBase
     {
         public SqlObjectCreator(SqlConnection connection)
             : base(connection)

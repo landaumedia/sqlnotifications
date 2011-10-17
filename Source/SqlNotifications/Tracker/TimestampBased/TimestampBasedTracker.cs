@@ -2,15 +2,19 @@
 using System.Collections;
 using System.Data.SqlClient;
 using System.Linq;
+using LandauMedia.Exceptions;
+using LandauMedia.Infrastructure.SqlTasks;
 using LandauMedia.Storage;
 using LandauMedia.Wire;
 using NLog;
 
-namespace LandauMedia.Tracker
+namespace LandauMedia.Tracker.TimestampBased
 {
     public class TimestampBasedTracker : ITracker
     {
         static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+        SqlConnection _connection;
         string _connectionString;
         string _timestampField;
 
@@ -31,8 +35,7 @@ namespace LandauMedia.Tracker
             }
         }
 
-
-        public void Prepare(string connectionString, INotificationSetup notificationSetup, INotification notification, IVersionStorage stroage, TrackerOptions options)
+        public void Prepare(string connectionString, INotificationSetup notificationSetup, INotification notification, IVersionStorage storage, TrackerOptions options)
         {
             Logger.Debug(() => "Preparing timestampbased Notification");
 
@@ -41,14 +44,17 @@ namespace LandauMedia.Tracker
             NotificationSetup = notificationSetup;
             Notification = notification;
             _connectionString = connectionString;
+            _connection = new SqlConnection(_connectionString);
             _options = options;
-            
-            _versionStorage = stroage;
+            _versionStorage = storage;
 
-            _timestampField = GetTimestampFieldOrNull();
+            if (!new TableFinder(_connection).Exist(NotificationSetup.Table, NotificationSetup.Schema))
+                throw new TableNotExistException(NotificationSetup.Table, NotificationSetup.Schema);
 
-            if (_timestampField == null)
-                throw new InvalidOperationException("requested Table has no timestamp field");
+            _timestampField = new TimestampFieldFinder(_connection).GetOrEmpty(NotificationSetup.Table, NotificationSetup.Schema);
+
+            if (string.IsNullOrEmpty(_timestampField))
+                throw new InvalidOperationException(string.Format("requested Table has no timestamp field (Table:{0} Schema:{1})", NotificationSetup.Table, NotificationSetup.Schema));
 
 
             ulong timestamp;
@@ -72,8 +78,9 @@ namespace LandauMedia.Tracker
             var fromTimestamp = _versionStorage.Load(_key);
             var toTimestamp = GetLastTimestamp();
 
+            var maxTimestamp = ulong.MinValue;
 
-            string statement = string.Format("SELECT TOP {6} {0} FROM [{1}].[{2}] WHERE CONVERT(bigint, {3}) > {4} AND CONVERT(bigint, {3}) <= {5} ORDER BY {3} ASC ",
+            string statement = string.Format("SELECT TOP {6} {0}, Convert(bigint,{3}) FROM [{1}].[{2}] WHERE CONVERT(bigint, {3}) > {4} AND CONVERT(bigint, {3}) <= {5} ORDER BY {3} ASC ",
                 NotificationSetup.KeyColumn,
                 NotificationSetup.Schema,
                 NotificationSetup.Table,
@@ -95,6 +102,7 @@ namespace LandauMedia.Tracker
 
                     while (reader.Read())
                     {
+                        maxTimestamp = Math.Max(maxTimestamp, Convert.ToUInt64(reader.GetInt64(1)));
                         listOfChangedRows.Add(ReadFromReader(reader, NotificationSetup.IdType));
                     }
                 }
@@ -113,7 +121,7 @@ namespace LandauMedia.Tracker
                 }
             }
 
-            _versionStorage.Store(_key, toTimestamp);
+            _versionStorage.Store(_key, maxTimestamp);
 
             return true;
         }
@@ -140,25 +148,13 @@ namespace LandauMedia.Tracker
 
         private ulong GetLastTimestamp()
         {
-            const string selectTimestamp = "SELECT CONVERT(bigint, @@dbts)";
-
-            using (SqlConnection connection = new SqlConnection(_connectionString))
-            using (SqlCommand command = new SqlCommand(selectTimestamp, connection))
-            {
-                connection.Open();
-
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-                    reader.Read();
-                    return Convert.ToUInt64(reader.GetInt64(0));
-                }
-            }
+            return (ulong)_connection.ExecuteSkalar<long>("SELECT CONVERT(bigint, @@dbts)");
         }
 
         private void InitializeHashTable()
         {
             string select = string.Format("SELECT {1} FROM [{0}].[{2}]", NotificationSetup.Schema, NotificationSetup.KeyColumn, NotificationSetup.Table);
-
+                                       
             using (SqlConnection connection = new SqlConnection(_connectionString))
             using (SqlCommand command = new SqlCommand(select, connection))
             {
@@ -173,31 +169,6 @@ namespace LandauMedia.Tracker
                         var value = ReadFromReader(reader, NotificationSetup.IdType);
                         _lastseenIds.Add(value, value);
                     }
-                }
-            }
-        }
-
-        private string GetTimestampFieldOrNull()
-        {
-            string existTimestampField = @"SELECT Column_Name FROM INFORMATION_SCHEMA.COLUMNS
-                WHERE DATA_TYPE = 'timestamp' AND TABLE_SCHEMA='@Schema' and TABLE_NAME='@TableName'";
-
-            existTimestampField = existTimestampField.Replace("@TableName", NotificationSetup.Table);
-            existTimestampField = existTimestampField.Replace("@Schema", NotificationSetup.Schema);
-
-            using (SqlConnection connection = new SqlConnection(_connectionString))
-            using (SqlCommand command = new SqlCommand(existTimestampField, connection))
-            {
-                connection.Open();
-
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-                    if (!reader.HasRows)
-                        return null;
-
-                    reader.Read();
-
-                    return reader.GetString(0);
                 }
             }
         }
