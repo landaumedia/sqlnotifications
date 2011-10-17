@@ -22,9 +22,10 @@ namespace LandauMedia.Tracker
 
         public void TrackingChanges()
         {
-            string checkChange = string.Format(@"SELECT CT.Id, CT.SYS_CHANGE_OPERATION, {2} CT.SYS_CHANGE_COLUMNS, CT.SYS_CHANGE_CONTEXT
-                FROM [{0}] AS P RIGHT OUTER JOIN CHANGETABLE(CHANGES [{0}], @lastId) AS CT ON P.Id = CT.[{1}]", 
-                NotificationSetup.Table, 
+            string checkChange = string.Format(@"SELECT CT.Id, CT.SYS_CHANGE_OPERATION, {3} CT.SYS_CHANGE_COLUMNS, CT.SYS_CHANGE_CONTEXT
+                FROM [{0}].[{1}] AS P RIGHT OUTER JOIN CHANGETABLE(CHANGES [{0}].[{1}], @lastId) AS CT ON P.Id = CT.[{2}]",
+                NotificationSetup.Schema,
+                NotificationSetup.Table,
                 NotificationSetup.KeyColumn,
                 BuildCheckColumnsStatement());
 
@@ -34,7 +35,7 @@ namespace LandauMedia.Tracker
 
                 using (SqlCommand command = new SqlCommand(checkChange, connection))
                 {
-                    command.Parameters.AddWithValue("@lastId", _versionStorage.Load(_key));
+                    command.Parameters.AddWithValue("@lastId", (long)_versionStorage.Load(_key));
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -55,7 +56,7 @@ namespace LandauMedia.Tracker
                     }
                 }
 
-                _versionStorage.Store(_key, GetLastId(connection));
+                _versionStorage.Store(_key, (ulong)GetLastId(connection));
             }
         }
 
@@ -71,12 +72,18 @@ namespace LandauMedia.Tracker
             _options = trackerOptions;
             _versionStorage = storage;
 
-            string updateNotifications = 
-                string.Format(@"ALTER TABLE [{0}] ENABLE CHANGE_TRACKING WITH (TRACK_COLUMNS_UPDATED = ON);", NotificationSetup.Table);
+            string updateNotifications =
+                string.Format(@"ALTER TABLE [{0}].[{1}] ENABLE CHANGE_TRACKING WITH (TRACK_COLUMNS_UPDATED = ON);",
+                NotificationSetup.Schema,
+                NotificationSetup.Table);
 
             string isChangeTrackingEnabled =
-                string.Format(@"SELECT COUNT(*) FROM sys.change_tracking_tables a 
-                    INNER JOIN sys.tables b ON a.object_id = b.object_id WHERE b.name = '{0}';", NotificationSetup.Table);
+                string.Format(@"SELECT Count(*) FROM sys.change_tracking_tables a 
+                    INNER JOIN sys.tables b ON a.object_id = b.object_id 
+                    INNER JOIN sys.schemas c ON b.schema_id = c.schema_id
+                    WHERE b.name = '{0}' and c.name = '{1}'",
+                    NotificationSetup.Table,
+                    NotificationSetup.Schema);
 
             _versionStorage.Store(_key, _options.InitializeToCurrentVersion ? GetInitialId() : 0);
 
@@ -100,9 +107,9 @@ namespace LandauMedia.Tracker
         private IEnumerable<string> ParseUpdated(SqlDataReader reader)
         {
             return from columns in NotificationSetup.IntrestedInUpdatedColums
-                let isChanged = reader.GetInt32(reader.GetOrdinal(string.Format("HasChanged{0}", columns))) ==  1
-                where isChanged
-                select columns;
+                   let isChanged = reader.GetInt32(reader.GetOrdinal(string.Format("HasChanged{0}", columns))) == 1
+                   where isChanged
+                   select columns;
         }
 
         public ulong GetInitialId()
@@ -110,7 +117,7 @@ namespace LandauMedia.Tracker
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                return GetLastId(connection);
+                return (ulong)GetLastId(connection);
             }
         }
 
@@ -122,7 +129,8 @@ namespace LandauMedia.Tracker
             foreach (var colum in NotificationSetup.IntrestedInUpdatedColums)
             {
                 sb.AppendLine(
-                    string.Format("CHANGE_TRACKING_IS_COLUMN_IN_MASK(COLUMNPROPERTY(OBJECT_ID('{0}'), '{1}', 'ColumnId'), CT.SYS_CHANGE_COLUMNS) as HasChanged{1}, "
+                    string.Format("CHANGE_TRACKING_IS_COLUMN_IN_MASK(COLUMNPROPERTY(OBJECT_ID('[{0}].[{1}]'), '{2}', 'ColumnId'), CT.SYS_CHANGE_COLUMNS) as HasChanged{2}, "
+                    , NotificationSetup.Schema
                     , NotificationSetup.Table
                     , colum));
             }
@@ -130,11 +138,11 @@ namespace LandauMedia.Tracker
             return sb.ToString();
         }
 
-        private ulong GetLastId(SqlConnection connection)
+        private long GetLastId(SqlConnection connection)
         {
             using (SqlCommand lastIdCommand = new SqlCommand("SELECT CHANGE_TRACKING_CURRENT_VERSION()", connection))
             {
-                return (ulong)lastIdCommand.ExecuteScalar();
+                return (long)lastIdCommand.ExecuteScalar();
             }
         }
     }

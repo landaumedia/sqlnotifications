@@ -153,6 +153,8 @@ namespace LandauMedia.Tracker.TimestampBased
 
         private void InitializeHashTable()
         {
+            Logger.Debug(() => "Intizialize HashTable");
+
             string select = string.Format("SELECT {1} FROM [{0}].[{2}]", NotificationSetup.Schema, NotificationSetup.KeyColumn, NotificationSetup.Table);
                                        
             using (SqlConnection connection = new SqlConnection(_connectionString))

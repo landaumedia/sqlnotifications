@@ -1,5 +1,4 @@
 ﻿using SqlNotifications.Demo.Scenarios.LocalUser;
-using SqlNotifications.Demo.Scenarios.LocalUserWithDatabaseStorage;
 
 namespace SqlNotifications.Demo
 {
@@ -7,7 +6,7 @@ namespace SqlNotifications.Demo
     {
         static void Main(string[] args)
         {
-            new LocalUserWithDatabaseStorage().Start();
+            new LocalUserScenario().Start();
         }
     }
 }
