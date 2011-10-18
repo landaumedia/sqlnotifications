@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -58,6 +59,11 @@ namespace LandauMedia.Infrastructure.SqlTasks
         public static IEnumerable<T> ExecuteList<T>(this SqlConnection connection, string statement)
         {
             return new SqlTasksBase(connection).ListRead<T>(statement);
+        }
+
+        public static IEnumerable<T> ExecuteList<T>(this SqlConnection connection, string statement, Action<IDataRecord> onRead)
+        {
+            return new SqlTasksBase(connection).ListRead<T>(statement, onRead);
         }
         
     }

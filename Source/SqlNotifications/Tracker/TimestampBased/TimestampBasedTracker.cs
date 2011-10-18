@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Data.SqlClient;
 using System.Linq;
 using LandauMedia.Exceptions;
@@ -15,7 +14,6 @@ namespace LandauMedia.Tracker.TimestampBased
         static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         SqlConnection _connection;
-        string _connectionString;
         string _timestampField;
 
         IVersionStorage _versionStorage;
@@ -43,8 +41,7 @@ namespace LandauMedia.Tracker.TimestampBased
 
             NotificationSetup = notificationSetup;
             Notification = notification;
-            _connectionString = connectionString;
-            _connection = new SqlConnection(_connectionString);
+            _connection = new SqlConnection(connectionString);
             _options = options;
             _versionStorage = storage;
 
@@ -89,26 +86,13 @@ namespace LandauMedia.Tracker.TimestampBased
                 toTimestamp,
                 bucketSize);
 
-            ArrayList listOfChangedRows = new ArrayList();
+            var changedIds = _connection.ExecuteList<object>(statement, reader =>  maxTimestamp = Math.Max(maxTimestamp, Convert.ToUInt64(reader.GetInt64(1))))
+                .ToList();
 
-            using (SqlConnection connection = new SqlConnection(_connectionString))
-            using (SqlCommand command = new SqlCommand(statement, connection))
-            {
-                connection.Open();
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-                    if (!reader.HasRows)
-                        return false;
+            if (changedIds.Count() == 0)
+                return false;
 
-                    while (reader.Read())
-                    {
-                        maxTimestamp = Math.Max(maxTimestamp, Convert.ToUInt64(reader.GetInt64(1)));
-                        listOfChangedRows.Add(ReadFromReader(reader, NotificationSetup.IdType));
-                    }
-                }
-            }
-
-            foreach (var entry in listOfChangedRows)
+            foreach (var entry in changedIds)
             {
                 if (_lastseenIds.Contains(entry))
                 {
@@ -126,26 +110,6 @@ namespace LandauMedia.Tracker.TimestampBased
             return true;
         }
 
-        private static object ReadFromReader(SqlDataReader reader, Type t)
-        {
-            if (t == typeof(string))
-            {
-                return reader.GetString(0);
-            }
-
-            if (t == typeof(int))
-            {
-                return reader.GetInt32(0);
-            }
-
-            if (t == typeof(Guid))
-            {
-                return reader.GetGuid(0);
-            }
-
-            throw new ArgumentOutOfRangeException();
-        }
-
         private ulong GetLastTimestamp()
         {
             return (ulong)_connection.ExecuteSkalar<long>("SELECT CONVERT(bigint, @@dbts)");
@@ -156,22 +120,11 @@ namespace LandauMedia.Tracker.TimestampBased
             Logger.Debug(() => "Intizialize HashTable");
 
             string select = string.Format("SELECT {1} FROM [{0}].[{2}]", NotificationSetup.Schema, NotificationSetup.KeyColumn, NotificationSetup.Table);
-                                       
-            using (SqlConnection connection = new SqlConnection(_connectionString))
-            using (SqlCommand command = new SqlCommand(select, connection))
-            {
-                connection.Open();
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-                    if (!reader.HasRows)
-                        return;
 
-                    while (reader.Read())
-                    {
-                        var value = ReadFromReader(reader, NotificationSetup.IdType);
-                        _lastseenIds.Add(value);
-                    }
-                }
+            var idList = _connection.ExecuteList<object>(select);
+            foreach(var id in idList)
+            {
+                _lastseenIds.Add(id);
             }
         }
     }
