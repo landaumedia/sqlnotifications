@@ -8,6 +8,7 @@ namespace LandauMedia.Tracker.TimestampBased
         readonly SortedArray<int> _intArray = new SortedArray<int>();
         readonly SortedArray<long> _longArray = new SortedArray<long>();
         readonly SortedArray<Guid> _guidArray = new SortedArray<Guid>();
+        readonly SortedArray<string> _stringArray = new SortedArray<string>();
 
         public void Add(object key)
         {
@@ -29,6 +30,12 @@ namespace LandauMedia.Tracker.TimestampBased
                 return;
             }
 
+            if (key is string)
+            {
+                _stringArray.Add((string)key);
+                return;
+            }
+
             throw new NotImplementedException("Dieser Typ ist nicht implementiert");
         }
 
@@ -37,7 +44,6 @@ namespace LandauMedia.Tracker.TimestampBased
             if (key is int)
             {
                 return _intArray.IndexOf((int)key) >= 0;
-                
             }
 
             if (key is long)
@@ -48,6 +54,11 @@ namespace LandauMedia.Tracker.TimestampBased
             if (key is Guid)
             {
                 return _guidArray.IndexOf((Guid)key) >= 0;
+            }
+
+            if (key is string)
+            {
+                return _stringArray.IndexOf((string)key) >= 0;
             }
 
             throw new NotImplementedException("Dieser Typ ist nicht implementiert");
