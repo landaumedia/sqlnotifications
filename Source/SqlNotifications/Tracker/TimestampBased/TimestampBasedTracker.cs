@@ -22,7 +22,7 @@ namespace LandauMedia.Tracker.TimestampBased
         TrackerOptions _options;
         string _key;
 
-        readonly Hashtable _lastseenIds = new Hashtable();
+        readonly ILookupTable _lastseenIds = new SortedArrayLookupTable();
 
         public INotificationSetup NotificationSetup { get; internal set; }
         public INotification Notification { get; internal set; }
@@ -117,7 +117,7 @@ namespace LandauMedia.Tracker.TimestampBased
                 else
                 {
                     Notification.OnInsert(NotificationSetup, entry.ToString(), Enumerable.Empty<string>());
-                    _lastseenIds.Add(entry, entry);
+                    _lastseenIds.Add(entry);
                 }
             }
 
@@ -169,7 +169,7 @@ namespace LandauMedia.Tracker.TimestampBased
                     while (reader.Read())
                     {
                         var value = ReadFromReader(reader, NotificationSetup.IdType);
-                        _lastseenIds.Add(value, value);
+                        _lastseenIds.Add(value);
                     }
                 }
             }

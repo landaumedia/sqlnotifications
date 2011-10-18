@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using LandauMedia.Wire;
 using NLog;
 
-namespace SqlNotifications.Demo.Notifications
+namespace SqlNotifications.Demo.Scenarios.LocalUser
 {
     public class UserNotificationSetup : AbstractNotificationSetup
     {
@@ -13,7 +12,7 @@ namespace SqlNotifications.Demo.Notifications
             SetTable("User");
             SetKeyColumn("Id");
             SetIdType<int>();
-            SetTrackingType("changetracking");
+            SetTrackingType("timestamp");
 
             IntrestedInColumn("Username");
             IntrestedInColumn("Description");

@@ -3,7 +3,6 @@ using System.Data.SqlClient;
 using System.Reflection;
 using LandauMedia.Storage;
 using LandauMedia.Wire;
-using SqlNotifications.Demo.Notifications;
 
 namespace SqlNotifications.Demo.Scenarios.LocalUser
 {
