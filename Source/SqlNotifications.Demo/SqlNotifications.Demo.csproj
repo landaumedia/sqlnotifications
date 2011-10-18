@@ -52,6 +52,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Scenarios\BigTable\BigTableScenario.cs" />
+    <Compile Include="Scenarios\BigTable\BigTableNotificationSetup.cs" />
     <Compile Include="Scenarios\LocalUserWithDatabaseStorage\LocalUserWithDatabaseStorage.cs" />
     <Compile Include="Scenarios\LocalUserWithDatabaseStorage\UserNotificationSetup.cs" />
     <Compile Include="Scenarios\LocalUser\LocalUserScenario.cs" />

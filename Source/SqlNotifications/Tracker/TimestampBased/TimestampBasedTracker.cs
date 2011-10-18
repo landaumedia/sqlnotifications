@@ -117,8 +117,6 @@ namespace LandauMedia.Tracker.TimestampBased
 
         private void InitializeHashTable()
         {
-            Logger.Debug(() => "Intizialize HashTable");
-
             string select = string.Format("SELECT {1} FROM [{0}].[{2}]", NotificationSetup.Schema, NotificationSetup.KeyColumn, NotificationSetup.Table);
 
             var idList = _connection.ExecuteList<object>(select);

@@ -1,4 +1,5 @@
-﻿using SqlNotifications.Demo.Scenarios.LocalUser;
+﻿using SqlNotifications.Demo.Scenarios.BigTable;
+using SqlNotifications.Demo.Scenarios.LocalUser;
 
 namespace SqlNotifications.Demo
 {
@@ -6,7 +7,12 @@ namespace SqlNotifications.Demo
     {
         static void Main(string[] args)
         {
-            new LocalUserScenario().Start();
+            //new LocalUserScenario().Start();
+
+            var bigTableScenario = new BigTableScenario();
+
+            bigTableScenario.Prepare();
+            bigTableScenario.Start();
         }
     }
 }
