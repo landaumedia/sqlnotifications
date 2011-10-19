@@ -4,7 +4,6 @@ using System.Data.SqlClient;
 using LandauMedia.Storage;
 using LandauMedia.Wire;
 using NLog;
-using SqlNotifications.Demo.Scenarios.LocalUser;
 
 namespace SqlNotifications.Demo.Scenarios.BigTable
 {

@@ -1,4 +1,8 @@
-﻿using SqlNotifications.Demo.Scenarios.BigTable;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Sql;
+using SqlNotifications.Demo.Scenarios.BigTable;
 using SqlNotifications.Demo.Scenarios.LocalUser;
 
 namespace SqlNotifications.Demo
@@ -13,6 +17,7 @@ namespace SqlNotifications.Demo
 
             bigTableScenario.Prepare();
             bigTableScenario.Start();
+
         }
     }
 }
