@@ -12,6 +12,7 @@
     <dependencies>
       <dependency id="nlog" version="[2.0.0,)" />
       <dependency id="Rx-Main" version="[1.0.0,)" />
+      <dependency id="C5" version="[2.0.0,)" />
     </dependencies>
   </metadata>
   <files>
