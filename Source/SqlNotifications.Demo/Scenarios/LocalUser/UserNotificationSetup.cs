@@ -12,7 +12,7 @@ namespace SqlNotifications.Demo.Scenarios.LocalUser
             SetTable("User");
             SetKeyColumn("Id");
             SetIdType<int>();
-            SetTrackingType("timestamp");
+            SetTrackingType("changetracking");
 
             IntrestedInColumn("Username");
             IntrestedInColumn("Description");

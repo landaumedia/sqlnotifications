@@ -11,12 +11,12 @@ namespace SqlNotifications.Demo
     {
         static void Main(string[] args)
         {
-            //new LocalUserScenario().Start();
+            new BigTableScenario().Start();
 
-            var bigTableScenario = new BigTableScenario();
+            //var bigTableScenario = new BigTableScenario();
 
-            bigTableScenario.Prepare();
-            bigTableScenario.Start();
+            //bigTableScenario.Prepare();
+            //bigTableScenario.Start();
 
         }
     }

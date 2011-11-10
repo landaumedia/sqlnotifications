@@ -2,6 +2,7 @@
 using System.Data.SqlClient;
 using System.Reflection;
 using LandauMedia.Storage;
+using LandauMedia.Tracker;
 using LandauMedia.Wire;
 
 namespace SqlNotifications.Demo.Scenarios.LocalUser
