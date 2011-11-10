@@ -209,6 +209,11 @@
     <Error Condition="Exists(@(NugetPackages->'$(NuGetLandaumediaFeed)\%(FileName)%(Extension)', '%0D%0A'))" Text="Version already Deployed" />
     <Copy SourceFiles="@(NugetPackages)" DestinationFolder="$(NuGetLandaumediaFeed)" />
   </Target>
+  
+  
+  <Target Name="UpdateDeployEnvironment">
+	<Exec Command='Packages\Nuget\NuGet.exe install LandauMedia.CommandCenter.Deploy.Provisioning /source http://nuget.dev.local /OutputDirectory Packages /ExcludeVersion' />
+  </Target>
 
 </Project>
 
