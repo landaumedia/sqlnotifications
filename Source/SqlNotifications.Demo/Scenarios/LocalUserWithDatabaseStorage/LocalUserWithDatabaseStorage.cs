@@ -20,7 +20,7 @@ namespace SqlNotifications.Demo.Scenarios.LocalUserWithDatabaseStorage
                 .UseDefaultTimestampBased()
                 .WithVersionStorage(new DatabaseVersionStorage(connectionString))
                 .WithNotificationFactory(factory)
-                .WithDefaultTrackerOptions(new TrackerOptions() {InitializeToCurrentVersion = true, BucketSize = 3})
+                .WithDefaultTrackerOptions(new TrackerOptions() {InitializationOptions = InitializationOptions.InitializeToCurrent, BucketSize = 3})
                 .Build();
 
             using (notificationTracker.Start())

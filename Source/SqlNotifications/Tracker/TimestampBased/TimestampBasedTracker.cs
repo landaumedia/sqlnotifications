@@ -53,12 +53,21 @@ namespace LandauMedia.Tracker.TimestampBased
             if (string.IsNullOrEmpty(_timestampField))
                 throw new InvalidOperationException(string.Format("requested Table has no timestamp field (Table:{0} Schema:{1})", NotificationSetup.Table, NotificationSetup.Schema));
 
-            if (_options.InitializeToCurrentVersion)
-            {
-                ulong timestamp = GetLastTimestamp();
-                InitializeHashTable();
-                _versionStorage.Store(_key, timestamp);
-            }
+
+            ulong keyToStore = 0;
+
+            if (_options.InitializationOptions == InitializationOptions.InitializeToCurrent)
+                keyToStore = GetLastTimestamp();
+
+            if (_options.InitializationOptions == InitializationOptions.InitializeToCurrentIfNotSet && !_versionStorage.Exist(_key))
+                keyToStore = GetLastTimestamp();
+
+            if (_options.InitializationOptions == InitializationOptions.InitializeToCurrentIfNotSet && _versionStorage.Exist(_key))
+                keyToStore = _versionStorage.Load(_key);
+
+            _versionStorage.Store(_key, keyToStore);
+
+            InitializeHashTable();
 
             Logger.Debug(() => "Finished Prepare for timestampbased Notification");
         }

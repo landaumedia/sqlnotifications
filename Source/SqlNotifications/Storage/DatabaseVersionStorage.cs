@@ -55,6 +55,10 @@ namespace LandauMedia.Storage
             return ReadVersionFormKey(key);
         }
 
+        public bool Exist(string key)
+        {
+            return ExistKey(key);
+        }
 
         private bool ExistKey(string key)
         {

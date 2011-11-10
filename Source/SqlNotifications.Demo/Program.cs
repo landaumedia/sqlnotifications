@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Sql;
-using SqlNotifications.Demo.Scenarios.BigTable;
-using SqlNotifications.Demo.Scenarios.LocalUser;
+﻿using SqlNotifications.Demo.Scenarios.BigTable;
+using SqlNotifications.Demo.Scenarios.LocalUserWithDatabaseStorage;
 
 namespace SqlNotifications.Demo
 {
@@ -11,7 +7,7 @@ namespace SqlNotifications.Demo
     {
         static void Main(string[] args)
         {
-            new BigTableScenario().Start();
+            new LocalUserWithDatabaseStorage().Start();
 
             //var bigTableScenario = new BigTableScenario();
 

@@ -75,7 +75,7 @@ namespace LandauMedia.Tracker
             ITracker tracker = TrackerFactory.BuildByName(
                 string.IsNullOrWhiteSpace(notificationSetup.TrackingType) ? _defaultTrackingType : notificationSetup.TrackingType);
 
-            TrackerOptions options = _defaultTrackerOptions ?? new TrackerOptions {InitializeToCurrentVersion = true};
+            TrackerOptions options = _defaultTrackerOptions ?? new TrackerOptions();
 
             tracker.Prepare(_connectionString, notificationSetup, _factory(notificationSetup.Notification), _storage, options);
             return tracker;

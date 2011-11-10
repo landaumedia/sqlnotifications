@@ -66,6 +66,11 @@ namespace LandauMedia.Storage
             return keyValuePairs.ContainsKey(key) ? keyValuePairs[key] : 0;
         }
 
+        public bool Exist(string key)
+        {
+            return Read().Where(g => g.Key == key).Any();
+        }
+
         private void Write(IDictionary<string, ulong> values)
         {
             lock (_lock)

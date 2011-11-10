@@ -4,15 +4,11 @@
     {
         public TrackerOptions()
         {
-            InitializeToCurrentVersion = true;
+            InitializationOptions = InitializationOptions.InitializeToCurrent;
             BucketSize = 1000;
         }
 
-        /// <summary>
-        /// if set the tracker starts the current version
-        /// </summary>
-        public bool InitializeToCurrentVersion { get; set; }
-
+        public InitializationOptions InitializationOptions { get; set; }
 
         public int BucketSize { get; set; }
 

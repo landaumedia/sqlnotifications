@@ -85,7 +85,18 @@ namespace LandauMedia.Tracker
                     NotificationSetup.Table,
                     NotificationSetup.Schema);
 
-            _versionStorage.Store(_key, _options.InitializeToCurrentVersion ? GetInitialId() : 0);
+            ulong keyToStore = 0;
+
+            if (_options.InitializationOptions == InitializationOptions.InitializeToCurrent)
+                keyToStore = GetInitialId();
+
+            if (_options.InitializationOptions == InitializationOptions.InitializeToCurrentIfNotSet && !_versionStorage.Exist(_key))
+                keyToStore =  GetInitialId();
+
+            if (_options.InitializationOptions == InitializationOptions.InitializeToCurrentIfNotSet && _versionStorage.Exist(_key))
+                keyToStore = _versionStorage.Load(_key);
+
+            _versionStorage.Store(_key, keyToStore);
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {

@@ -5,5 +5,7 @@
         void Store(string key, ulong version);
 
         ulong Load(string key);
+
+        bool Exist(string key);
     }
 }
