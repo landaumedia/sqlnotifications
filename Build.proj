@@ -19,7 +19,7 @@
 
   <PropertyGroup>
     <NUnitToolPath>$(PackagePath)\NUnit.2.5.10.11092\tools</NUnitToolPath>
-    <MSpecToolPath>$(PackagePath)\Machine.Specifications.0.4.24.0\tools</MSpecToolPath>
+    <MSpecToolPath>$(PackagePath)\Machine.Specifications.0.5.2.0\tools</MSpecToolPath>
     <MSpecToJUnitPath>$(PackagePath)\MSpecToJUnit\MSpecToJUnit.xlt</MSpecToJUnitPath>
     <SVNToolPath>$(PackagePath)\Subversion\</SVNToolPath>
     <StyleCopyToolPath>$(PackagePath)\StyleCop</StyleCopyToolPath>
