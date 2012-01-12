@@ -40,6 +40,7 @@ namespace LandauMedia.Tracker
                     {
                         while (reader.Read())
                         {
+                            // should be a async notification
                             switch (reader.GetString(1).ToUpper())
                             {
                                 case "U":

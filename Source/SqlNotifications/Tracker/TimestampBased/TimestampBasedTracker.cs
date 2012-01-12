@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Threading;
 using LandauMedia.Exceptions;
 using LandauMedia.Infrastructure.SqlTasks;
 using LandauMedia.Storage;
@@ -27,9 +29,20 @@ namespace LandauMedia.Tracker.TimestampBased
 
         public void TrackingChanges()
         {
-            while (TrackChangesForOneBucket(_options.BucketSize))
+            while (true)
             {
-                
+                try
+                {
+                    if (!TrackChangesForOneBucket(_options.BucketSize))
+                    {
+                        Thread.Sleep(100);                  // wait short time if no changed pending
+                    }           
+                }
+                catch (DataException dataException)
+                {
+                    // on error log a warning and 
+                    Logger.WarnException("error on Tracking Database", dataException);
+                }
             }
         }
 
@@ -91,7 +104,7 @@ namespace LandauMedia.Tracker.TimestampBased
             var changedIds = _connection.ExecuteList<object>(statement, reader =>  maxTimestamp = Math.Max(maxTimestamp, Convert.ToUInt64(reader.GetInt64(1))))
                 .ToList();
 
-            if (changedIds.Count() == 0)
+            if (!changedIds.Any())
                 return false;
 
             foreach (var entry in changedIds)

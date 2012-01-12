@@ -7,12 +7,12 @@ namespace SqlNotifications.Demo
     {
         static void Main(string[] args)
         {
-            new LocalUserWithDatabaseStorage().Start();
+            //new LocalUserWithDatabaseStorage().Start();
 
-            //var bigTableScenario = new BigTableScenario();
+            var bigTableScenario = new BigTableScenario();
 
-            //bigTableScenario.Prepare();
-            //bigTableScenario.Start();
+            bigTableScenario.Prepare();
+            bigTableScenario.Start();
 
         }
     }

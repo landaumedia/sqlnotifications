@@ -49,11 +49,16 @@
     <Reference Include="ConstructorTester">
       <HintPath>..\..\packages\ConstructorTester.1.0\lib\net40\ConstructorTester.dll</HintPath>
     </Reference>
-    <Reference Include="Machine.Fakes">
-      <HintPath>..\..\packages\Machine.Fakes.0.2.6\lib\Machine.Fakes.dll</HintPath>
+    <Reference Include="Machine.Fakes, Version=0.3.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Machine.Fakes.0.3.3\lib\Machine.Fakes.dll</HintPath>
     </Reference>
-    <Reference Include="Machine.Specifications">
-      <HintPath>..\..\packages\Machine.Specifications.0.4.24.0\lib\Machine.Specifications.dll</HintPath>
+    <Reference Include="Machine.Fakes.Adapters.RhinoMocks">
+      <HintPath>..\..\packages\Machine.Fakes.RhinoMocks.0.3.3\lib\Machine.Fakes.Adapters.RhinoMocks.dll</HintPath>
+    </Reference>
+    <Reference Include="Machine.Specifications, Version=0.5.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Machine.Specifications.0.5.2.0\lib\Machine.Specifications.dll</HintPath>
     </Reference>
     <Reference Include="Rhino.Mocks">
       <HintPath>..\..\packages\RhinoMocks.3.6\lib\Rhino.Mocks.dll</HintPath>

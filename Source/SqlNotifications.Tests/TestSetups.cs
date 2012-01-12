@@ -2,6 +2,7 @@
 using System.Data.SqlClient;
 using System.IO;
 using LandauMedia.Infrastructure.SqlTasks;
+using Machine.Fakes;
 using Machine.Specifications;
 
 // ReSharper disable InconsistentNaming
@@ -20,7 +21,7 @@ namespace LandauMedia
     }
 
 
-    public class With_express_database
+    public class With_express_database : WithFakes
     {
         protected static string _connectionstring;
 

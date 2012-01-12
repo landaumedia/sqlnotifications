@@ -20,12 +20,14 @@ namespace SqlNotifications.Demo.Scenarios.LocalUserWithDatabaseStorage
                 .UseDefaultTimestampBased()
                 .WithVersionStorage(new DatabaseVersionStorage(connectionString))
                 .WithNotificationFactory(factory)
-                .WithDefaultTrackerOptions(new TrackerOptions() {InitializationOptions = InitializationOptions.InitializeToCurrent, BucketSize = 3})
+                .WithDefaultTrackerOptions(new TrackerOptions {InitializationOptions = InitializationOptions.InitializeToCurrent, BucketSize = 3})
                 .Build();
 
             using (notificationTracker.Start())
             {
                 string readLine;
+
+                Console.WriteLine("i\t-> Inserts a User\nu\t-> updates all users\nquit\t-> exit console");
 
                 while ((readLine = Console.ReadLine()) != "quit")
                 {

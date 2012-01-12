@@ -1,18 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using LandauMedia.Exceptions;
 using LandauMedia.Storage;
 using LandauMedia.Wire;
 using Machine.Specifications;
+using Machine.Fakes;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable UnusedMember.Local
 // ReSharper disable UnusedMember.Global
+// ReSharper disable PublicMembersMustHaveComments
 
 namespace LandauMedia.Tracker.TimestampBased
 {
     [Subject(typeof(TimestampBasedTracker))]
+
     public class When_prepare_a_tracker_for_non_existing_Table : With_express_database
+
     {
         Establish context = () =>
         {
@@ -126,3 +131,4 @@ namespace LandauMedia.Tracker.TimestampBased
 // ReSharper restore UnusedMember.Global
 // ReSharper restore UnusedMember.Local
 // ReSharper restore InconsistentNaming
+// ReSharper restore PublicMembersMustHaveComments
