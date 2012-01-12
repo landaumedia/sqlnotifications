@@ -3,6 +3,7 @@ _Resharper*
 Source/*/bin/*
 Source/*/obj/*
 Build/*
+.Sonar/*
 
 /SqlNotifications.6.0.ReSharper.user
 /SqlNotifications.sln.docstates.suo

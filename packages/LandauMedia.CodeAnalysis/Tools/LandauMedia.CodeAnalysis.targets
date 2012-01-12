@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build" ToolsVersion="4.0">
+
+  <PropertyGroup>
+    <PackagePath Condition="$(PackagePath) == ''">$(MSBuildProjectDirectory)\Packages</PackagePath>
+	<SonarRunnerPath>$(PackagePath)\Landaumedia.CodeAnalysis\Tools\SonarRunner</SonarRunnerPath>
+	
+	<LandaumediaPackageSource>http://nuget.dev.local</LandaumediaPackageSource>
+	
+	<Version Condition="$(Version) == ''">1.0.0</Version>
+  </PropertyGroup>
+
+  <Target Name="Landaumedia:CodeAnalysis" DependsOnTargets="CodeAnalysis:Sonar" />
+  
+  <Target Name="CodeAnalysis:Sonar" DependsOnTargets="Build;CodeAnalysis:UpdateEnvironment">
+    <Exec Command='"java.exe" -classpath "$(SonarRunnerPath)\lib\sonar-runner.jar";"$(SonarRunnerPath)\lib\sonar-batch-bootstrapper.jar" "-Drunner.home=$(SonarRunnerPath)" "-Dproject.home=$(MSBuildProjectDirectory)" org.sonar.runner.Main' />
+  </Target>
+  
+  <Target Name="CodeAnalysis:UpdateEnvironment">
+	<Exec Command='Packages\Nuget\NuGet.exe install LandauMedia.CodeAnalysis /source $(LandaumediaPackageSource) /OutputDirectory Packages /ExcludeVersion' />
+  </Target>
+  
+  <Target Name="CodeAnalysis:UpdateSonarProperties" Condition="$(Version) != ''">
+	<FileUpdate Files="sonar-project.properties" RegEx="sonar.projectVersion=.*" ReplacementText="sonar.projectVersion=$(Version)" />
+  </Target>
+  
+</Project>
+

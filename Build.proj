@@ -13,6 +13,8 @@
     <BinaryOutputRelease>$(BinaryOutputPath)\Release\SqlNotifications</BinaryOutputRelease>
     <BinaryOutputTests>$(BinaryOutputPath)\Tests</BinaryOutputTests>
 
+	
+	
     <ArtifactDirectory>$(BinaryOutputPath)\Artifacts</ArtifactDirectory>
     <StyleCopEnabled>true</StyleCopEnabled>
   </PropertyGroup>
@@ -27,7 +29,7 @@
     <MSBuildCommunityTasksPath>$(PackagePath)\msBuild</MSBuildCommunityTasksPath>
     <SVNToolPath>$(PackagePath)\Subversion\</SVNToolPath>
     <ExtensionTasksPath>$(PackagePath)\MSBuild.Extension\</ExtensionTasksPath>
-  
+    <SonarRunnerPath>$(PackagePath)\SonarRunner</SonarRunnerPath>
 </PropertyGroup>
 
   <PropertyGroup Label="Nuget">
@@ -54,11 +56,13 @@
 
   <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets" />
   <Import Project="$(ExtensionTasksPath)MSBuild.ExtensionPack.tasks" />
+  <Import Project="$(PackagePath)\Landaumedia.CodeAnalysis\Tools\Landaumedia.CodeAnalysis.Targets" />
   <UsingTask AssemblyFile="$(StyleCopyToolPath)\Microsoft.StyleCop.dll" TaskName="StyleCopTask"/>
 
 
   <Target Name="Run_Hudson" DependsOnTargets="Rebuild;Test" />
   <Target Name="Run_Hudson_CodeAnalysis" DependsOnTargets="" />
+  <Target Name="Run_Sonar" DependsOnTargets="Landaumedia:CodeAnalysis" />
 
   <Target Name="Rebuild" DependsOnTargets="Clean;Build_Release" />
 
@@ -214,6 +218,14 @@
   <Target Name="UpdateDeployEnvironment">
 	<Exec Command='Packages\Nuget\NuGet.exe install LandauMedia.CommandCenter.Deploy.Provisioning /source http://nuget.dev.local /OutputDirectory Packages /ExcludeVersion' />
   </Target>
-
+   
+   
+  <Target Name="Sonar" DependsOnTargets="Build">
+    <Exec Command='"java.exe" -classpath "$(SonarRunnerPath)\lib\sonar-runner.jar";"$(SonarRunnerPath)\lib\sonar-batch-bootstrapper.jar" "-Drunner.home=$(SonarRunnerPath)" "-Dproject.home=$(MSBuildProjectDirectory)" org.sonar.runner.Main' />
+  </Target>
+  
+  <Target Name="UpdateCodeAnalysisEnvironment">
+    <Exec Command='Packages\Nuget\NuGet.exe install LandauMedia.CodeAnalysis /source http://nuget.dev.local /OutputDirectory Packages /ExcludeVersion' />
+  </Target>
 </Project>
 
