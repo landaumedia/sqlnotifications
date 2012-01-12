@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Data.SqlClient;
 using LandauMedia.Infrastructure.SqlTasks;
 
@@ -60,8 +61,14 @@ namespace LandauMedia.Storage
             return ExistKey(key);
         }
 
+        /// <summary>
+        /// check for Key in Database
+        /// </summary>
+        /// <param name="key">the Key that should be checked</param>
+        /// <returns><c>true</c> if exist, otherwise <c>false</c></returns>
         private bool ExistKey(string key)
         {
+            // checking with count
             string statement = string.Format("SELECT Count(*) FROM [{0}].[{1}] WHERE [Key]=@Key", _schemaName, _tableName);
 
             using (SqlCommand command = new SqlCommand(statement, _database))
@@ -71,6 +78,11 @@ namespace LandauMedia.Storage
             }
         }
 
+        /// <summary>
+        /// Updates the <paramref name="version"/> in the Database
+        /// </summary>
+        /// <param name="key">the Key that should be updated.</param>
+        /// <param name="version">value for version </param>
         private void UpdateKey(string key, ulong version)
         {
             string statement = string.Format("UPDATE [{0}].[{1}] SET version=@version WHERE [Key]=@key", _schemaName, _tableName);

@@ -7,6 +7,7 @@ using Machine.Specifications;
 // ReSharper disable InconsistentNaming
 // ReSharper disable UnusedMember.Local
 // ReSharper disable UnusedMember.Global
+// ReSharper disable PublicMembersMustHaveComments
 
 namespace LandauMedia
 {
@@ -17,6 +18,7 @@ namespace LandauMedia
         Establish context = () =>
             _connectionString = "SERVER=Localhost;DATABASE=NotificationTest;User=Guest";
     }
+
 
     public class With_express_database
     {
@@ -65,3 +67,4 @@ namespace LandauMedia
 // ReSharper restore UnusedMember.Global
 // ReSharper restore UnusedMember.Local
 // ReSharper restore InconsistentNaming
+// ReSharper restore PublicMembersMustHaveComments
