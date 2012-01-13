@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AnalyseParams>
+  <Filters>
+    <IncludeFilters>
+      <FilterEntry>
+        <ModuleMask>CommandCenter.SqlNotifications</ModuleMask>
+        <ClassMask>*</ClassMask>
+        <FunctionMask>*</FunctionMask>
+      </FilterEntry>
+	  <FilterEntry>
+        <ModuleMask>CommandCenter.SqlNotifications.Demo</ModuleMask>
+        <ClassMask>*</ClassMask>
+        <FunctionMask>*</FunctionMask>
+      </FilterEntry>
+    </IncludeFilters>
+    <ExcludeFilters>
+    </ExcludeFilters>
+  </Filters>
+</AnalyseParams>

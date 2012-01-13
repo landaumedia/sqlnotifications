@@ -225,7 +225,7 @@
       <Output TaskParameter="Include" ItemName="TestAssembly" />
     </CreateItem>
 
-    <Exec Command="$(dotCoverRunnerPath) analyse /TargetExecutable=$(MSpecToolPath)\mspec-x86-clr4.exe /TargetArguments=@(TestAssembly,' ') /TargetWorkingDir=$(DotCoverWorkingDir) /Output=$(dotCoverOuput) /Filters=+:module=*SqlNotifications;class=*;function=*;"
+    <Exec Command="$(dotCoverRunnerPath) analyse coverageFilters.xml /TargetExecutable=$(MSpecToolPath)\mspec-x86-clr4.exe /TargetArguments=@(TestAssembly,' ') /TargetWorkingDir=$(DotCoverWorkingDir) /Output=$(dotCoverOuput)"
           IgnoreExitCode ="true" />
 
     <Exec Command="$(dotCover2Emma) -dotCover $(dotCoverOuput) $(dotCoverOutputEmma)" />
