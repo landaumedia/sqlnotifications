@@ -3,7 +3,8 @@ _Resharper*
 Source/*/bin/*
 Source/*/obj/*
 Build/*
-.Sonar/*
+.sonar/*
+*.sonar
 
 /SqlNotifications.6.0.ReSharper.user
 /SqlNotifications.sln.docstates.suo
@@ -11,3 +12,4 @@ Build/*
 /SqlNotifications.sln.docstates.suo
 /SqlNotifications.6.1.ReSharper.user
 /SqlNotifications.sln.DotSettings.user
+/Source/SqlNotifications/StyleCop.Cache
