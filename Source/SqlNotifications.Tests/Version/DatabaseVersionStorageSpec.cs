@@ -52,6 +52,9 @@ namespace LandauMedia.Version
         Establish context = () =>
             _versionStorage = new DatabaseVersionStorage(_connectionstring);
 
+        Cleanup cleanup = () =>
+            _versionStorage.Dispose();
+
         protected static DatabaseVersionStorage _versionStorage;
     }
 }
