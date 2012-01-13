@@ -3,7 +3,7 @@
 
   <PropertyGroup>
     <SourceFolder>$(MSBuildProjectDirectory)\Source</SourceFolder>
-    
+
     <BinaryOutputPath>$(MSBuildProjectDirectory)\build</BinaryOutputPath>
     <PackagePath>$(MSBuildProjectDirectory)\Packages</PackagePath>
 
@@ -14,8 +14,8 @@
     <BinaryOutputTests>$(BinaryOutputPath)\Tests</BinaryOutputTests>
 
     <DotCoverWorkingDir>$(MSBuildProjectDirectory)\build\dotCover</DotCoverWorkingDir>
-	
-	
+
+
     <ArtifactDirectory>$(BinaryOutputPath)\Artifacts</ArtifactDirectory>
     <StyleCopEnabled>true</StyleCopEnabled>
   </PropertyGroup>
@@ -31,13 +31,13 @@
     <SVNToolPath>$(PackagePath)\Subversion\</SVNToolPath>
     <ExtensionTasksPath>$(PackagePath)\MSBuild.Extension\</ExtensionTasksPath>
     <SonarRunnerPath>$(PackagePath)\SonarRunner</SonarRunnerPath>
-    
+
     <dotCoverRunnerPath>$(PackagePath)\dotCover\dotcover.exe</dotCoverRunnerPath>
     <dotCover2Emma>$(PackagePath)\dotCover2Emma\cover2Emma.exe</dotCover2Emma>
     <DotCoverWorkingDir>$(MSBuildProjectDirectory)\build\dotCover</DotCoverWorkingDir>
     <dotCoverOuput>$(ArtifactDirectory)\dotCover.xml</dotCoverOuput>
     <dotCoverOutputEmma>$(ArtifactDirectory)\dotCoverEmma.xml</dotCoverOutputEmma>
-</PropertyGroup>
+  </PropertyGroup>
 
   <PropertyGroup Label="Nuget">
     <NuGetLocalFeed>c:\daten\NugetFeed</NuGetLocalFeed>
@@ -69,7 +69,7 @@
 
   <Target Name="Run_Hudson" DependsOnTargets="Rebuild;Test" />
   <Target Name="Run_Hudson_CodeAnalysis" DependsOnTargets="" />
-  <Target Name="Run_Sonar" DependsOnTargets="Landaumedia:CodeAnalysis; Coverage" />
+  <Target Name="Run_Sonar" DependsOnTargets="GetVersion;Landaumedia:CodeAnalysis;Coverage" />
 
   <Target Name="Rebuild" DependsOnTargets="Clean;Build_Release" />
 
@@ -95,7 +95,7 @@
     <RemoveDir Directories="$(ArtifactDirectory)" />
   </Target>
 
-  
+
   <Target Name="Deploy_Production">
     <MSBuild Projects="$(MSBuildProjectFile)"
          Targets="Deploy"
@@ -119,7 +119,7 @@
     <CreateItem Include="$(BinaryOutputRelease)\**\*" Exclude="$(BinaryOutputRelease)\App*.config" >
       <Output TaskParameter="Include" ItemName="DeploymentFiles" />
     </CreateItem>
-    
+
     <Copy SourceFiles="@(DeploymentFiles)"
 					DestinationFolder="$(Deploy_To)CommandCenter.Searcher\%(RecursiveDir)">
     </Copy>
@@ -162,7 +162,7 @@
         $(MSpecToolPath)\mspec-x86-clr4.exe $(AdditionalSettings) @(TestAssembly,' ')
       </MSpecCommand>
     </PropertyGroup>
-    <Exec Command="$(MSpecCommand)" 
+    <Exec Command="$(MSpecCommand)"
           WorkingDirectory="$(BinaryOutputTests)"
           IgnoreExitCode="true"
           ContinueOnError="true"/>
@@ -170,7 +170,7 @@
     <XslTransformation  XmlInputPaths="$(ArtifactDirectory)\mspec-results.xml"
                         XslInputPath="$(MSpecToJUnitPath)"
                         OutputPaths="$(ArtifactDirectory)\junit-results.xml"/>
-    
+
   </Target>
 
   <Target Name="Prepare">
@@ -190,13 +190,6 @@
     <GetAssemblyIdentity AssemblyFiles="$(NuGetDirectory)\lib\net40\$(AssemblyName)">
       <Output TaskParameter="Assemblies" ItemName="AssemblyInfo"/>
     </GetAssemblyIdentity>
-<!--
-    <XmlUpdate
-      Prefix="n"
-      Namespace="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd"
-      XmlFileName="$(NuGetSpecFile)"
-      XPath="//n:package/n:metadata/n:version"
-			Value="%(AssemblyInfo.Version)" />-->
 
     <Exec Command="&quot;$(NuGetToolPath)Nuget.exe&quot; pack &quot;$(NuGetSpecFile)&quot; /OutputDirectory &quot;$(NuGetPackageDirectory)&quot; -version %(AssemblyInfo.Version)" />
   </Target>
@@ -221,10 +214,10 @@
     <Error Condition="Exists(@(NugetPackages->'$(NuGetLandaumediaFeed)\%(FileName)%(Extension)', '%0D%0A'))" Text="Version already Deployed" />
     <Copy SourceFiles="@(NugetPackages)" DestinationFolder="$(NuGetLandaumediaFeed)" />
   </Target>
-  
-  
+
+
   <Target Name="UpdateDeployEnvironment">
-	<Exec Command='Packages\Nuget\NuGet.exe install LandauMedia.CommandCenter.Deploy.Provisioning /source http://nuget.dev.local /OutputDirectory Packages /ExcludeVersion' />
+    <Exec Command='Packages\Nuget\NuGet.exe install LandauMedia.CommandCenter.Deploy.Provisioning /source http://nuget.dev.local /OutputDirectory Packages /ExcludeVersion' />
   </Target>
 
   <Target Name="Coverage" DependsOnTargets="Build_Tests; Prepare">
@@ -232,16 +225,27 @@
       <Output TaskParameter="Include" ItemName="TestAssembly" />
     </CreateItem>
 
-    <Exec Command="$(dotCoverRunnerPath) analyse /TargetExecutable=$(MSpecToolPath)\mspec-x86-clr4.exe /TargetArguments=@(TestAssembly,' ') /TargetWorkingDir=$(DotCoverWorkingDir) /Output=$(dotCoverOuput)"  
+    <Exec Command="$(dotCoverRunnerPath) analyse /TargetExecutable=$(MSpecToolPath)\mspec-x86-clr4.exe /TargetArguments=@(TestAssembly,' ') /TargetWorkingDir=$(DotCoverWorkingDir) /Output=$(dotCoverOuput)"
           IgnoreExitCode ="true" />
 
     <Exec Command="$(dotCover2Emma) -dotCover $(dotCoverOuput) $(dotCoverOutputEmma)" />
   </Target>
-   
-  <Target Name="Sonar" DependsOnTargets="Build">
+
+  <Target Name="GetVersion" DependsOnTargets="Build" >
+    <GetAssemblyIdentity AssemblyFiles="$(BinaryOutputDebug)\CommandCenter.SqlNotifications.dll">
+      <Output TaskParameter="Assemblies" ItemName="AssemblyInfo"/>
+    </GetAssemblyIdentity>
+
+    <CreateProperty Value="%(AssemblyInfo.Version)">
+      <Output TaskParameter="Value" PropertyName="Version" />
+    </CreateProperty>
+
+  </Target>
+
+  <Target Name="Sonar" DependsOnTargets="Build;GetVersion">
     <Exec Command='"java.exe" -classpath "$(SonarRunnerPath)\lib\sonar-runner.jar";"$(SonarRunnerPath)\lib\sonar-batch-bootstrapper.jar" "-Drunner.home=$(SonarRunnerPath)" "-Dproject.home=$(MSBuildProjectDirectory)" org.sonar.runner.Main' />
   </Target>
-  
+
   <Target Name="UpdateCodeAnalysisEnvironment">
     <Exec Command='Packages\Nuget\NuGet.exe install LandauMedia.CodeAnalysis /source http://nuget.dev.local /OutputDirectory Packages /ExcludeVersion' />
   </Target>

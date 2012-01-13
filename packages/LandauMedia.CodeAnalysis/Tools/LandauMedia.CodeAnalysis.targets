@@ -12,7 +12,7 @@
 
   <Target Name="Landaumedia:CodeAnalysis" DependsOnTargets="CodeAnalysis:Sonar" />
   
-  <Target Name="CodeAnalysis:Sonar" DependsOnTargets="Build;CodeAnalysis:UpdateEnvironment">
+  <Target Name="CodeAnalysis:Sonar" DependsOnTargets="Build;CodeAnalysis:UpdateEnvironment;CodeAnalysis:UpdateSonarProperties">
     <Exec Command='"java.exe" -classpath "$(SonarRunnerPath)\lib\sonar-runner.jar";"$(SonarRunnerPath)\lib\sonar-batch-bootstrapper.jar" "-Drunner.home=$(SonarRunnerPath)" "-Dproject.home=$(MSBuildProjectDirectory)" org.sonar.runner.Main' />
   </Target>
   
