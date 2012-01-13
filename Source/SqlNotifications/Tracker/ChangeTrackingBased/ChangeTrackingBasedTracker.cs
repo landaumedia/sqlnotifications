@@ -6,7 +6,7 @@ using LandauMedia.Storage;
 using LandauMedia.Wire;
 using NLog;
 
-namespace LandauMedia.Tracker
+namespace LandauMedia.Tracker.ChangeTrackingBased
 {
     public class ChangeTrackingBasedTracker : ITracker
     {
@@ -105,7 +105,7 @@ namespace LandauMedia.Tracker
 
                 using (SqlCommand isEnabled = new SqlCommand(isChangeTrackingEnabled, connection))
                 {
-                    if (((int)isEnabled.ExecuteScalar() > 0))
+                    if ((int)isEnabled.ExecuteScalar() > 0)
                         return;
                 }
 

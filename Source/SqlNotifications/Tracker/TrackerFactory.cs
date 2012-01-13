@@ -1,4 +1,5 @@
 ﻿using System;
+using LandauMedia.Tracker.ChangeTrackingBased;
 using LandauMedia.Tracker.TimestampBased;
 
 namespace LandauMedia.Tracker
