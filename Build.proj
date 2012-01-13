@@ -13,6 +13,7 @@
     <BinaryOutputRelease>$(BinaryOutputPath)\Release\SqlNotifications</BinaryOutputRelease>
     <BinaryOutputTests>$(BinaryOutputPath)\Tests</BinaryOutputTests>
 
+    <DotCoverWorkingDir>$(MSBuildProjectDirectory)\build\dotCover</DotCoverWorkingDir>
 	
 	
     <ArtifactDirectory>$(BinaryOutputPath)\Artifacts</ArtifactDirectory>
@@ -30,6 +31,12 @@
     <SVNToolPath>$(PackagePath)\Subversion\</SVNToolPath>
     <ExtensionTasksPath>$(PackagePath)\MSBuild.Extension\</ExtensionTasksPath>
     <SonarRunnerPath>$(PackagePath)\SonarRunner</SonarRunnerPath>
+    
+    <dotCoverRunnerPath>$(PackagePath)\dotCover\dotcover.exe</dotCoverRunnerPath>
+    <dotCover2Emma>$(PackagePath)\dotCover2Emma\cover2Emma.exe</dotCover2Emma>
+    <DotCoverWorkingDir>$(MSBuildProjectDirectory)\build\dotCover</DotCoverWorkingDir>
+    <dotCoverOuput>$(ArtifactDirectory)\dotCover.xml</dotCoverOuput>
+    <dotCoverOutputEmma>$(ArtifactDirectory)\dotCoverEmma.xml</dotCoverOutputEmma>
 </PropertyGroup>
 
   <PropertyGroup Label="Nuget">
@@ -62,7 +69,7 @@
 
   <Target Name="Run_Hudson" DependsOnTargets="Rebuild;Test" />
   <Target Name="Run_Hudson_CodeAnalysis" DependsOnTargets="" />
-  <Target Name="Run_Sonar" DependsOnTargets="Landaumedia:CodeAnalysis" />
+  <Target Name="Run_Sonar" DependsOnTargets="Landaumedia:CodeAnalysis; Coverage" />
 
   <Target Name="Rebuild" DependsOnTargets="Clean;Build_Release" />
 
@@ -168,6 +175,7 @@
 
   <Target Name="Prepare">
     <MakeDir Directories="$(ArtifactDirectory)" />
+    <MakeDir Directories="$(DotCoverWorkingDir)" />
   </Target>
 
 
@@ -218,7 +226,17 @@
   <Target Name="UpdateDeployEnvironment">
 	<Exec Command='Packages\Nuget\NuGet.exe install LandauMedia.CommandCenter.Deploy.Provisioning /source http://nuget.dev.local /OutputDirectory Packages /ExcludeVersion' />
   </Target>
-   
+
+  <Target Name="Coverage" DependsOnTargets="Build_Tests; Prepare">
+    <CreateItem Include="$(BinaryOutputTests)\*.Tests.dll">
+      <Output TaskParameter="Include" ItemName="TestAssembly" />
+    </CreateItem>
+
+    <Exec Command="$(dotCoverRunnerPath) analyse /TargetExecutable=$(MSpecToolPath)\mspec-x86-clr4.exe /TargetArguments=@(TestAssembly,' ') /TargetWorkingDir=$(DotCoverWorkingDir) /Output=$(dotCoverOuput)"  
+          IgnoreExitCode ="true" />
+
+    <Exec Command="$(dotCover2Emma) -dotCover $(dotCoverOuput) $(dotCoverOutputEmma)" />
+  </Target>
    
   <Target Name="Sonar" DependsOnTargets="Build">
     <Exec Command='"java.exe" -classpath "$(SonarRunnerPath)\lib\sonar-runner.jar";"$(SonarRunnerPath)\lib\sonar-batch-bootstrapper.jar" "-Drunner.home=$(SonarRunnerPath)" "-Dproject.home=$(MSBuildProjectDirectory)" org.sonar.runner.Main' />
