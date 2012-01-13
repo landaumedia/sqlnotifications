@@ -239,7 +239,6 @@
     <CreateProperty Value="%(AssemblyInfo.Version)">
       <Output TaskParameter="Value" PropertyName="Version" />
     </CreateProperty>
-
   </Target>
 
   <Target Name="Sonar" DependsOnTargets="Build;GetVersion">
