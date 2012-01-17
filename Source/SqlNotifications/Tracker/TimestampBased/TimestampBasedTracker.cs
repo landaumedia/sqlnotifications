@@ -38,10 +38,10 @@ namespace LandauMedia.Tracker.TimestampBased
                         Thread.Sleep(100);                  // wait short time if no changed pending
                     }           
                 }
-                catch (DataException dataException)
+                catch (SqlException sqlException)
                 {
                     // on error log a warning and 
-                    Logger.WarnException("error on Tracking Database", dataException);
+                    Logger.WarnException("Error on Tracking Database", sqlException);
                 }
             }
         }
