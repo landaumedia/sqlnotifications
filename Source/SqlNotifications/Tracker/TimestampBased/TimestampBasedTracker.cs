@@ -133,12 +133,7 @@ namespace LandauMedia.Tracker.TimestampBased
         private void InitializeHashTable()
         {
             string select = string.Format("SELECT {1} FROM [{0}].[{2}]", NotificationSetup.Schema, NotificationSetup.KeyColumn, NotificationSetup.Table);
-
-            var idList = _connection.ExecuteList<object>(select);
-            foreach(var id in idList)
-            {
-                _lastseenIds.Add(id);
-            }
+            _lastseenIds.AddRange(_connection.ExecuteList<object>(select));
         }
     }
 }

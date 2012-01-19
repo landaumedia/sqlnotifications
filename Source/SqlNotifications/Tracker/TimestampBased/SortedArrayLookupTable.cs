@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using C5;
 
 namespace LandauMedia.Tracker.TimestampBased
@@ -37,6 +39,33 @@ namespace LandauMedia.Tracker.TimestampBased
             }
 
             throw new NotImplementedException("Dieser Typ ist nicht implementiert");
+        }
+
+        public void AddRange(IEnumerable<object> keys)
+        {
+            if (keys.First() is int)
+            {
+                _intArray.AddAll(keys.Cast<int>());
+                return;
+            }
+
+            if (keys.First() is long)
+            {
+                _longArray.AddAll(keys.Cast<long>());
+                return;
+            }
+
+            if (keys.First() is Guid)
+            {
+                _guidArray.AddAll(keys.Cast<Guid>());
+                return;
+            }
+
+            if (keys.First() is string)
+            {
+                _stringArray.AddAll(keys.Cast<string>());
+                return;
+            }
         }
 
         public bool Contains(object key)

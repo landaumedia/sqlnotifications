@@ -1,4 +1,5 @@
-﻿using SqlNotifications.Demo.Scenarios.BigTable;
+﻿using SqlNotifications.Demo.Scenarios;
+using SqlNotifications.Demo.Scenarios.BigTable;
 using SqlNotifications.Demo.Scenarios.LocalUserWithDatabaseStorage;
 
 namespace SqlNotifications.Demo
@@ -9,11 +10,11 @@ namespace SqlNotifications.Demo
         {
             //new LocalUserWithDatabaseStorage().Start();
 
-            var bigTableScenario = new BigTableScenario();
+            //var bigTableScenario = new BigTableScenario();
+            //bigTableScenario.Prepare();
+            //bigTableScenario.Start();
 
-            bigTableScenario.Prepare();
-            bigTableScenario.Start();
-
+            new BlogPostScenario().Start();
         }
     }
 }
