@@ -33,7 +33,7 @@
     <SonarRunnerPath>$(PackagePath)\SonarRunner</SonarRunnerPath>
 
     <dotCoverRunnerPath>$(PackagePath)\dotCover\dotcover.exe</dotCoverRunnerPath>
-    <dotCover2Emma>$(PackagePath)\dotCover2Emma\cover2Emma.exe</dotCover2Emma>
+    <dotCover2Emma>$(PackagePath)\dotCover2Emma\dotCover2Emma.exe</dotCover2Emma>
     <DotCoverWorkingDir>$(MSBuildProjectDirectory)\build\dotCover</DotCoverWorkingDir>
     <dotCoverOuput>$(ArtifactDirectory)\dotCover.xml</dotCoverOuput>
     <dotCoverOutputEmma>$(ArtifactDirectory)\dotCoverEmma.xml</dotCoverOutputEmma>
@@ -228,7 +228,7 @@
     <Exec Command="$(dotCoverRunnerPath) analyse coverageFilters.xml /TargetExecutable=$(MSpecToolPath)\mspec-x86-clr4.exe /TargetArguments=@(TestAssembly,' ') /TargetWorkingDir=$(DotCoverWorkingDir) /Output=$(dotCoverOuput)"
           IgnoreExitCode ="true" />
 
-    <Exec Command="$(dotCover2Emma) -dotCover $(dotCoverOuput) $(dotCoverOutputEmma)" />
+    <Exec Command='$(dotCover2Emma) "$(dotCoverOuput)" "$(dotCoverOutputEmma)"' />
   </Target>
 
   <Target Name="GetVersion" DependsOnTargets="Build" >
