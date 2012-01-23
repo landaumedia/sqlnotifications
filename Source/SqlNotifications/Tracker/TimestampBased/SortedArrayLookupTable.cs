@@ -43,6 +43,9 @@ namespace LandauMedia.Tracker.TimestampBased
 
         public void AddRange(IEnumerable<object> keys)
         {
+            if (!keys.Any())
+                return;
+
             if (keys.First() is int)
             {
                 _intArray.AddAll(keys.Cast<int>());
