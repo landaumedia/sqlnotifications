@@ -51,16 +51,23 @@ namespace LandauMedia.Tracker
         {
             Logger.Debug(() => string.Format("Start Tracking with {0} Trackers", _trackers.Count()));
 
+            IList<Thread> trackerThreads = new List<Thread>();
+
             try
             {
-                while (true)
+                foreach (var tracker in _trackers)
                 {
-                    foreach (var tracker in _trackers)
-                    {
-                        tracker.TrackingChanges();
-                    }
+                    trackerThreads.Add(new Thread(tracker.TrackingChanges));
+                }
 
-                    Thread.Sleep(1000);
+                foreach(var trackerThread in trackerThreads)
+                {
+                    trackerThread.Start();
+                }
+
+                foreach(var trackerThread in trackerThreads)
+                {
+                    trackerThread.Join();
                 }
             }
             catch (ThreadAbortException)

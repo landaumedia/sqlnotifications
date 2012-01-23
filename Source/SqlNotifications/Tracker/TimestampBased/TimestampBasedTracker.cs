@@ -33,7 +33,7 @@ namespace LandauMedia.Tracker.TimestampBased
             {
                 try
                 {
-                    if (!TrackChangesForOneBucket(_options.BucketSize))
+                    if (TrackChangesForOneBucket(_options.BucketSize))
                     {
                         Thread.Sleep(100);                  // wait short time if no changed pending
                     }           

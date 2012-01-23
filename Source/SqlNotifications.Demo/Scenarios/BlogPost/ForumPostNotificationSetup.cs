@@ -7,9 +7,10 @@ namespace SqlNotifications.Demo.Scenarios
     {
         public ForumPostNotificationSetup()
         {
-            SetSchemaAndTable("t_forumpost", "blog");
+            SetSchemaAndTable("t_forumpost", "Blog");
             SetIdType<int>();
             SetKeyColumn("Id");
+            SetTrackingType("timestamp");
         }
 
         public override Type Notification
