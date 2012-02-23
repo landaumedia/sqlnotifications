@@ -33,10 +33,10 @@ namespace LandauMedia.Tracker.TimestampBased
             {
                 try
                 {
-                    if (TrackChangesForOneBucket(_options.BucketSize))
+                    if (!TrackChangesForOneBucket(_options.BucketSize))
                     {
-                        Thread.Sleep(100);                  // wait short time if no changed pending
-                    }           
+                        Thread.Sleep(_options.FetchInterval);                  // wait short time if no changed pending
+                    }
                 }
                 catch (SqlException sqlException)
                 {
@@ -101,7 +101,7 @@ namespace LandauMedia.Tracker.TimestampBased
                 toTimestamp,
                 bucketSize);
 
-            var changedIds = _connection.ExecuteList<object>(statement, reader =>  maxTimestamp = Math.Max(maxTimestamp, Convert.ToUInt64(reader.GetInt64(1))))
+            var changedIds = _connection.ExecuteList<object>(statement, reader => maxTimestamp = Math.Max(maxTimestamp, Convert.ToUInt64(reader.GetInt64(1))))
                 .ToList();
 
             if (!changedIds.Any())

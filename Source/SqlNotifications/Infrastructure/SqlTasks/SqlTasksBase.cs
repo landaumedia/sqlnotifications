@@ -59,6 +59,7 @@ namespace LandauMedia.Infrastructure.SqlTasks
                 {
                     if (onRead != null)
                         onRead(reader);
+                    
                     yield return (T)ReadFromReader(reader);
                 }
             }
