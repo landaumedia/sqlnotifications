@@ -1,6 +1,4 @@
 ﻿using SqlNotifications.Demo.Scenarios;
-using SqlNotifications.Demo.Scenarios.BigTable;
-using SqlNotifications.Demo.Scenarios.LocalUserWithDatabaseStorage;
 
 namespace SqlNotifications.Demo
 {

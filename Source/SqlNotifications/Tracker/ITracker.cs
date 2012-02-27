@@ -1,3 +1,4 @@
+using LandauMedia.Infrastructure;
 using LandauMedia.Storage;
 using LandauMedia.Wire;
 
@@ -13,17 +14,20 @@ namespace LandauMedia.Tracker
         /// </summary>
         INotificationSetup NotificationSetup { get; }
 
-
         /// <summary>
         /// the Notification that will be called on databasechanges.
         /// </summary>
         INotification Notification { get; }
 
         /// <summary>
+        /// API for getting Performanceinformation
+        /// </summary>
+        IPerformanceCounter PerformanceCounter { get; set; }
+
+        /// <summary>
         /// start tracking changes. the call is syncron and will block until aborted
         /// </summary>
         void TrackingChanges();
-
 
         /// <summary>
         /// Prepares the tracker.

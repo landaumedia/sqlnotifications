@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using LandauMedia.Infrastructure;
 using LandauMedia.Storage;
 using LandauMedia.Wire;
 
@@ -23,6 +24,8 @@ namespace LandauMedia.Tracker
         ITrackerSetup WithNotificationFactory(Func<Type, INotification> notificationFactory);
 
         ITrackerSetup WithDefaultTrackerOptions(TrackerOptions options);
+
+        ITrackerSetup WithPerformanceCounter(IPerformanceCounter counter);
 
         NotificationTracker Build();
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Threading;
+using LandauMedia.Infrastructure;
 using LandauMedia.Storage;
 using LandauMedia.Wire;
 using NLog;
@@ -21,13 +22,15 @@ namespace LandauMedia.Tracker
 
         Func<Type, INotification> _factory;
 
+        IPerformanceCounter _counter;
+
         readonly string _defaultTrackingType;
 
         Thread _workerThread;
 
         IEnumerable<ITracker> _trackers;
 
-        public NotificationTracker(string connectionString, IEnumerable<INotificationSetup> notificationTypes, string defaultTrackingType, IVersionStorage storage, Func<Type, INotification> factory, TrackerOptions defaultTrackerOptions)
+        public NotificationTracker(string connectionString, IEnumerable<INotificationSetup> notificationTypes, string defaultTrackingType, IVersionStorage storage, Func<Type, INotification> factory, TrackerOptions defaultTrackerOptions, IPerformanceCounter counter)
         {
             _connectionString = connectionString;
             _notificationTypes = notificationTypes;
@@ -35,6 +38,7 @@ namespace LandauMedia.Tracker
             _factory = factory;
             _defaultTrackerOptions = defaultTrackerOptions;
             _storage = storage;
+            _counter = counter;
         }
 
         public IDisposable Start()
@@ -85,6 +89,8 @@ namespace LandauMedia.Tracker
             TrackerOptions options = _defaultTrackerOptions ?? new TrackerOptions();
 
             tracker.Prepare(_connectionString, notificationSetup, _factory(notificationSetup.Notification), _storage, options);
+
+            tracker.PerformanceCounter = _counter;
             return tracker;
         }
     }

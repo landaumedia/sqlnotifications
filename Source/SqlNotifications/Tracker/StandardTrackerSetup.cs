@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using LandauMedia.Infrastructure;
 using LandauMedia.Storage;
 using LandauMedia.Wire;
 
@@ -14,6 +15,7 @@ namespace LandauMedia.Tracker
         Func<Type, INotification> _notificationFactory;
         IEnumerable<Type> _types;
         TrackerOptions _trackerOptions;
+        IPerformanceCounter _counter;
 
         Assembly _souceAssembly;
 
@@ -29,8 +31,6 @@ namespace LandauMedia.Tracker
         public ITrackerSetup WithNotificationsOfAssembly(Assembly assembly)
         {
             _souceAssembly = assembly;
-
-
             return this;
         }
 
@@ -70,6 +70,12 @@ namespace LandauMedia.Tracker
             return this;
         }
 
+        public ITrackerSetup WithPerformanceCounter(IPerformanceCounter counter)
+        {
+            _counter = counter;
+            return this;
+        }
+
         public NotificationTracker Build()
         {
             if (_storage == null)
@@ -99,7 +105,7 @@ namespace LandauMedia.Tracker
             if (_notificationFactory == null)
                 _notificationFactory = t => (INotification)Activator.CreateInstance(t);
 
-            return new NotificationTracker(_connectionString, notificationTypes, _trackerType, _storage, _notificationFactory, _trackerOptions);
+            return new NotificationTracker(_connectionString, notificationTypes, _trackerType, _storage, _notificationFactory, _trackerOptions, _counter);
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
+using LandauMedia.Infrastructure;
 using LandauMedia.Storage;
 using LandauMedia.Wire;
 using NLog;
@@ -19,6 +20,8 @@ namespace LandauMedia.Tracker.ChangeTrackingBased
 
         public INotificationSetup NotificationSetup { get; internal set; }
         public INotification Notification { get; internal set; }
+
+        public IPerformanceCounter PerformanceCounter { get; set; }
 
         public void TrackingChanges()
         {
@@ -92,7 +95,7 @@ namespace LandauMedia.Tracker.ChangeTrackingBased
                 keyToStore = GetInitialId();
 
             if (_options.InitializationOptions == InitializationOptions.InitializeToCurrentIfNotSet && !_versionStorage.Exist(_key))
-                keyToStore =  GetInitialId();
+                keyToStore = GetInitialId();
 
             if (_options.InitializationOptions == InitializationOptions.InitializeToCurrentIfNotSet && _versionStorage.Exist(_key))
                 keyToStore = _versionStorage.Load(_key);

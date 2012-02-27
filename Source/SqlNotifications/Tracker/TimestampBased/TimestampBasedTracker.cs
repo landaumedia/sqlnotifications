@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading;
 using LandauMedia.Exceptions;
+using LandauMedia.Infrastructure;
 using LandauMedia.Infrastructure.SqlTasks;
 using LandauMedia.Storage;
 using LandauMedia.Wire;
@@ -26,6 +26,8 @@ namespace LandauMedia.Tracker.TimestampBased
 
         public INotificationSetup NotificationSetup { get; internal set; }
         public INotification Notification { get; internal set; }
+
+        public IPerformanceCounter PerformanceCounter { get; set; }
 
         public void TrackingChanges()
         {
@@ -103,6 +105,7 @@ namespace LandauMedia.Tracker.TimestampBased
 
             var changedIds = _connection.ExecuteList<object>(statement, reader => maxTimestamp = Math.Max(maxTimestamp, Convert.ToUInt64(reader.GetInt64(1))))
                 .ToList();
+            NotifyDatabaseExecution();
 
             if (!changedIds.Any())
                 return false;
@@ -127,6 +130,7 @@ namespace LandauMedia.Tracker.TimestampBased
 
         private ulong GetLastTimestamp()
         {
+            NotifyDatabaseExecution();
             return (ulong)_connection.ExecuteSkalar<long>("SELECT CONVERT(bigint, @@dbts)");
         }
 
@@ -134,6 +138,13 @@ namespace LandauMedia.Tracker.TimestampBased
         {
             string select = string.Format("SELECT {1} FROM [{0}].[{2}]", NotificationSetup.Schema, NotificationSetup.KeyColumn, NotificationSetup.Table);
             _lastseenIds.AddRange(_connection.ExecuteList<object>(select));
+            NotifyDatabaseExecution();
+        }
+
+        private void NotifyDatabaseExecution()
+        {
+            if(PerformanceCounter != null)
+                PerformanceCounter.Inc("DatabaseQuery");
         }
     }
 }
