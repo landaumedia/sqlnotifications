@@ -18,7 +18,7 @@ namespace SqlNotifications.Demo.Scenarios
                 .WithNotifications(new[] { typeof(BlogPostNotificationSetup), typeof(ForumPostNotificationSetup) })
                 .UseDefaultTimestampBased()
                 .WithVersionStorage(new FilebasedVersionStorage("versions.storage"))
-                .WithDefaultTrackerOptions(new TrackerOptions() {BucketSize = 10000, InitializationOptions = InitializationOptions.InitializeWithZero})
+                .WithDefaultTrackerOptions(new TrackerOptions {BucketSize = 10000, InitializationOptions = InitializationOptions.InitializeToCurrent})
                 .WithPerformanceCounter(counter)
                 .Build();
 

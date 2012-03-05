@@ -13,6 +13,8 @@ namespace LandauMedia.Storage
 
         SqlConnection _database;
 
+        static readonly object Synclock = new object();
+
         public DatabaseVersionStorage(string connectionString, string tableName = "Versions", string schemaName = "Management")
         {
             _connectionString = connectionString;
@@ -71,10 +73,13 @@ namespace LandauMedia.Storage
             // checking with count
             string statement = string.Format("SELECT Count(*) FROM [{0}].[{1}] WHERE [Key]=@Key", _schemaName, _tableName);
 
-            using (SqlCommand command = new SqlCommand(statement, _database))
+            lock (Synclock)
             {
-                command.Parameters.AddWithValue("@Key", key);
-                return (int)command.ExecuteScalar() == 1;
+                using (SqlCommand command = new SqlCommand(statement, _database))
+                {
+                    command.Parameters.AddWithValue("@Key", key);
+                    return (int)command.ExecuteScalar() == 1;
+                }    
             }
         }
 
@@ -87,11 +92,14 @@ namespace LandauMedia.Storage
         {
             string statement = string.Format("UPDATE [{0}].[{1}] SET version=@version WHERE [Key]=@key", _schemaName, _tableName);
 
-            using (SqlCommand command = new SqlCommand(statement, _database))
+            lock (Synclock)
             {
-                command.Parameters.AddWithValue("@key", key);
-                command.Parameters.AddWithValue("@version", (long)version);
-                command.ExecuteNonQuery();
+                using (SqlCommand command = new SqlCommand(statement, _database))
+                {
+                    command.Parameters.AddWithValue("@key", key);
+                    command.Parameters.AddWithValue("@version", (long)version);
+                    command.ExecuteNonQuery();
+                }
             }
         }
 
@@ -99,11 +107,14 @@ namespace LandauMedia.Storage
         {
             string statement = string.Format("INSERT INTO [{0}].[{1}]([Key], Version) VALUES(@key, @version)", _schemaName, _tableName);
 
-            using (SqlCommand command = new SqlCommand(statement, _database))
+            lock(Synclock)
             {
-                command.Parameters.AddWithValue("@key", key);
-                command.Parameters.AddWithValue("@version", (long)version);
-                command.ExecuteNonQuery();
+                using (SqlCommand command = new SqlCommand(statement, _database))
+                {
+                    command.Parameters.AddWithValue("@key", key);
+                    command.Parameters.AddWithValue("@version", (long)version);
+                    command.ExecuteNonQuery();
+                }
             }
         }
 
@@ -111,12 +122,15 @@ namespace LandauMedia.Storage
         {
             string statement = string.Format("SELECT Version FROM [{0}].[{1}] WHERE [Key]=@Key", _schemaName, _tableName);
 
-            using (SqlCommand command = new SqlCommand(statement, _database))
+            lock (Synclock)
             {
-                command.Parameters.AddWithValue("@Key", key);
+                using (SqlCommand command = new SqlCommand(statement, _database))
+                {
+                    command.Parameters.AddWithValue("@Key", key);
 
-                object result = command.ExecuteScalar();
-                return result == null ? 0 : Convert.ToUInt64((long)result);
+                    object result = command.ExecuteScalar();
+                    return result == null ? 0 : Convert.ToUInt64((long)result);
+                }
             }
         }
 
