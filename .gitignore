@@ -13,3 +13,4 @@ Build/*
 /SqlNotifications.6.1.ReSharper.user
 /SqlNotifications.sln.DotSettings.user
 /Source/SqlNotifications/StyleCop.Cache
+/SqlNotifications.1.2.dotCover
