@@ -13,12 +13,20 @@ namespace SqlNotifications.Demo.Scenarios
         {
             DictionaryCounter counter = new DictionaryCounter();
 
+            var connectionstring =
+                "Data Source=Web20StagingDB;Initial Catalog=_staging_Web20;User ID=Web20User;Password=2s1DOmUqSdF1Isq8cXmG;Application Name=\"CommandCenter: FeedExporter.vshost.exe\"";
+
             var notificationTracker = Notify.For()
-                .Database("Data Source=Web20TestingDB;Initial Catalog=_testing_Web20;User ID=Web20User;Password=2s1DOmUqSdF1Isq8cXmG;Application Name=\"CommandCenter: FeedExporter.vshost.exe\"")
+                .Database(connectionstring)
                 .WithNotifications(new[] { typeof(BlogPostNotificationSetup), typeof(ForumPostNotificationSetup) })
                 .UseDefaultTimestampBased()
-                .WithVersionStorage(new FilebasedVersionStorage("versions.storage"))
-                .WithDefaultTrackerOptions(new TrackerOptions {BucketSize = 10000, InitializationOptions = InitializationOptions.InitializeToCurrent})
+                .WithVersionStorage(new DatabaseVersionStorage(connectionstring, "VersionsTest"))
+                .WithDefaultTrackerOptions(new TrackerOptions
+                {
+                    BucketSize = 10000, 
+                    InitializationOptions = InitializationOptions.InitializeToCurrentIfNotSet,
+                    FetchInterval = TimeSpan.FromSeconds(5)
+                })
                 .WithPerformanceCounter(counter)
                 .Build();
 
