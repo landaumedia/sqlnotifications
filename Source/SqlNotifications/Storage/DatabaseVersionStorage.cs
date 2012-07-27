@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data;
 using System.Data.SqlClient;
 using LandauMedia.Infrastructure.SqlTasks;
 
@@ -11,15 +10,21 @@ namespace LandauMedia.Storage
         readonly string _tableName;
         readonly string _schemaName;
 
+        readonly string _keyPrefix;
+
         SqlConnection _database;
 
         static readonly object Synclock = new object();
 
-        public DatabaseVersionStorage(string connectionString, string tableName = "Versions", string schemaName = "Management")
+        public DatabaseVersionStorage(string connectionString, 
+            string tableName = "Versions", 
+            string schemaName = "Management",
+            string keyPrefix = "")
         {
             _connectionString = connectionString;
             _tableName = tableName;
             _schemaName = schemaName;
+            _keyPrefix = keyPrefix;
 
             Prepare();
         }
@@ -43,6 +48,8 @@ namespace LandauMedia.Storage
 
         public void Store(string key, ulong version)
         {
+            key = AddPrefixToKey(key);
+
             if (ExistKey(key))
             {
                 UpdateKey(key, version);
@@ -55,11 +62,15 @@ namespace LandauMedia.Storage
 
         public ulong Load(string key)
         {
+            key = AddPrefixToKey(key);
+
             return ReadVersionFormKey(key);
         }
 
         public bool Exist(string key)
         {
+            key = AddPrefixToKey(key);
+
             return ExistKey(key);
         }
 
@@ -116,6 +127,11 @@ namespace LandauMedia.Storage
                     command.ExecuteNonQuery();
                 }
             }
+        }
+
+        private string AddPrefixToKey(string key)
+        {
+            return _keyPrefix + "_" + key;
         }
 
         private ulong ReadVersionFormKey(string key)

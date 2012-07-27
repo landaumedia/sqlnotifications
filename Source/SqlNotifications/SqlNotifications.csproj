@@ -66,6 +66,7 @@
     <Compile Include="Infrastructure\SqlTasks\SqlObjectExistenceChecker.cs" />
     <Compile Include="Infrastructure\SqlTasks\Sql.cs" />
     <Compile Include="Infrastructure\SqlTasks\SqlTasksBase.cs" />
+    <Compile Include="Tracker\ChangeOnlyTimestampBased\AddOnlyTimestampBasedTracker.cs" />
     <Compile Include="Tracker\InitializationOptions.cs" />
     <Compile Include="Tracker\ITracker.cs" />
     <Compile Include="Tracker\TimestampBased\ILookupTable.cs" />
@@ -77,6 +78,9 @@
     <Compile Include="Storage\FilebasedVersionStorage.cs" />
     <Compile Include="Storage\IVersionStorage.cs" />
     <Compile Include="Wire\INotification.cs" />
+    <Compile Include="Wire\INotifyInsert.cs" />
+    <Compile Include="Wire\INotifyDelete.cs" />
+    <Compile Include="Wire\INotifyUpdate.cs" />
     <Compile Include="Wire\Notify.cs" />
     <Compile Include="Tracker\NotificationTracker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

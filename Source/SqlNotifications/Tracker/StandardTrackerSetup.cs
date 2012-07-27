@@ -52,6 +52,12 @@ namespace LandauMedia.Tracker
             return this;
         }
 
+        public ITrackerSetup UseDefaultTrackingTypeOf(string trackingType)
+        {
+            _trackerType = trackingType;
+            return this;
+        }
+
         public ITrackerSetup WithVersionStorage(IVersionStorage storage)
         {
             _storage = storage;
@@ -76,7 +82,7 @@ namespace LandauMedia.Tracker
             return this;
         }
 
-        public NotificationTracker Build()
+        public TrackerRunner Build()
         {
             if (_storage == null)
                 throw new InvalidOperationException("No Storage Defined");
@@ -105,7 +111,7 @@ namespace LandauMedia.Tracker
             if (_notificationFactory == null)
                 _notificationFactory = t => (INotification)Activator.CreateInstance(t);
 
-            return new NotificationTracker(_connectionString, notificationTypes, _trackerType, _storage, _notificationFactory, _trackerOptions, _counter);
+            return new TrackerRunner(_connectionString, notificationTypes, _trackerType, _storage, _notificationFactory, _trackerOptions, _counter);
         }
     }
 }

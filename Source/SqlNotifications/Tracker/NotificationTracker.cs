@@ -10,7 +10,7 @@ using NLog;
 
 namespace LandauMedia.Tracker
 {
-    public class NotificationTracker
+    public class TrackerRunner
     {
         static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -20,9 +20,8 @@ namespace LandauMedia.Tracker
 
         readonly TrackerOptions _defaultTrackerOptions;
 
-        Func<Type, INotification> _factory;
-
-        IPerformanceCounter _counter;
+        readonly Func<Type, INotification> _factory;
+        readonly IPerformanceCounter _counter;
 
         readonly string _defaultTrackingType;
 
@@ -30,7 +29,7 @@ namespace LandauMedia.Tracker
 
         IEnumerable<ITracker> _trackers;
 
-        public NotificationTracker(string connectionString, IEnumerable<INotificationSetup> notificationTypes, string defaultTrackingType, IVersionStorage storage, Func<Type, INotification> factory, TrackerOptions defaultTrackerOptions, IPerformanceCounter counter)
+        public TrackerRunner(string connectionString, IEnumerable<INotificationSetup> notificationTypes, string defaultTrackingType, IVersionStorage storage, Func<Type, INotification> factory, TrackerOptions defaultTrackerOptions, IPerformanceCounter counter)
         {
             _connectionString = connectionString;
             _notificationTypes = notificationTypes;

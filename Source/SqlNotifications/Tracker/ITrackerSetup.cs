@@ -19,6 +19,8 @@ namespace LandauMedia.Tracker
 
         ITrackerSetup UseDefaultTimestampBased();
 
+        ITrackerSetup UseDefaultTrackingTypeOf(string trackingType);
+
         ITrackerSetup WithVersionStorage(IVersionStorage storage);
 
         ITrackerSetup WithNotificationFactory(Func<Type, INotification> notificationFactory);
@@ -27,6 +29,6 @@ namespace LandauMedia.Tracker
 
         ITrackerSetup WithPerformanceCounter(IPerformanceCounter counter);
 
-        NotificationTracker Build();
+        TrackerRunner Build();
     }
 }
