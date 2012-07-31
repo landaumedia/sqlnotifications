@@ -5,6 +5,7 @@ using System.Threading;
 using LandauMedia.Exceptions;
 using LandauMedia.Infrastructure;
 using LandauMedia.Infrastructure.SqlTasks;
+using LandauMedia.Model;
 using LandauMedia.Storage;
 using LandauMedia.Wire;
 using NLog;
@@ -114,11 +115,11 @@ namespace LandauMedia.Tracker.TimestampBased
             {
                 if (_lastseenIds.Contains(entry))
                 {
-                    Notification.OnUpdate(NotificationSetup, entry.ToString(), Enumerable.Empty<string>());
+                    Notification.OnUpdate(NotificationSetup, entry.ToString(), new AditionalNotificationInformation());
                 }
                 else
                 {
-                    Notification.OnInsert(NotificationSetup, entry.ToString(), Enumerable.Empty<string>());
+                    Notification.OnInsert(NotificationSetup, entry.ToString(), new AditionalNotificationInformation());
                     _lastseenIds.Add(entry);
                 }
             }

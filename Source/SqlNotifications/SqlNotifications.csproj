@@ -60,6 +60,7 @@
     <Compile Include="Exceptions\TableNotExistException.cs" />
     <Compile Include="Infrastructure\DictionaryCounter.cs" />
     <Compile Include="Infrastructure\IPerformanceCounter.cs" />
+    <Compile Include="Model\AditionalNotificationInformation.cs" />
     <Compile Include="Storage\DatabaseVersionStorage.cs" />
     <Compile Include="Storage\InMemoryVersionStorage.cs" />
     <Compile Include="Infrastructure\SqlTasks\SqlObjectCreator.cs" />

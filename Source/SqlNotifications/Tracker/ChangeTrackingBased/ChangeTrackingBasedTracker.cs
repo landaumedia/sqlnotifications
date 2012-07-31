@@ -3,6 +3,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using LandauMedia.Infrastructure;
+using LandauMedia.Model;
 using LandauMedia.Storage;
 using LandauMedia.Wire;
 using NLog;
@@ -47,13 +48,13 @@ namespace LandauMedia.Tracker.ChangeTrackingBased
                             switch (reader.GetString(1).ToUpper())
                             {
                                 case "U":
-                                    Notification.OnUpdate(NotificationSetup, reader.GetSqlValue(0).ToString(), ParseUpdated(reader));
+                                    Notification.OnUpdate(NotificationSetup, reader.GetSqlValue(0).ToString(), new AditionalNotificationInformation { UpdatedColumns = ParseUpdated(reader) });
                                     break;
                                 case "I":
-                                    Notification.OnInsert(NotificationSetup, reader.GetSqlValue(0).ToString(), ParseUpdated(reader));
+                                    Notification.OnInsert(NotificationSetup, reader.GetSqlValue(0).ToString(), new AditionalNotificationInformation { UpdatedColumns = ParseUpdated(reader) });
                                     break;
                                 case "D":
-                                    Notification.OnDelete(NotificationSetup, reader.GetSqlValue(0).ToString(), ParseUpdated(reader));
+                                    Notification.OnDelete(NotificationSetup, reader.GetSqlValue(0).ToString(), new AditionalNotificationInformation { UpdatedColumns = ParseUpdated(reader) });
                                     break;
                             }
                         }

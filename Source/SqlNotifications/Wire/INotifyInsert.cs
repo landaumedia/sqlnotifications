@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using LandauMedia.Model;
 
 namespace LandauMedia.Wire
 {
     public interface INotifyInsert
     {
-        void OnInsert(INotificationSetup notificationSetup, string id, IEnumerable<string> updatedColumns); 
+        void OnInsert(INotificationSetup notificationSetup, string id, AditionalNotificationInformation addtionalInformation);
     }
 }

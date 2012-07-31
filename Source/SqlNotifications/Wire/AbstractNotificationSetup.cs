@@ -10,7 +10,6 @@ namespace LandauMedia.Wire
         string _keyColum;
         string _trackingType;
 
-
         Type _id;
 
         string[] _additionalColumns = new string[0];
@@ -61,7 +60,6 @@ namespace LandauMedia.Wire
         {
             _additionalColumns = columnNames;
         }
-
 
         public string Table
         {

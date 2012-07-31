@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using LandauMedia.Model;
 
 namespace LandauMedia.Wire
 {
     public interface INotifyDelete
     {
-        void OnDelete(INotificationSetup notificationSetup, string id, IEnumerable<string> updatedColumns, IDictionary<string, string> add );
+        void OnDelete(INotificationSetup notificationSetup, string id, AditionalNotificationInformation addtionalInformation);
     }
 }

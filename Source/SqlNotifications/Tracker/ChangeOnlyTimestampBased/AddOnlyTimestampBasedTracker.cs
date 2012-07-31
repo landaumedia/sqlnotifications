@@ -5,6 +5,7 @@ using System.Threading;
 using LandauMedia.Exceptions;
 using LandauMedia.Infrastructure;
 using LandauMedia.Infrastructure.SqlTasks;
+using LandauMedia.Model;
 using LandauMedia.Storage;
 using LandauMedia.Tracker.TimestampBased;
 using LandauMedia.Wire;
@@ -109,7 +110,7 @@ namespace LandauMedia.Tracker.ChangeOnlyTimestampBased
 
             foreach (var entry in changedIds)
             {
-                Notification.OnInsert(NotificationSetup, entry.ToString(), Enumerable.Empty<string>());
+                Notification.OnInsert(NotificationSetup, entry.ToString(), new AditionalNotificationInformation());
             }
 
             _versionStorage.Store(_key, maxTimestamp);

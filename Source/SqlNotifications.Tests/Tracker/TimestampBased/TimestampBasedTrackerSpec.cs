@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
 using LandauMedia.Exceptions;
+using LandauMedia.Model;
 using LandauMedia.Storage;
 using LandauMedia.Wire;
 using Machine.Specifications;
-using Machine.Fakes;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable UnusedMember.Local
@@ -110,17 +108,17 @@ namespace LandauMedia.Tracker.TimestampBased
         public int CountUpdates { get; set; }
         public int CountDeletes { get; set; }
 
-        public void OnInsert(INotificationSetup notificationSetup, string id, IEnumerable<string> updatedColumns)
+        public void OnInsert(INotificationSetup notificationSetup, string id, AditionalNotificationInformation information)
         {
             CountInserts++;
         }
 
-        public void OnUpdate(INotificationSetup notificationSetup, string id, IEnumerable<string> updatedColumns)
+        public void OnUpdate(INotificationSetup notificationSetup, string id, AditionalNotificationInformation information)
         {
             CountUpdates++;
         }
 
-        public void OnDelete(INotificationSetup notificationSetup, string id, IEnumerable<string> updatedColumns)
+        public void OnDelete(INotificationSetup notificationSetup, string id, AditionalNotificationInformation information)
         {
             CountDeletes++;
         }
