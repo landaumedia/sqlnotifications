@@ -8,16 +8,15 @@ namespace SqlNotifications.Demo.Scenarios
         public BlogPostNotificationSetup()
         {
             SetIdType<int>();
-            SetTrackingType("timestamp");
+            SetTrackingType("changeonlytimestamp");
             SetKeyColumn("Id");
             SetSchemaAndTable("t_blogPost", "Blog");
+            SetAdditionalColumns(new[] {"RI"});
         }
 
         public override Type Notification
         {
             get { return typeof(LoggerNotification); }
         }
-
-
     }
 }

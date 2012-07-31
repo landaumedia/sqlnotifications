@@ -1,9 +1,16 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace LandauMedia.Model
 {
     public class AditionalNotificationInformation
     {
+        public AditionalNotificationInformation()
+        {
+            UpdatedColumns = Enumerable.Empty<string>();
+            AdditionalColumns = new Dictionary<string, string>();
+        }
+
         /// <summary>
         /// gibt die Spalten an, in denen Updates stattgefunden haben
         /// </summary>

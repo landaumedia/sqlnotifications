@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading;
@@ -9,6 +11,7 @@ using LandauMedia.Model;
 using LandauMedia.Storage;
 using LandauMedia.Wire;
 using NLog;
+using Logger = NLog.Logger;
 
 namespace LandauMedia.Tracker.TimestampBased
 {
@@ -95,16 +98,16 @@ namespace LandauMedia.Tracker.TimestampBased
 
             var maxTimestamp = ulong.MinValue;
 
-            string statement = string.Format("SELECT TOP {6} {0}, Convert(bigint,{3}) FROM [{1}].[{2}] WHERE CONVERT(bigint, {3}) > {4} AND CONVERT(bigint, {3}) <= {5} ORDER BY {3} ASC ",
-                NotificationSetup.KeyColumn,
-                NotificationSetup.Schema,
-                NotificationSetup.Table,
-                _timestampField,
-                fromTimestamp,
-                toTimestamp,
-                bucketSize);
+            var statement = BuildTrackerStatement(bucketSize, fromTimestamp, toTimestamp);
 
-            var changedIds = _connection.ExecuteList<object>(statement, reader => maxTimestamp = Math.Max(maxTimestamp, Convert.ToUInt64(reader.GetInt64(1))))
+            IDictionary<object, IDictionary<string, string>> addionalData = new Dictionary<object, IDictionary<string, string>>();
+                
+            var changedIds = _connection.ExecuteList<object>(statement, 
+                    reader =>
+                    {
+                        maxTimestamp = Math.Max(maxTimestamp, Convert.ToUInt64(reader.GetInt64(1)));
+                        addionalData.Add( reader.GetValue(0), ExtractAddionalData(reader));
+                    })
                 .ToList();
             NotifyDatabaseExecution();
 
@@ -115,11 +118,17 @@ namespace LandauMedia.Tracker.TimestampBased
             {
                 if (_lastseenIds.Contains(entry))
                 {
-                    Notification.OnUpdate(NotificationSetup, entry.ToString(), new AditionalNotificationInformation());
+                    Notification.OnUpdate(NotificationSetup, entry.ToString(), new AditionalNotificationInformation
+                    {
+                        AdditionalColumns = addionalData[entry]
+                    });
                 }
                 else
                 {
-                    Notification.OnInsert(NotificationSetup, entry.ToString(), new AditionalNotificationInformation());
+                    Notification.OnInsert(NotificationSetup, entry.ToString(), new AditionalNotificationInformation
+                    {
+                        AdditionalColumns = addionalData[entry]
+                    });
                     _lastseenIds.Add(entry);
                 }
             }
@@ -127,6 +136,41 @@ namespace LandauMedia.Tracker.TimestampBased
             _versionStorage.Store(_key, maxTimestamp);
 
             return true;
+        }
+
+        IDictionary<string, string> ExtractAddionalData(IDataRecord reader)
+        {
+            IDictionary<string, string> data = new Dictionary<string, string>();
+
+            foreach (var column in NotificationSetup.AdditionalColumns)
+            {
+                data.Add(column, reader.GetValue(reader.GetOrdinal(column)).ToString());
+            }
+
+            return data;
+        }
+
+        string BuildTrackerStatement(int bucketSize, ulong fromTimestamp, ulong toTimestamp)
+        {
+            string additionalColumnsStatement = string.Empty;
+
+            if (NotificationSetup.AdditionalColumns.Any())
+            {
+                additionalColumnsStatement = string.Join(",", NotificationSetup.AdditionalColumns);
+                additionalColumnsStatement = "," + additionalColumnsStatement;
+            }
+
+            string statement = string.Format("SELECT TOP {6} {0}, Convert(bigint,{3}) {7} FROM [{1}].[{2}] WHERE CONVERT(bigint, {3}) > {4} AND CONVERT(bigint, {3}) <= {5} ORDER BY {3} ASC ",
+                NotificationSetup.KeyColumn,
+                NotificationSetup.Schema,
+                NotificationSetup.Table,
+                _timestampField,
+                fromTimestamp,
+                toTimestamp,
+                bucketSize,
+                additionalColumnsStatement);
+
+            return statement;
         }
 
         private ulong GetLastTimestamp()
