@@ -12,6 +12,8 @@ namespace LandauMedia.Wire
 
         string TrackingType { get; }
 
+        string[] AdditionalColumns { get; }
+
         IEnumerable<string> IntrestedInUpdatedColums { get; }
 
         Type Notification { get; }

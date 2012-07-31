@@ -9,7 +9,11 @@ namespace LandauMedia.Wire
         string _schemaName;
         string _keyColum;
         string _trackingType;
+
+
         Type _id;
+
+        string[] _additionalColumns = new string[0];
         readonly IList<string> _intrestedUpdateColumns = new List<string>();
 
         protected AbstractNotificationSetup()
@@ -53,6 +57,11 @@ namespace LandauMedia.Wire
             _intrestedUpdateColumns.Add(columnName);
         }
 
+        protected void SetAdditionalColumns(string[] columnNames)
+        {
+            _additionalColumns = columnNames;
+        }
+
 
         public string Table
         {
@@ -77,6 +86,11 @@ namespace LandauMedia.Wire
         public virtual string TrackingType
         {
             get { return _trackingType; }
+        }
+
+        public string[] AdditionalColumns
+        {
+            get { return _additionalColumns; }
         }
 
         public IEnumerable<string> IntrestedInUpdatedColums
