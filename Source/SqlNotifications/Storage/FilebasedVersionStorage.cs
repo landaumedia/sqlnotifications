@@ -3,21 +3,24 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using LandauMedia.Wire;
+using NLog;
 
 namespace LandauMedia.Storage
 {
     public class FilebasedVersionStorage : IVersionStorage
     {
+        static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         static object _lock = new object();
 
         readonly FileInfo _storageFile;
 
-
         public FilebasedVersionStorage(string storageFile)
             : this(new FileInfo(storageFile))
         {
+            Verbose = false;
         }
+
+        public bool Verbose { get;  set; }
 
         public FilebasedVersionStorage(FileInfo storageFile)
         {
@@ -41,7 +44,7 @@ namespace LandauMedia.Storage
         {
             if (key.Contains("="))
                 throw new ArgumentException("key must not contain =");
-
+            
             var keyvaluePairs = Read();
 
             if (keyvaluePairs.ContainsKey(key))
@@ -68,7 +71,7 @@ namespace LandauMedia.Storage
 
         public bool Exist(string key)
         {
-            return Read().Where(g => g.Key == key).Any();
+            return Read().Any(g => g.Key == key);
         }
 
         public void Reset()
@@ -77,14 +80,19 @@ namespace LandauMedia.Storage
                 _storageFile.Delete();
         }
 
-        private void Write(IDictionary<string, ulong> values)
+        private void Write(IEnumerable<KeyValuePair<string, ulong>> values)
         {
+
+
             lock (_lock)
             {
                 using (StreamWriter writer = new StreamWriter(_storageFile.FullName, false, Encoding.Default))
                 {
                     foreach (var pair in values)
                     {
+                        if (Verbose)
+                            Logger.Debug(string.Format("Store Key to VersionStorage: key:{0} value:{1}", pair.Key, pair.Value));
+
                         writer.WriteLine(pair.Key + "=" + pair.Value);
                     }
                 }

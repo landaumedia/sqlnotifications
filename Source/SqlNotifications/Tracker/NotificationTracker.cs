@@ -75,8 +75,11 @@ namespace LandauMedia.Tracker
             }
             catch (ThreadAbortException)
             {
+                foreach(var trackerThread in trackerThreads)
+                {
+                    trackerThread.Abort();
+                }
                 Logger.Debug(() => "Tracking Thread aborted");
-                return;
             }
         }
 

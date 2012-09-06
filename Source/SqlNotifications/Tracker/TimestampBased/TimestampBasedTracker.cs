@@ -54,7 +54,7 @@ namespace LandauMedia.Tracker.TimestampBased
 
         public void Prepare(string connectionString, INotificationSetup notificationSetup, INotification notification, IVersionStorage storage, TrackerOptions options)
         {
-            Logger.Debug(() => "Preparing timestampbased Notification");
+            Logger.Debug(() => string.Format("Preparing timestampbased Notification with Options: InitOptions:{0}", options.InitializationOptions));
 
             _key = notificationSetup.GetType().FullName + "_" + GetType().FullName;
 
@@ -84,6 +84,7 @@ namespace LandauMedia.Tracker.TimestampBased
             if (_options.InitializationOptions == InitializationOptions.InitializeToCurrentIfNotSet && _versionStorage.Exist(_key))
                 keyToStore = _versionStorage.Load(_key);
 
+            
             _versionStorage.Store(_key, keyToStore);
 
             InitializeHashTable(keyToStore);
