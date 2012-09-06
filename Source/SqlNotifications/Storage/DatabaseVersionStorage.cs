@@ -16,8 +16,8 @@ namespace LandauMedia.Storage
 
         static readonly object Synclock = new object();
 
-        public DatabaseVersionStorage(string connectionString, 
-            string tableName = "Versions", 
+        public DatabaseVersionStorage(string connectionString,
+            string tableName = "Versions",
             string schemaName = "Management",
             string keyPrefix = "")
         {
@@ -74,6 +74,15 @@ namespace LandauMedia.Storage
             return ExistKey(key);
         }
 
+        public void Reset()
+        {
+            string statement = string.Format("TRUNCATE TABLE [{0}].[{1}]", _schemaName, _tableName);
+            using (SqlCommand command = new SqlCommand(statement, _database))
+            {
+                command.ExecuteNonQuery();
+            }
+        }
+
         /// <summary>
         /// check for Key in Database
         /// </summary>
@@ -90,7 +99,7 @@ namespace LandauMedia.Storage
                 {
                     command.Parameters.AddWithValue("@Key", key);
                     return (int)command.ExecuteScalar() == 1;
-                }    
+                }
             }
         }
 
@@ -118,7 +127,7 @@ namespace LandauMedia.Storage
         {
             string statement = string.Format("INSERT INTO [{0}].[{1}]([Key], Version) VALUES(@key, @version)", _schemaName, _tableName);
 
-            lock(Synclock)
+            lock (Synclock)
             {
                 using (SqlCommand command = new SqlCommand(statement, _database))
                 {

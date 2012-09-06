@@ -24,7 +24,7 @@ namespace SqlNotifications.Demo.Scenarios
                 .WithDefaultTrackerOptions(new TrackerOptions
                 {
                     BucketSize = 10000, 
-                    InitializationOptions = InitializationOptions.InitializeToCurrentIfNotSet,
+                    InitializationOptions = InitializationOptions.InitializeToCurrent,
                     FetchInterval = TimeSpan.FromSeconds(5)
                 })
                 .WithPerformanceCounter(counter)

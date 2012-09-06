@@ -25,5 +25,11 @@
         /// <param name="key"></param>
         /// <returns></returns>
         bool Exist(string key);
+
+
+        /// <summary>
+        /// reset the complete Storage
+        /// </summary>
+        void Reset();
     }
 }

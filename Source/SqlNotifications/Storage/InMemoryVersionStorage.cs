@@ -25,5 +25,10 @@ namespace LandauMedia.Storage
         {
             return _storage.ContainsKey(key);
         }
+
+        public void Reset()
+        {
+            _storage.Clear();
+        }
     }
 }

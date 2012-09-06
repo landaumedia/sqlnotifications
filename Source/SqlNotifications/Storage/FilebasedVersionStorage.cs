@@ -71,6 +71,12 @@ namespace LandauMedia.Storage
             return Read().Where(g => g.Key == key).Any();
         }
 
+        public void Reset()
+        {
+            if (_storageFile.Exists)
+                _storageFile.Delete();
+        }
+
         private void Write(IDictionary<string, ulong> values)
         {
             lock (_lock)

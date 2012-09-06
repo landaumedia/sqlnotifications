@@ -86,7 +86,7 @@ namespace LandauMedia.Tracker.TimestampBased
 
             _versionStorage.Store(_key, keyToStore);
 
-            InitializeHashTable();
+            InitializeHashTable(keyToStore);
 
             Logger.Debug(() => "Finished Prepare for timestampbased Notification");
         }
@@ -179,9 +179,15 @@ namespace LandauMedia.Tracker.TimestampBased
             return (ulong)_connection.ExecuteSkalar<long>("SELECT CONVERT(bigint, @@dbts)");
         }
 
-        private void InitializeHashTable()
+        private void InitializeHashTable(ulong intializeToRowVersion)
         {
-            string select = string.Format("SELECT {1} FROM [{0}].[{2}]", NotificationSetup.Schema, NotificationSetup.KeyColumn, NotificationSetup.Table);
+            string select = string.Format("SELECT {1} FROM [{0}].[{2}] WHERE CONVERT(bigint, {3}) <= {4} ", 
+                NotificationSetup.Schema, 
+                NotificationSetup.KeyColumn, 
+                NotificationSetup.Table,
+                _timestampField,
+                intializeToRowVersion);
+
             _lastseenIds.AddRange(_connection.ExecuteList<object>(select));
             NotifyDatabaseExecution();
         }
