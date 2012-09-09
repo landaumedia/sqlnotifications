@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using LandauMedia.Exceptions;
@@ -101,7 +102,7 @@ namespace LandauMedia.Tracker.ChangeOnlyTimestampBased
                 reader =>
                 {
                     maxTimestamp = Math.Max(maxTimestamp, Convert.ToUInt64(reader.GetInt64(1)));
-                    addionalData.Add(reader.GetValue(0), ExtractAddionalData(reader));
+                    addionalData.Add(reader.GetValue(0), ExtractAddionalData(reader, Convert.ToUInt64(reader.GetInt64(1))));
                 }).ToList();
 
             NotifyDatabaseExecution();
@@ -109,10 +110,14 @@ namespace LandauMedia.Tracker.ChangeOnlyTimestampBased
             if (!changedIds.Any())
                 return false;
 
-            changedIds.ForEach(e =>
+            changedIds.ForEach(entry =>
                 Notification.OnUpdate(NotificationSetup,
-                e.ToString(),
-                new AditionalNotificationInformation { AdditionalColumns = addionalData[e] }));
+                entry.ToString(),
+                new AditionalNotificationInformation
+                {
+                    AdditionalColumns = addionalData[entry],
+                    Rowversion = ulong.Parse(addionalData[entry]["RowVersion"])
+                }));
 
             _versionStorage.Store(_key, maxTimestamp);
 
@@ -120,7 +125,7 @@ namespace LandauMedia.Tracker.ChangeOnlyTimestampBased
         }
 
 
-        IDictionary<string, string> ExtractAddionalData(IDataRecord reader)
+        IDictionary<string, string> ExtractAddionalData(IDataRecord reader, ulong rowversion)
         {
             IDictionary<string, string> data = new Dictionary<string, string>();
 
@@ -128,6 +133,8 @@ namespace LandauMedia.Tracker.ChangeOnlyTimestampBased
             {
                 data.Add(column, reader.GetValue(reader.GetOrdinal(column)).ToString());
             }
+
+            data.Add("RowVersion", rowversion.ToString(CultureInfo.InvariantCulture));
 
             return data;
         }

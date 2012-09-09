@@ -21,5 +21,11 @@ namespace LandauMedia.Model
         /// wenn im Setup zusätzliche Daten geladen werden sollten, tauchen diese hier auf
         /// </summary>
         public IDictionary<string, string> AdditionalColumns { get; set; }
+
+
+        /// <summary>
+        /// Rowversion of this Notification
+        /// </summary>
+        public ulong Rowversion { get; set; }
     }
 }

@@ -1,4 +1,6 @@
-﻿using SqlNotifications.Demo.Scenarios;
+﻿using SqlNotifications.Demo.Infrastcture;
+using SqlNotifications.Demo.Scenarios;
+using SqlNotifications.Demo.Scenarios.ArticleTable;
 
 namespace SqlNotifications.Demo
 {
@@ -6,13 +8,17 @@ namespace SqlNotifications.Demo
     {
         static void Main(string[] args)
         {
+            string connectionString = @"SERVER=(local)\SQLExpress;Database=testing_sqlnotifications;user=sqlnotifications;password=test";
+
+            new TestDataArticleGenerator(connectionString).Generate(100);
+            new SimpleArticleTableScenario().Start();
             //new LocalUserWithDatabaseStorage().Start();
 
             //var bigTableScenario = new BigTableScenario();
             //bigTableScenario.Prepare();
             //bigTableScenario.Start();
 
-            new BlogPostScenario().Start();
+            //new BlogPostScenario().Start();
         }
     }
 }

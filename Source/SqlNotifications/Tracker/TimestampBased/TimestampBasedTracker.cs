@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using LandauMedia.Exceptions;
@@ -107,7 +108,7 @@ namespace LandauMedia.Tracker.TimestampBased
                     reader =>
                     {
                         maxTimestamp = Math.Max(maxTimestamp, Convert.ToUInt64(reader.GetInt64(1)));
-                        addionalData.Add( reader.GetValue(0), ExtractAddionalData(reader));
+                        addionalData.Add(reader.GetValue(0), ExtractAddionalData(reader, Convert.ToUInt64(reader.GetInt64(1))));
                     })
                 .ToList();
             NotifyDatabaseExecution();
@@ -121,14 +122,16 @@ namespace LandauMedia.Tracker.TimestampBased
                 {
                     Notification.OnUpdate(NotificationSetup, entry.ToString(), new AditionalNotificationInformation
                     {
-                        AdditionalColumns = addionalData[entry]
+                        AdditionalColumns = addionalData[entry],
+                        Rowversion = ulong.Parse(addionalData[entry]["RowVersion"])
                     });
                 }
                 else
                 {
                     Notification.OnInsert(NotificationSetup, entry.ToString(), new AditionalNotificationInformation
                     {
-                        AdditionalColumns = addionalData[entry]
+                        AdditionalColumns = addionalData[entry],
+                        Rowversion = ulong.Parse(addionalData[entry]["RowVersion"])
                     });
                     _lastseenIds.Add(entry);
                 }
@@ -139,7 +142,7 @@ namespace LandauMedia.Tracker.TimestampBased
             return true;
         }
 
-        IDictionary<string, string> ExtractAddionalData(IDataRecord reader)
+        IDictionary<string, string> ExtractAddionalData(IDataRecord reader, ulong rowversion)
         {
             IDictionary<string, string> data = new Dictionary<string, string>();
 
@@ -147,6 +150,8 @@ namespace LandauMedia.Tracker.TimestampBased
             {
                 data.Add(column, reader.GetValue(reader.GetOrdinal(column)).ToString());
             }
+
+            data.Add("RowVersion", rowversion.ToString(CultureInfo.InvariantCulture));
 
             return data;
         }

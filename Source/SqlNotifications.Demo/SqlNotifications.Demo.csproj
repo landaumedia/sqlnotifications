@@ -52,6 +52,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Infrastcture\TestDataArticleGenerator.cs" />
+    <Compile Include="Scenarios\ArticleTable\ArticleTableNotificationSetup.cs" />
+    <Compile Include="Scenarios\ArticleTable\SimpleArticleTableScenario.cs" />
     <Compile Include="Scenarios\BigTable\BigTableScenario.cs" />
     <Compile Include="Scenarios\BigTable\BigTableNotificationSetup.cs" />
     <Compile Include="Scenarios\LocalUserWithDatabaseStorage\LocalUserWithDatabaseStorage.cs" />
