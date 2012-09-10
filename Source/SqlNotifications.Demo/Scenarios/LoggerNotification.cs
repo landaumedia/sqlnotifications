@@ -22,8 +22,14 @@ namespace SqlNotifications.Demo.Scenarios
 
             if (information.AdditionalColumns.Any())
             {
-                Logger.Info(string.Format("AddionalInfo:{0}", 
+                Logger.Info(string.Format("AddionalInfo:{0}\n", 
                     information.AdditionalColumns.Aggregate(string.Empty, (s, pair) => s + "Feld:" + pair.Key + ":" + pair.Value)));
+            }
+
+            if (information.ColumnOldValue.Any())
+            {
+                Logger.Info(string.Format("ColumnOldValue:{0}\n",
+                    information.ColumnOldValue.Aggregate(string.Empty, (s, pair) => s + "Feld:" + pair.Key + ":" + pair.Value)));
             }
         }
 

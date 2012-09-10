@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LandauMedia.Wire
 {
@@ -12,7 +13,7 @@ namespace LandauMedia.Wire
 
         Type _id;
 
-        string[] _additionalColumns = new string[0];
+        readonly IList<string>_additionalColumns = new List<string>();
         readonly IList<string> _intrestedUpdateColumns = new List<string>();
 
         protected AbstractNotificationSetup()
@@ -54,11 +55,18 @@ namespace LandauMedia.Wire
         protected void IntrestedInColumn(string columnName)
         {
             _intrestedUpdateColumns.Add(columnName);
+
+            if (_additionalColumns.All(c => c != columnName))
+                _additionalColumns.Add(columnName);
+
         }
 
         protected void SetAdditionalColumns(string[] columnNames)
         {
-            _additionalColumns = columnNames;
+            foreach(var columnName in columnNames)
+            {
+                _additionalColumns.Add(columnName);    
+            }
         }
 
         public string Table
@@ -88,7 +96,7 @@ namespace LandauMedia.Wire
 
         public string[] AdditionalColumns
         {
-            get { return _additionalColumns; }
+            get { return _additionalColumns.ToArray(); }
         }
 
         public IEnumerable<string> IntrestedInUpdatedColums

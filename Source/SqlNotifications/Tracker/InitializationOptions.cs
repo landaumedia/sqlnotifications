@@ -17,6 +17,11 @@
         /// <summary>
         /// start with currentversion, if no version in Database
         /// </summary>
-        InitializeToCurrentIfNotSet
+        InitializeToCurrentIfNotSet,
+
+        /// <summary>
+        /// start with 0 if no rowversion set
+        /// </summary>
+        InitializeToZeroIfNotSet
     }
 }

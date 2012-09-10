@@ -13,7 +13,7 @@ namespace LandauMedia
 
         It should_be_false = () =>
             _result.ShouldBeFalse();
-        
+
         static bool _result;
     }
 }

@@ -8,7 +8,7 @@ namespace LandauMedia.Model
         public AditionalNotificationInformation()
         {
             UpdatedColumns = Enumerable.Empty<string>();
-            AdditionalColumns = new Dictionary<string, string>();
+            AdditionalColumns = new Dictionary<string, object>();
         }
 
         /// <summary>
@@ -20,8 +20,13 @@ namespace LandauMedia.Model
         /// <summary>
         /// wenn im Setup zusätzliche Daten geladen werden sollten, tauchen diese hier auf
         /// </summary>
-        public IDictionary<string, string> AdditionalColumns { get; set; }
+        public IDictionary<string, object> AdditionalColumns { get; set; }
 
+
+        /// <summary>
+        /// beinhaltet den alten Wert der spalte
+        /// </summary>
+        public IDictionary<string, object> ColumnOldValue { get; set; } 
 
         /// <summary>
         /// Rowversion of this Notification

@@ -83,6 +83,12 @@ namespace LandauMedia.Tracker.ChangeOnlyTimestampBased
             if (_options.InitializationOptions == InitializationOptions.InitializeToCurrentIfNotSet && _versionStorage.Exist(_key))
                 keyToStore = _versionStorage.Load(_key);
 
+            if (_options.InitializationOptions == InitializationOptions.InitializeToZeroIfNotSet && _versionStorage.Exist(_key))
+                keyToStore = _versionStorage.Load(_key);
+
+            if (_options.InitializationOptions == InitializationOptions.InitializeToZeroIfNotSet && !_versionStorage.Exist(_key))
+                keyToStore = 0;
+
             _versionStorage.Store(_key, keyToStore);
 
             Logger.Debug(() => "Finished Prepare for timestampbased Notification");
@@ -97,7 +103,7 @@ namespace LandauMedia.Tracker.ChangeOnlyTimestampBased
 
             string statement = BuildTrackerStatement(bucketSize, fromTimestamp, toTimestamp);
 
-            IDictionary<object, IDictionary<string, string>> addionalData = new Dictionary<object, IDictionary<string, string>>();
+            IDictionary<object, IDictionary<string, object>> addionalData = new Dictionary<object, IDictionary<string, object>>();
             var changedIds = _connection.ExecuteList<object>(statement,
                 reader =>
                 {
@@ -116,7 +122,7 @@ namespace LandauMedia.Tracker.ChangeOnlyTimestampBased
                 new AditionalNotificationInformation
                 {
                     AdditionalColumns = addionalData[entry],
-                    Rowversion = ulong.Parse(addionalData[entry]["RowVersion"])
+                    Rowversion = ulong.Parse(addionalData[entry]["RowVersion"].ToString())
                 }));
 
             _versionStorage.Store(_key, maxTimestamp);
@@ -125,13 +131,13 @@ namespace LandauMedia.Tracker.ChangeOnlyTimestampBased
         }
 
 
-        IDictionary<string, string> ExtractAddionalData(IDataRecord reader, ulong rowversion)
+        IDictionary<string, object> ExtractAddionalData(IDataRecord reader, ulong rowversion)
         {
-            IDictionary<string, string> data = new Dictionary<string, string>();
+            IDictionary<string, object> data = new Dictionary<string, object>();
 
             foreach (var column in NotificationSetup.AdditionalColumns)
             {
-                data.Add(column, reader.GetValue(reader.GetOrdinal(column)).ToString());
+                data.Add(column, reader.ReadFromReader(reader.GetOrdinal(column)));
             }
 
             data.Add("RowVersion", rowversion.ToString(CultureInfo.InvariantCulture));

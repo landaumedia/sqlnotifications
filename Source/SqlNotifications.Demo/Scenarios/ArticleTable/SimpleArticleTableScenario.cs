@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading;
 using LandauMedia.Storage;
+using LandauMedia.Tracker;
 using LandauMedia.Wire;
-using SqlNotifications.Demo.Scenarios.BigTable;
 
 namespace SqlNotifications.Demo.Scenarios.ArticleTable
 {
@@ -20,6 +20,7 @@ namespace SqlNotifications.Demo.Scenarios.ArticleTable
                 .UseDefaultTimestampBased()
                 .WithVersionStorage(new InMemoryVersionStorage())
                 .WithNotificationFactory(factory)
+                .WithDefaultTrackerOptions(new TrackerOptions() {InitializationOptions = InitializationOptions.InitializeToCurrentIfNotSet})
                 .Build();
 
 

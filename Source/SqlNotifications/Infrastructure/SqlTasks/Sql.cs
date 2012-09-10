@@ -51,6 +51,8 @@ namespace LandauMedia.Infrastructure.SqlTasks
             }
         }
 
+
+
         public static T ExecuteSkalar<T>(this SqlConnection connection, string statement)
         {
             return new SqlTasksBase(connection).SkalarRead<T>(statement);
@@ -65,6 +67,43 @@ namespace LandauMedia.Infrastructure.SqlTasks
         {
             return new SqlTasksBase(connection).ListRead<T>(statement, onRead);
         }
-        
+
+
+        public static object ReadFromReader(this IDataRecord reader, int ordinal)
+        {
+            Type t = reader.GetFieldType(ordinal);
+
+            if (t == typeof(bool))
+                return reader.GetBoolean(ordinal);
+
+            if (t == typeof(string))
+                return reader.GetString(ordinal);
+
+            if (t == typeof(int))
+                return reader.GetInt32(ordinal);
+
+            if (t == typeof(Guid))
+                return reader.GetGuid(ordinal);
+
+            if (t == typeof(long))
+                return reader.GetInt64(ordinal);
+
+            if (t == typeof(byte))
+                return reader.GetInt16(ordinal);
+
+            if (t == typeof(decimal))
+                return reader.GetDecimal(ordinal);
+
+            if (t == typeof(DateTime))
+                return reader.IsDBNull(ordinal) ? (DateTime?)null : reader.GetDateTime(ordinal);
+
+            if (t == typeof(double))
+                return reader.GetDouble(ordinal);
+
+            if (t == typeof(float))
+                return reader.GetFloat(ordinal);
+
+            throw new ArgumentOutOfRangeException();
+        }
     }
 }
