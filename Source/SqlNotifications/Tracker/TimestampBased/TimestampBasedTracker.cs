@@ -57,12 +57,13 @@ namespace LandauMedia.Tracker.TimestampBased
         {
             Logger.Debug(() => string.Format("Preparing timestampbased Notification with Options: InitOptions:{0}", options.InitializationOptions));
 
+            NotificationSetup = notificationSetup;
+            Notification = notification;
+
             _key = string.IsNullOrEmpty(NotificationSetup.NotificationKey)
                 ? notificationSetup.GetType().FullName + "_" + GetType().FullName
                 : NotificationSetup.NotificationKey;
 
-            NotificationSetup = notificationSetup;
-            Notification = notification;
             _connection = new SqlConnection(connectionString);
             _options = options;
             _versionStorage = storage;

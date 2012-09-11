@@ -140,6 +140,9 @@ namespace LandauMedia.Storage
 
         private string AddPrefixToKey(string key)
         {
+            if (string.IsNullOrEmpty(_keyPrefix))
+                return key;
+
             return _keyPrefix + "_" + key;
         }
 
