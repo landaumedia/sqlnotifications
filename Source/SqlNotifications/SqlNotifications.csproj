@@ -70,6 +70,7 @@
     <Compile Include="Tracker\ChangeOnlyTimestampBased\AddOnlyTimestampBasedTracker.cs" />
     <Compile Include="Tracker\InitializationOptions.cs" />
     <Compile Include="Tracker\ITracker.cs" />
+    <Compile Include="Tracker\TimestampBasedWithPayload\TimestampBasedTracker.cs" />
     <Compile Include="Tracker\TimestampBased\HashbasedLookupWithPayload.cs" />
     <Compile Include="Tracker\TimestampBased\ILookupTable.cs" />
     <Compile Include="Tracker\TimestampBased\ILookupTableWithData.cs" />

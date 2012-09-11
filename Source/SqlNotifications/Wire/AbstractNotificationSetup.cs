@@ -13,6 +13,8 @@ namespace LandauMedia.Wire
 
         Type _id;
 
+        string _notificationKey;
+
         readonly IList<string>_additionalColumns = new List<string>();
         readonly IList<string> _intrestedUpdateColumns = new List<string>();
 
@@ -45,6 +47,11 @@ namespace LandauMedia.Wire
         protected void SetIdType<T>()
         {
             _id = typeof (T);
+        }
+
+        protected void SetCustomNotificationKey(string key)
+        {
+            _notificationKey = key;
         }
 
         protected void SetTrackingType(string trackingType)
@@ -105,5 +112,10 @@ namespace LandauMedia.Wire
         }
 
         public abstract Type Notification { get; }
+
+        public string NotificationKey
+        {
+            get { return _notificationKey; }
+        }
     }
 }

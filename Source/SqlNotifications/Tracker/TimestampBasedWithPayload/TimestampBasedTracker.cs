@@ -10,13 +10,13 @@ using LandauMedia.Infrastructure;
 using LandauMedia.Infrastructure.SqlTasks;
 using LandauMedia.Model;
 using LandauMedia.Storage;
+using LandauMedia.Tracker.TimestampBased;
 using LandauMedia.Wire;
 using NLog;
-using Logger = NLog.Logger;
 
-namespace LandauMedia.Tracker.TimestampBased
+namespace LandauMedia.Tracker.TimestampBasedWithPayload
 {
-    public class TimestampBasedTracker : ITracker
+    public class TimestampBasedWithPayloadTracker : ITracker
     {
         static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -27,7 +27,7 @@ namespace LandauMedia.Tracker.TimestampBased
         TrackerOptions _options;
         string _key;
 
-        readonly ILookupTable _lookup = new SortedArrayLookupTable();
+        readonly ILookupTableWithPayload _lookupWithPayload = new HashbasedLookupWithPayload();
 
         public INotificationSetup NotificationSetup { get; internal set; }
         public INotification Notification { get; internal set; }
@@ -57,9 +57,7 @@ namespace LandauMedia.Tracker.TimestampBased
         {
             Logger.Debug(() => string.Format("Preparing timestampbased Notification with Options: InitOptions:{0}", options.InitializationOptions));
 
-            _key = string.IsNullOrEmpty(NotificationSetup.NotificationKey)
-                ? notificationSetup.GetType().FullName + "_" + GetType().FullName
-                : NotificationSetup.NotificationKey;
+            _key = notificationSetup.GetType().FullName + "_" + GetType().FullName;
 
             NotificationSetup = notificationSetup;
             Notification = notification;
@@ -89,7 +87,7 @@ namespace LandauMedia.Tracker.TimestampBased
 
             if (_options.InitializationOptions == InitializationOptions.InitializeToZeroIfNotSet && !_versionStorage.Exist(_key))
                 keyToStore = 0;
-
+            
             if (_options.InitializationOptions == InitializationOptions.InitializeToZeroIfNotSet && _versionStorage.Exist(_key))
                 keyToStore = _versionStorage.Load(_key);
 
@@ -110,8 +108,8 @@ namespace LandauMedia.Tracker.TimestampBased
             var statement = BuildTrackerStatement(bucketSize, fromTimestamp, toTimestamp);
 
             IDictionary<object, IDictionary<string, object>> addionalData = new Dictionary<object, IDictionary<string, object>>();
-
-            var changedIds = _connection.ExecuteList<object>(statement,
+                
+            var changedIds = _connection.ExecuteList<object>(statement, 
                     reader =>
                     {
                         maxTimestamp = Math.Max(maxTimestamp, Convert.ToUInt64(reader.GetInt64(1)));
@@ -125,15 +123,19 @@ namespace LandauMedia.Tracker.TimestampBased
 
             foreach (var entry in changedIds)
             {
-
-                if (_lookup.Contains(entry))
+                
+                if (_lookupWithPayload.Contains(entry))
                 {
                     // update was found
                     Notification.OnUpdate(NotificationSetup, entry.ToString(), new AditionalNotificationInformation
                     {
                         AdditionalColumns = addionalData[entry],
-                        Rowversion = ulong.Parse(addionalData[entry]["RowVersion"].ToString())
+                        Rowversion = ulong.Parse(addionalData[entry]["RowVersion"].ToString()),
+                        ColumnOldValue = ExtractOldValues(_lookupWithPayload.GetPayload(entry))
                     });
+
+                    // update Payload
+                    UpdatePayLoadFromAddionalData(entry, addionalData[entry]);
                 }
                 else
                 {
@@ -143,12 +145,39 @@ namespace LandauMedia.Tracker.TimestampBased
                         AdditionalColumns = addionalData[entry],
                         Rowversion = ulong.Parse(addionalData[entry]["RowVersion"].ToString())
                     });
+                    
+                    // update Payload
+                    UpdatePayLoadFromAddionalData(entry, addionalData[entry]);
                 }
             }
 
             _versionStorage.Store(_key, maxTimestamp);
 
             return true;
+        }
+
+        void UpdatePayLoadFromAddionalData(object entry, IDictionary<string, object> addionalData)
+        {
+            object[] payload = new object[NotificationSetup.IntrestedInUpdatedColums.Count()];
+
+            for(int i = 0; i < NotificationSetup.IntrestedInUpdatedColums.Count(); i++)
+            {
+                payload[i] = addionalData[NotificationSetup.IntrestedInUpdatedColums.ElementAt(i)];
+            }
+            
+            _lookupWithPayload.SetPayload(entry, payload);
+        }
+
+        IDictionary<string, object> ExtractOldValues(object[] payload)
+        {
+            IDictionary<string, object> result = new Dictionary<string, object>();
+
+            for(int i = 0; i < NotificationSetup.IntrestedInUpdatedColums.Count(); i++)
+            {
+                result.Add(NotificationSetup.IntrestedInUpdatedColums.ElementAt(i), payload[i]);
+            }
+
+            return result;
         }
 
         IDictionary<string, object> ExtractAddionalData(IDataRecord reader, ulong rowversion)
@@ -196,24 +225,37 @@ namespace LandauMedia.Tracker.TimestampBased
 
         private void InitializeHashTable(ulong intializeToRowVersion)
         {
-            string select = string.Format("SELECT {1} FROM [{0}].[{2}] WHERE CONVERT(bigint, {3}) <= {4} ",
-                NotificationSetup.Schema,
-                NotificationSetup.KeyColumn,
+            var addionalColumns = NotificationSetup.IntrestedInUpdatedColums.Aggregate(string.Empty, (s, s1) => s + "," + s1);
+
+            string select = string.Format("SELECT {1} {5} FROM [{0}].[{2}] WHERE CONVERT(bigint, {3}) <= {4} ", 
+                NotificationSetup.Schema, 
+                NotificationSetup.KeyColumn, 
                 NotificationSetup.Table,
                 _timestampField,
-                intializeToRowVersion);
+                intializeToRowVersion,
+                addionalColumns);
 
             // read Data with payload
-            var keys = _connection.ExecuteList<object>(select);
+            IDictionary<object, object[]> entries = new Dictionary<object, object[]>();
+            var keys = _connection.ExecuteList<object>(select, record =>
+            {
+                object[] payload = new object[NotificationSetup.IntrestedInUpdatedColums.Count()];
 
-            _lookup.AddRange(keys);
+                for(int i = 0; i < NotificationSetup.IntrestedInUpdatedColums.Count(); i++)
+                {
+                    payload[i] = record.ReadFromReader(i + 1);
+                }
 
+                entries.Add(record.ReadFromReader(0), payload);
+            }).ToList();
+
+            _lookupWithPayload.AddRange(entries.Keys, entries);
             NotifyDatabaseExecution();
         }
 
         private void NotifyDatabaseExecution()
         {
-            if (PerformanceCounter != null)
+            if(PerformanceCounter != null)
                 PerformanceCounter.Inc("DatabaseQuery");
         }
     }

@@ -10,8 +10,8 @@ namespace SqlNotifications.Demo
         {
             string connectionString = @"SERVER=(local)\SQLExpress;Database=testing_sqlnotifications;user=sqlnotifications;password=test";
 
-            new TestDataArticleGenerator(connectionString).Generate(2000000);
-            //new SimpleArticleTableScenario().Start();
+            //new TestDataArticleGenerator(connectionString).Generate(2000000);
+            new SimpleArticleTableScenario().Start();
             //new LocalUserWithDatabaseStorage().Start();
 
             //var bigTableScenario = new BigTableScenario();

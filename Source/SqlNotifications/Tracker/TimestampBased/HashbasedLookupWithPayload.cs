@@ -11,7 +11,7 @@ namespace LandauMedia.Tracker.TimestampBased
         readonly HashDictionary<long, object[]> _longDictionary = new HashDictionary<long, object[]>();
         readonly HashDictionary<Guid, object[]> _guidDictionary = new HashDictionary<Guid, object[]>();
         readonly HashDictionary<string, object[]> _stringDictionary = new HashDictionary<string, object[]>();
-        
+
         public void Add(object key, object[] data)
         {
             if (key is int)

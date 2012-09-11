@@ -35,8 +35,10 @@ namespace LandauMedia.Storage
             if (!_storageFile.Directory.Exists)
                 _storageFile.Directory.Create();
 
-            using (_storageFile.Create())
+            // create if not exist
+            if (!storageFile.Exists)
             {
+                using (_storageFile.Create()){}    
             }
         }
 
@@ -65,8 +67,12 @@ namespace LandauMedia.Storage
             if (key.Contains("="))
                 throw new ArgumentException("key must not contain =");
 
-            var keyValuePairs = Read();
-            return keyValuePairs.ContainsKey(key) ? keyValuePairs[key] : 0;
+            var pairs = Read();
+
+            if (Verbose)
+                Logger.Debug(string.Format("Load Key to VersionStorage: key:{0}", key));
+
+            return pairs.ContainsKey(key) ? pairs[key] : 0;
         }
 
         public bool Exist(string key)
@@ -82,8 +88,6 @@ namespace LandauMedia.Storage
 
         private void Write(IEnumerable<KeyValuePair<string, ulong>> values)
         {
-
-
             lock (_lock)
             {
                 using (StreamWriter writer = new StreamWriter(_storageFile.FullName, false, Encoding.Default))

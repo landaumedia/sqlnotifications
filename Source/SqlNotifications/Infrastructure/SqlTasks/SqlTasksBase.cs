@@ -53,15 +53,18 @@ namespace LandauMedia.Infrastructure.SqlTasks
             _connection.EnsureIsOpen();
 
             using (SqlCommand command = new SqlCommand(statement, _connection))
-            using (SqlDataReader reader = command.ExecuteReader())
             {
-                while (reader.Read())
+                command.CommandTimeout = 600;
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    if (onRead != null)
-                        onRead(reader);
-                    
-                    yield return (T)ReadFromReader(reader);
-                }
+                    while (reader.Read())
+                    {
+                        if (onRead != null)
+                            onRead(reader);
+
+                        yield return (T)ReadFromReader(reader);
+                    }
+                }    
             }
         }
 

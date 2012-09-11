@@ -9,6 +9,7 @@ namespace LandauMedia.Model
         {
             UpdatedColumns = Enumerable.Empty<string>();
             AdditionalColumns = new Dictionary<string, object>();
+            ColumnOldValue = new Dictionary<string, object>();
         }
 
         /// <summary>

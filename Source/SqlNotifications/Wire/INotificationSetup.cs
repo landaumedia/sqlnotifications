@@ -17,5 +17,10 @@ namespace LandauMedia.Wire
         IEnumerable<string> IntrestedInUpdatedColums { get; }
 
         Type Notification { get; }
+
+        /// <summary>
+        /// mit diesem Key kann der Eintrag in der Versionstorage eingestellt werden
+        /// </summary>
+        string NotificationKey { get; }
     }
 }

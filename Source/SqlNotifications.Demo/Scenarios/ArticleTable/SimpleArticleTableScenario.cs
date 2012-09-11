@@ -18,9 +18,12 @@ namespace SqlNotifications.Demo.Scenarios.ArticleTable
                 .Database(connectionString)
                 .WithNotifications(new[] { typeof(ArticleTableNotificationSetup) })
                 .UseDefaultTimestampBased()
-                .WithVersionStorage(new InMemoryVersionStorage())
+                .WithVersionStorage(new FilebasedVersionStorage("SimpleArticleTableScenario.timestamp"))
                 .WithNotificationFactory(factory)
-                .WithDefaultTrackerOptions(new TrackerOptions() {InitializationOptions = InitializationOptions.InitializeToCurrentIfNotSet})
+                .WithDefaultTrackerOptions(new TrackerOptions()
+                {
+                    InitializationOptions = InitializationOptions.InitializeToCurrent
+                })
                 .Build();
 
 
