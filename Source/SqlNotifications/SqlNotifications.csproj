@@ -76,7 +76,7 @@
     <Compile Include="Infrastructure\SqlTasks\SqlObjectExistenceChecker.cs" />
     <Compile Include="Infrastructure\SqlTasks\Sql.cs" />
     <Compile Include="Infrastructure\SqlTasks\SqlTasksBase.cs" />
-    <Compile Include="Tracker\ChangeOnlyTimestampBased\AddOnlyTimestampBasedTracker.cs" />
+    <Compile Include="Tracker\ChangeOnlyTimestampBased\ChangeOnlyTimestampBasedTracker.cs" />
     <Compile Include="Tracker\InitializationOptions.cs" />
     <Compile Include="Tracker\ITracker.cs" />
     <Compile Include="Tracker\TimestampBasedWithPayload\TimestampBasedTracker.cs" />

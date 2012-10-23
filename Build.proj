@@ -246,7 +246,7 @@
   </Target>
 
   <Target Name="UpdateCodeAnalysisEnvironment">
-    <Exec Command='Packages\Nuget\NuGet.exe install LandauMedia.CodeAnalysis /source http://nuget.dev.local /OutputDirectory Packages /ExcludeVersion' />
+    <Exec Command='Packages\Nuget\NuGet.exe install LandauMedia.CodeAnalysis /source "\\artus\8 EDV\8-2 Entwicklung\NuGet" /OutputDirectory Packages /ExcludeVersion' />
   </Target>
 </Project>
 

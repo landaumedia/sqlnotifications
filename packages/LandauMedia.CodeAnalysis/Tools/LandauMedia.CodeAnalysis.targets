@@ -3,26 +3,56 @@
 
   <PropertyGroup>
     <PackagePath Condition="$(PackagePath) == ''">$(MSBuildProjectDirectory)\Packages</PackagePath>
-	<SonarRunnerPath>$(PackagePath)\Landaumedia.CodeAnalysis\Tools\SonarRunner</SonarRunnerPath>
+	<ArtifactDirectory Condition="$(PackagePath) == ''">$(MSBuildProjectDirectory)\build\Artifacts</ArtifactDirectory>
 	
-	<LandaumediaPackageSource>http://nuget.dev.local</LandaumediaPackageSource>
+	<ToolsPath>$(PackagePath)\Landaumedia.CodeAnalysis\Tools</ToolsPath>
+	
+	<SonarRunnerPath>$(ToolsPath)\SonarRunner</SonarRunnerPath>
+	
+	<!-- Coverage -->
+	<dotCoverRunnerPath>$(ToolsPath)\dotCover\dotcover.exe</dotCoverRunnerPath>
+	<dotCoverFilter>$(ToolsPath)\CoverageFilters.xml</dotCoverFilter>
+    <dotCover2Emma>$(ToolsPath)\dotCover2Emma\dotCover2Emma.exe</dotCover2Emma>
+    <DotCoverWorkingDir>$(MSBuildProjectDirectory)\build\dotCover</DotCoverWorkingDir>
+    
+	<dotCoverOuput>$(ArtifactDirectory)\dotCover.xml</dotCoverOuput>
+    <dotCoverOutputEmma>$(ArtifactDirectory)\dotCoverEmma.xml</dotCoverOutputEmma>
+	
+	<LandaumediaPackageSource>\\artus\8 EDV\8-2 Entwicklung\NuGet</LandaumediaPackageSource>
 	
 	<Version Condition="$(Version) == ''">1.0.0</Version>
   </PropertyGroup>
 
-  <Target Name="Landaumedia:CodeAnalysis" DependsOnTargets="CodeAnalysis:Sonar" />
+  <Target Name="Landaumedia:CodeAnalysis" DependsOnTargets="CodeAnalysis:Coverage" />
   
   <Target Name="CodeAnalysis:Sonar" DependsOnTargets="Build;CodeAnalysis:UpdateEnvironment;CodeAnalysis:UpdateSonarProperties">
-    <Exec Command='"java.exe" -classpath "$(SonarRunnerPath)\lib\sonar-runner.jar";"$(SonarRunnerPath)\lib\sonar-batch-bootstrapper.jar" "-Drunner.home=$(SonarRunnerPath)" "-Dproject.home=$(MSBuildProjectDirectory)" org.sonar.runner.Main' />
+    <Exec IgnoreExitCode ="true"
+      Command='"java.exe" -classpath "$(SonarRunnerPath)\lib\sonar-runner.jar";"$(SonarRunnerPath)\lib\sonar-batch-bootstrapper.jar" "-Drunner.home=$(SonarRunnerPath)" "-Dproject.home=$(MSBuildProjectDirectory)" org.sonar.runner.Main' />
   </Target>
   
   <Target Name="CodeAnalysis:UpdateEnvironment">
-	<Exec Command='Packages\Nuget\NuGet.exe install LandauMedia.CodeAnalysis /source $(LandaumediaPackageSource) /OutputDirectory Packages /ExcludeVersion' />
+	<Exec Command='Packages\Nuget\NuGet.exe install LandauMedia.CodeAnalysis /source "$(LandaumediaPackageSource)" /OutputDirectory Packages /ExcludeVersion' />
   </Target>
   
   <Target Name="CodeAnalysis:UpdateSonarProperties" Condition="$(Version) != ''">
 	<FileUpdate Files="sonar-project.properties" RegEx="sonar.projectVersion=.*" ReplacementText="sonar.projectVersion=$(Version)" />
   </Target>
+  
+  <Target Name="CreateDotCoverWorkingDir" >
+	<MakeDir Directories="$(DotCoverWorkingDir)" />
+  </Target>
+  
+  <Target Name="CodeAnalysis:Coverage" DependsOnTargets="Build_Tests;CreateDotCoverWorkingDir">
+    <CreateItem Include="$(BinaryOutputTests)\*.Tests.dll">
+      <Output TaskParameter="Include" ItemName="TestAssembly" />
+    </CreateItem>
+
+    <Exec Command="$(dotCoverRunnerPath) analyse &quot;$(dotCoverFilter)&quot; /TargetExecutable=&quot;$(MSpecToolPath)\mspec-x86-clr4.exe&quot; /TargetArguments=&quot;@(TestAssembly,' ')&quot; /TargetWorkingDir=&quot;$(DotCoverWorkingDir)&quot; /Output=&quot;$(dotCoverOuput)&quot;"
+          IgnoreExitCode ="true" />
+
+    <Exec Command="$(dotCover2Emma) $(dotCoverOuput) $(dotCoverOutputEmma)" />
+  </Target>
+  
   
 </Project>
 
