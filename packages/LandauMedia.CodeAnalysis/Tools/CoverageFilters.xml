@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AnalyseParams>
+  <Filters>
+    <IncludeFilters>
+	  <FilterEntry>
+        <ModuleMask>*</ModuleMask>
+        <ClassMask>LandauMedia.*</ClassMask>
+        <FunctionMask>*</FunctionMask>
+      </FilterEntry>
+	  <FilterEntry>
+        <ModuleMask>*</ModuleMask>
+        <ClassMask>Landaumedia.*</ClassMask>
+        <FunctionMask>*</FunctionMask>
+      </FilterEntry>
+    </IncludeFilters>
+    <ExcludeFilters>
+	  <FilterEntry>
+		<ModuleMask>*.Tests</ModuleMask>
+        <ClassMask>*</ClassMask>
+        <FunctionMask>*</FunctionMask>
+      </FilterEntry>
+	  <FilterEntry>
+			<ModuleMask>*</ModuleMask>
+			<ClassMask>*Generated*</ClassMask>
+			<FunctionMask>*</FunctionMask>
+      </FilterEntry>
+    </ExcludeFilters>
+  </Filters>
+</AnalyseParams>
