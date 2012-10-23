@@ -68,7 +68,7 @@
 
 
   <Target Name="Run_Hudson" DependsOnTargets="Rebuild;Test" />
-  <Target Name="CodeAnalysis" DependsOnTargets="GetVersion;Landaumedia:CodeAnalysis;Coverage" />
+  <Target Name="Run_CodeAnalysis" DependsOnTargets="GetVersion;Landaumedia:CodeAnalysis;Coverage" />
   
   <Target Name="Run_Sonar" DependsOnTargets="GetVersion;Landaumedia:CodeAnalysis;Coverage" />
 
