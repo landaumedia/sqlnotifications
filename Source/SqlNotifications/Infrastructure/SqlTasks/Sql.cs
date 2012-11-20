@@ -75,6 +75,9 @@ namespace LandauMedia.Infrastructure.SqlTasks
 
             if (reader.IsDBNull(ordinal))
             {
+                if (t == typeof (DateTime))
+                    return null;
+
                 return t.IsValueType ? Activator.CreateInstance(t) : null;
             }
 
