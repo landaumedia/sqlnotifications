@@ -73,6 +73,11 @@ namespace LandauMedia.Infrastructure.SqlTasks
         {
             Type t = reader.GetFieldType(ordinal);
 
+            if (reader.IsDBNull(ordinal))
+            {
+                return t.IsValueType ? Activator.CreateInstance(t) : null;
+            }
+
             if (t == typeof(bool))
                 return reader.GetBoolean(ordinal);
 

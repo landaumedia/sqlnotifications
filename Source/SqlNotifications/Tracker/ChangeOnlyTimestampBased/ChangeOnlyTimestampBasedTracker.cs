@@ -55,9 +55,9 @@ namespace LandauMedia.Tracker.ChangeOnlyTimestampBased
         {
             Logger.Debug(() => "Preparing changetimestampbased Notification");
 
-            _key = string.IsNullOrEmpty(NotificationSetup.NotificationKey)
+            _key = string.IsNullOrEmpty(notificationSetup.NotificationKey)
                 ? notificationSetup.GetType().FullName + "_" + GetType().FullName
-                : NotificationSetup.NotificationKey;
+                : notificationSetup.NotificationKey;
 
             NotificationSetup = notificationSetup;
             Notification = notification;
