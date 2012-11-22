@@ -70,6 +70,9 @@
     <Compile Include="Infrastructure\DictionaryCounter.cs" />
     <Compile Include="Infrastructure\IPerformanceCounter.cs" />
     <Compile Include="Model\AditionalNotificationInformation.cs" />
+    <Compile Include="State\InMemoryStatePersister.cs" />
+    <Compile Include="State\IStatePersister.cs" />
+    <Compile Include="State\State.cs" />
     <Compile Include="Storage\DatabaseVersionStorage.cs" />
     <Compile Include="Storage\InMemoryVersionStorage.cs" />
     <Compile Include="Infrastructure\SqlTasks\SqlObjectCreator.cs" />
