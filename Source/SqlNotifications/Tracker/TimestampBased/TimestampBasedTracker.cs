@@ -176,7 +176,14 @@ namespace LandauMedia.Tracker.TimestampBased
                 additionalColumnsStatement = "," + additionalColumnsStatement;
             }
 
-            string statement = string.Format("SELECT TOP {6} {0}, Convert(bigint,{3}) {7} FROM [{1}].[{2}] WHERE CONVERT(bigint, {3}) > {4} AND CONVERT(bigint, {3}) <= {5} ORDER BY {3} ASC ",
+            string customWhereStatement = string.Empty;
+
+            if (!string.IsNullOrEmpty(NotificationSetup.CustomWhereStatement))
+            {
+                customWhereStatement = " AND (" + NotificationSetup.CustomWhereStatement + ") ";
+            }
+
+            string statement = string.Format("SELECT TOP {6} {0}, Convert(bigint,{3}) {7} FROM [{1}].[{2}] WHERE CONVERT(bigint, {3}) > {4} AND CONVERT(bigint, {3}) <= {5} {8} ORDER BY {3} ASC ",
                 NotificationSetup.KeyColumn,
                 NotificationSetup.Schema,
                 NotificationSetup.Table,
@@ -184,7 +191,8 @@ namespace LandauMedia.Tracker.TimestampBased
                 fromTimestamp,
                 toTimestamp,
                 bucketSize,
-                additionalColumnsStatement);
+                additionalColumnsStatement,
+                customWhereStatement);
 
             return statement;
         }

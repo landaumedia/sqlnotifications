@@ -11,11 +11,13 @@ namespace LandauMedia.Wire
         string _keyColum;
         string _trackingType;
 
+        string _customWhereStatement;
+
         Type _id;
 
         string _notificationKey;
 
-        readonly IList<string>_additionalColumns = new List<string>();
+        readonly IList<string> _additionalColumns = new List<string>();
         readonly IList<string> _intrestedUpdateColumns = new List<string>();
 
         protected AbstractNotificationSetup()
@@ -46,12 +48,17 @@ namespace LandauMedia.Wire
 
         protected void SetIdType<T>()
         {
-            _id = typeof (T);
+            _id = typeof(T);
         }
 
         protected void SetCustomNotificationKey(string key)
         {
             _notificationKey = key;
+        }
+
+        protected void SetCustomWhereStatement(string statement)
+        {
+            _customWhereStatement = statement;
         }
 
         protected void SetTrackingType(string trackingType)
@@ -70,9 +77,9 @@ namespace LandauMedia.Wire
 
         protected void SetAdditionalColumns(string[] columnNames)
         {
-            foreach(var columnName in columnNames)
+            foreach (var columnName in columnNames)
             {
-                _additionalColumns.Add(columnName);    
+                _additionalColumns.Add(columnName);
             }
         }
 
@@ -99,6 +106,11 @@ namespace LandauMedia.Wire
         public virtual string TrackingType
         {
             get { return _trackingType; }
+        }
+
+        public string CustomWhereStatement
+        {
+            get { return _customWhereStatement; }
         }
 
         public string[] AdditionalColumns
