@@ -87,7 +87,7 @@ namespace LandauMedia.Tracker.TimestampBasedWithPayload
 
             if (_options.InitializationOptions == InitializationOptions.InitializeToZeroIfNotSet && !_versionStorage.Exist(_key))
                 keyToStore = 0;
-            
+
             if (_options.InitializationOptions == InitializationOptions.InitializeToZeroIfNotSet && _versionStorage.Exist(_key))
                 keyToStore = _versionStorage.Load(_key);
 
@@ -108,8 +108,8 @@ namespace LandauMedia.Tracker.TimestampBasedWithPayload
             var statement = BuildTrackerStatement(bucketSize, fromTimestamp, toTimestamp);
 
             IDictionary<object, IDictionary<string, object>> addionalData = new Dictionary<object, IDictionary<string, object>>();
-                
-            var changedIds = _connection.ExecuteList<object>(statement, 
+
+            var changedIds = _connection.ExecuteList<object>(statement,
                     reader =>
                     {
                         maxTimestamp = Math.Max(maxTimestamp, Convert.ToUInt64(reader.GetInt64(1)));
@@ -123,7 +123,7 @@ namespace LandauMedia.Tracker.TimestampBasedWithPayload
 
             foreach (var entry in changedIds)
             {
-                
+
                 if (_lookupWithPayload.Contains(entry))
                 {
                     // update was found
@@ -145,7 +145,7 @@ namespace LandauMedia.Tracker.TimestampBasedWithPayload
                         AdditionalColumns = addionalData[entry],
                         Rowversion = ulong.Parse(addionalData[entry]["RowVersion"].ToString())
                     });
-                    
+
                     // update Payload
                     UpdatePayLoadFromAddionalData(entry, addionalData[entry]);
                 }
@@ -160,11 +160,11 @@ namespace LandauMedia.Tracker.TimestampBasedWithPayload
         {
             object[] payload = new object[NotificationSetup.IntrestedInUpdatedColums.Count()];
 
-            for(int i = 0; i < NotificationSetup.IntrestedInUpdatedColums.Count(); i++)
+            for (int i = 0; i < NotificationSetup.IntrestedInUpdatedColums.Count(); i++)
             {
                 payload[i] = addionalData[NotificationSetup.IntrestedInUpdatedColums.ElementAt(i)];
             }
-            
+
             _lookupWithPayload.SetPayload(entry, payload);
         }
 
@@ -172,7 +172,7 @@ namespace LandauMedia.Tracker.TimestampBasedWithPayload
         {
             IDictionary<string, object> result = new Dictionary<string, object>();
 
-            for(int i = 0; i < NotificationSetup.IntrestedInUpdatedColums.Count(); i++)
+            for (int i = 0; i < NotificationSetup.IntrestedInUpdatedColums.Count(); i++)
             {
                 result.Add(NotificationSetup.IntrestedInUpdatedColums.ElementAt(i), payload[i]);
             }
@@ -227,9 +227,9 @@ namespace LandauMedia.Tracker.TimestampBasedWithPayload
         {
             var addionalColumns = NotificationSetup.IntrestedInUpdatedColums.Aggregate(string.Empty, (s, s1) => s + "," + s1);
 
-            string select = string.Format("SELECT {1} {5} FROM [{0}].[{2}] WHERE CONVERT(bigint, {3}) <= {4} ", 
-                NotificationSetup.Schema, 
-                NotificationSetup.KeyColumn, 
+            string select = string.Format("SELECT {1} {5} FROM [{0}].[{2}] WHERE CONVERT(bigint, {3}) <= {4} ",
+                NotificationSetup.Schema,
+                NotificationSetup.KeyColumn,
                 NotificationSetup.Table,
                 _timestampField,
                 intializeToRowVersion,
@@ -241,7 +241,7 @@ namespace LandauMedia.Tracker.TimestampBasedWithPayload
             {
                 object[] payload = new object[NotificationSetup.IntrestedInUpdatedColums.Count()];
 
-                for(int i = 0; i < NotificationSetup.IntrestedInUpdatedColums.Count(); i++)
+                for (int i = 0; i < NotificationSetup.IntrestedInUpdatedColums.Count(); i++)
                 {
                     payload[i] = record.ReadFromReader(i + 1);
                 }
@@ -255,7 +255,7 @@ namespace LandauMedia.Tracker.TimestampBasedWithPayload
 
         private void NotifyDatabaseExecution()
         {
-            if(PerformanceCounter != null)
+            if (PerformanceCounter != null)
                 PerformanceCounter.Inc("DatabaseQuery");
         }
     }

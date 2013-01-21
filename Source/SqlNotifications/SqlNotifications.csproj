@@ -41,6 +41,9 @@
     <Reference Include="C5">
       <HintPath>..\..\packages\C5.2.0\lib\net40\C5.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\..\packages\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
     </Reference>
@@ -70,8 +73,10 @@
     <Compile Include="Infrastructure\DictionaryCounter.cs" />
     <Compile Include="Infrastructure\IPerformanceCounter.cs" />
     <Compile Include="Model\AditionalNotificationInformation.cs" />
-    <Compile Include="State\InMemoryStatePersister.cs" />
-    <Compile Include="State\IStatePersister.cs" />
+    <Compile Include="State\DatabaseStateHolder.cs" />
+    <Compile Include="State\FilesystemHoldStates.cs" />
+    <Compile Include="State\InMemoryHoldStates.cs" />
+    <Compile Include="State\IHoldStates.cs" />
     <Compile Include="State\State.cs" />
     <Compile Include="Storage\DatabaseVersionStorage.cs" />
     <Compile Include="Storage\InMemoryVersionStorage.cs" />

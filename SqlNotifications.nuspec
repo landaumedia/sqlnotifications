@@ -13,7 +13,7 @@
       <dependency id="nlog" version="[2.0.0,)" />
       <dependency id="Rx-Main" version="[2.0.0,)" />
       <dependency id="C5" version="[2.0.0,)" />
-      <dependency id="Json.Net" version="[4.5.0,)" />
+      <dependency id="newtonsoft.json" version="[4.0.8,)" />
     </dependencies>
   </metadata>
   <files>

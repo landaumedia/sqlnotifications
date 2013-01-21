@@ -3,22 +3,22 @@ using System.Collections.Generic;
 
 namespace LandauMedia.State
 {
-    public class InMemoryStatePersister : IStatePersister
+    public class InMemoryHoldStates : IHoldStates
     {
         readonly IDictionary<string, State> _data = new Dictionary<string, State>();
         readonly Func<string, string, string> _keyCreation;
 
-        public InMemoryStatePersister(Func<string, string, string> keyCreation)
+        public InMemoryHoldStates(Func<string, string, string> keyCreation)
         {
             _keyCreation = keyCreation;
         }
 
-        public InMemoryStatePersister()
-            :this(CreateKey)
+        public InMemoryHoldStates()
+            : this(CreateKey)
         {
         }
 
-        public void Save(string id, State state)
+        public void Put(string id, State state)
         {
             var key = _keyCreation(id, state.StateType);
 

@@ -5,16 +5,16 @@ using Newtonsoft.Json;
 
 namespace LandauMedia.State
 {
-    public class FilesystemStatePersister : IStatePersister
+    public class FilesystemHoldStates : IHoldStates
     {
         readonly DirectoryInfo _dataStateDirectory;
 
-        public FilesystemStatePersister(DirectoryInfo dataStateDirectory)
+        public FilesystemHoldStates(DirectoryInfo dataStateDirectory)
         {
             _dataStateDirectory = dataStateDirectory;
         }
 
-        public void Save(string id, State state)
+        public void Put(string id, State state)
         {
             var typeDirectory = EnsureDirectoryExistAndGet(state.StateType);
 
