@@ -30,6 +30,7 @@ namespace LandauMedia.Tracker.TimestampBased
         readonly ILookupTable _lookup = new SortedArrayLookupTable();
 
         public INotificationSetup NotificationSetup { get; internal set; }
+        
         public INotification Notification { get; internal set; }
 
         public IPerformanceCounter PerformanceCounter { get; set; }
@@ -44,6 +45,9 @@ namespace LandauMedia.Tracker.TimestampBased
                     {
                         Thread.Sleep(_options.FetchInterval);                  // wait short time if no changed pending
                     }
+
+                    // set throttling for Starup and big batches
+                    Thread.Sleep(_options.Throttling);
                 }
                 catch (SqlException sqlException)
                 {
@@ -53,6 +57,8 @@ namespace LandauMedia.Tracker.TimestampBased
             }
         }
 
+        /// <exception cref="TableNotExistException">Wird geworfen, wenn die </exception>
+        /// <exception cref="InvalidOperationException"></exception>
         public void Prepare(string connectionString, INotificationSetup notificationSetup, INotification notification, IVersionStorage storage, TrackerOptions options)
         {
             Logger.Debug(() => string.Format("Preparing timestampbased Notification with Options: InitOptions:{0}", options.InitializationOptions));

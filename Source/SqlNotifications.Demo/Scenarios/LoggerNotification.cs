@@ -11,30 +11,28 @@ namespace SqlNotifications.Demo.Scenarios
     {
         static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
+        int _countInsert = 0;
+        int _countUpdate = 0;
+
         public void OnInsert(INotificationSetup notificationSetup, string id, AditionalNotificationInformation information)
         {
-            Logger.Info(string.Format(CultureInfo.InvariantCulture, "INSERT On Table '{0}' With Id '{1}' (UpdatedColumns:{2})", notificationSetup.Table, id, String.Join(",", information.UpdatedColumns)));
+            _countInsert++;
+
+            if ((_countInsert % 1000) == 0)
+                Logger.Info(string.Format("{0} Insert Events detected", _countInsert));
         }
 
         public void OnUpdate(INotificationSetup notificationSetup, string id, AditionalNotificationInformation information)
         {
-            Logger.Info(string.Format(CultureInfo.InvariantCulture, "UPDATE On Table '{0}' With Id '{1}' (UpdatedColumns:{2})", notificationSetup.Table, id, String.Join(",", information.UpdatedColumns)));
+            _countUpdate++;
 
-            if (information.AdditionalColumns.Any())
-            {
-                Logger.Info(string.Format("AddionalInfo:{0}\n", 
-                    information.AdditionalColumns.Aggregate(string.Empty, (s, pair) => s + "Feld:" + pair.Key + ":" + pair.Value)));
-            }
-
-            if (information.ColumnOldValue.Any())
-            {
-                Logger.Info(string.Format("ColumnOldValue:{0}\n",
-                    information.ColumnOldValue.Aggregate(string.Empty, (s, pair) => s + "Feld:" + pair.Key + ":" + pair.Value)));
-            }
+            if ((_countUpdate % 1000) == 0)
+                Logger.Info(string.Format("{0} Update Events detected", _countUpdate));
         }
 
         public void OnDelete(INotificationSetup notificationSetup, string id, AditionalNotificationInformation information)
         {
+
             Logger.Info(string.Format(CultureInfo.InvariantCulture, "DELETE On Table '{0}' With Id '{1}' (UpdatedColumns:{2})", notificationSetup.Table, id, String.Join(",", information.UpdatedColumns)));
         }
     }

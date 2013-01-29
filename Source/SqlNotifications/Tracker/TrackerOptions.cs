@@ -9,6 +9,7 @@ namespace LandauMedia.Tracker
             InitializationOptions = InitializationOptions.InitializeToCurrent;
             BucketSize = 1000;
             FetchInterval = TimeSpan.FromSeconds(1);
+            Throttling = TimeSpan.FromMilliseconds(250);
         }
 
         public InitializationOptions InitializationOptions { get; set; }
@@ -22,6 +23,8 @@ namespace LandauMedia.Tracker
         /// Gibt das Interval an, in dem nach neuen Daten gefragt wird.
         /// </summary>
         public TimeSpan FetchInterval { get; set; }
+
+        public TimeSpan Throttling { get; set; }
 
         /// <summary>
         /// gibt die TrackerOptions mit DefaultSetting zurück

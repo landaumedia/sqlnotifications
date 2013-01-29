@@ -28,6 +28,7 @@ namespace LandauMedia.Tracker.ChangeOnlyTimestampBased
         string _key;
 
         public INotificationSetup NotificationSetup { get; internal set; }
+        
         public INotification Notification { get; internal set; }
 
         public IPerformanceCounter PerformanceCounter { get; set; }
@@ -42,6 +43,9 @@ namespace LandauMedia.Tracker.ChangeOnlyTimestampBased
                     {
                         Thread.Sleep(_options.FetchInterval);                  // wait short time if no changed pending
                     }
+
+                    // set throttling for Starup and big batches
+                    Thread.Sleep(_options.Throttling);
                 }
                 catch (SqlException sqlException)
                 {

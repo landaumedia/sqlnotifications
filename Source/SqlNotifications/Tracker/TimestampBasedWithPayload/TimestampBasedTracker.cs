@@ -30,6 +30,7 @@ namespace LandauMedia.Tracker.TimestampBasedWithPayload
         readonly ILookupTableWithPayload _lookupWithPayload = new HashbasedLookupWithPayload();
 
         public INotificationSetup NotificationSetup { get; internal set; }
+        
         public INotification Notification { get; internal set; }
 
         public IPerformanceCounter PerformanceCounter { get; set; }
@@ -44,6 +45,9 @@ namespace LandauMedia.Tracker.TimestampBasedWithPayload
                     {
                         Thread.Sleep(_options.FetchInterval);                  // wait short time if no changed pending
                     }
+
+                    // set throttling for Starup and big batches
+                    Thread.Sleep(_options.Throttling);
                 }
                 catch (SqlException sqlException)
                 {
