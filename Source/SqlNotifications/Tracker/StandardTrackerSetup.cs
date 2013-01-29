@@ -113,5 +113,7 @@ namespace LandauMedia.Tracker
 
             return new TrackerRunner(_connectionString, notificationTypes, _trackerType, _storage, _notificationFactory, _trackerOptions, _counter);
         }
+
+        
     }
 }

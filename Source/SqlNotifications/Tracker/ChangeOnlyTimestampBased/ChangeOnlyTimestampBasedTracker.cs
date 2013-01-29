@@ -55,6 +55,8 @@ namespace LandauMedia.Tracker.ChangeOnlyTimestampBased
             }
         }
 
+        /// <exception cref="TableNotExistException">Wird geworfen, wenn die die definierte Tabelle nicht existiert</exception>
+        /// <exception cref="InvalidOperationException">Wird geworfen, wenn die Tabelle kein Timestampfeld besitzt</exception>
         public void Prepare(string connectionString, INotificationSetup notificationSetup, INotification notification, IVersionStorage storage, TrackerOptions options)
         {
             Logger.Debug(() => "Preparing changetimestampbased Notification");
@@ -77,6 +79,9 @@ namespace LandauMedia.Tracker.ChangeOnlyTimestampBased
             if (string.IsNullOrEmpty(_timestampField))
                 throw new InvalidOperationException(string.Format("requested Table has no timestamp field (Table:{0} Schema:{1})", NotificationSetup.Table, NotificationSetup.Schema));
 
+            // check for Index on Timestamp
+            if (!new SqlIndexChecker(_connection).Exists(NotificationSetup.Schema, NotificationSetup.Table, _timestampField))
+                Logger.Warn("The timestamp-Field has no index - this result in bad performance");
 
             ulong keyToStore = 0;
 

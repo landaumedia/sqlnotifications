@@ -7,9 +7,10 @@ namespace LandauMedia.Tracker
 {
     public class TrackerFactory
     {
+        /// <exception cref="ArgumentOutOfRangeException">trackername ist nicht bekannt</exception>
         public static ITracker BuildByName(string name)
         {
-            switch(name.ToLower())
+            switch (name.ToLower())
             {
                 case "changetracking":
                     return new ChangeTrackingBasedTracker();
@@ -20,6 +21,6 @@ namespace LandauMedia.Tracker
                 default:
                     throw new ArgumentOutOfRangeException("name");
             }
-        } 
+        }
     }
 }

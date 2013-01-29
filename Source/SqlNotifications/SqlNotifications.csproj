@@ -72,6 +72,7 @@
     <Compile Include="Exceptions\TableNotExistException.cs" />
     <Compile Include="Infrastructure\DictionaryCounter.cs" />
     <Compile Include="Infrastructure\IPerformanceCounter.cs" />
+    <Compile Include="Infrastructure\SqlTasks\SqlIndexChecker.cs" />
     <Compile Include="Model\AditionalNotificationInformation.cs" />
     <Compile Include="State\DatabaseStateHolder.cs" />
     <Compile Include="State\FilesystemHoldStates.cs" />
