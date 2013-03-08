@@ -74,6 +74,7 @@
     <Compile Include="Infrastructure\IPerformanceCounter.cs" />
     <Compile Include="Infrastructure\SqlTasks\SqlIndexChecker.cs" />
     <Compile Include="Model\AditionalNotificationInformation.cs" />
+    <Compile Include="Notifications\LogOnlyNotification.cs" />
     <Compile Include="Notifications\StreamingNotifications.cs" />
     <Compile Include="State\DatabaseStateHolder.cs" />
     <Compile Include="State\FilesystemHoldStates.cs" />

@@ -13,11 +13,11 @@ namespace LandauMedia.Notifications
             DeleteStream = new Subject<T>();
         }
 
-        Subject<T> InsertStream { get; set; }
+        public Subject<T> InsertStream { get; set; }
 
-        Subject<T> UpdateStream { get; set; }
+        public Subject<T> UpdateStream { get; set; }
         
-        Subject<T> DeleteStream { get; set; }
+        public Subject<T> DeleteStream { get; set; }
 
         public void OnDelete(INotificationSetup notificationSetup, string id, AditionalNotificationInformation addtionalInformation)
         {
