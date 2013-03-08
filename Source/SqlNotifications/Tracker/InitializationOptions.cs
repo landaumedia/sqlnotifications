@@ -1,5 +1,8 @@
 ﻿namespace LandauMedia.Tracker
 {
+    /// <summary>
+    /// defines how the tracker ist initialized
+    /// </summary>
     public enum InitializationOptions
     {
         /// <summary>

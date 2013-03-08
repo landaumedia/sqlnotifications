@@ -1,13 +1,11 @@
 ﻿using System;
 using System.IO;
 using LandauMedia.Storage;
-using LandauMedia.Wire;
 using Machine.Specifications;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable UnusedMember.Local
 // ReSharper disable UnusedMember.Global
-
 namespace LandauMedia.Version
 {
     [Subject(typeof(FilebasedVersionStorage))]

@@ -9,7 +9,6 @@ using Machine.Specifications;
 // ReSharper disable UnusedMember.Local
 // ReSharper disable UnusedMember.Global
 // ReSharper disable PublicMembersMustHaveComments
-
 namespace LandauMedia.Tracker.TimestampBased
 {
     [Subject(typeof(TimestampBasedTracker))]

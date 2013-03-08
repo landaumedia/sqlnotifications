@@ -74,6 +74,7 @@
     <Compile Include="Infrastructure\IPerformanceCounter.cs" />
     <Compile Include="Infrastructure\SqlTasks\SqlIndexChecker.cs" />
     <Compile Include="Model\AditionalNotificationInformation.cs" />
+    <Compile Include="Notifications\StreamingNotifications.cs" />
     <Compile Include="State\DatabaseStateHolder.cs" />
     <Compile Include="State\FilesystemHoldStates.cs" />
     <Compile Include="State\InMemoryHoldStates.cs" />
@@ -100,8 +101,8 @@
     <Compile Include="Storage\FilebasedVersionStorage.cs" />
     <Compile Include="Storage\IVersionStorage.cs" />
     <Compile Include="Wire\INotification.cs" />
-    <Compile Include="Wire\INotifyInsert.cs" />
     <Compile Include="Wire\INotifyDelete.cs" />
+    <Compile Include="Wire\INotifyInsert.cs" />
     <Compile Include="Wire\INotifyUpdate.cs" />
     <Compile Include="Wire\Notify.cs" />
     <Compile Include="Tracker\NotificationTracker.cs" />
