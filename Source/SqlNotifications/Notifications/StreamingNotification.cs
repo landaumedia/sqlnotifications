@@ -1,16 +1,21 @@
-﻿using System.Reactive.Subjects;
+﻿using System;
+using System.Reactive.Subjects;
 using LandauMedia.Model;
 using LandauMedia.Wire;
 
 namespace LandauMedia.Notifications
 {
-    public abstract class StreamingNotifications<T> : INotification
+    public sealed class StreamingNotification<T> : INotification
     {
-        protected StreamingNotifications()
+        readonly Func<string, AditionalNotificationInformation, T> _convertFunction;
+
+        public StreamingNotification(Func<string, AditionalNotificationInformation, T> convertFunction)
         {
             InsertStream = new Subject<T>();
             UpdateStream = new Subject<T>();
             DeleteStream = new Subject<T>();
+
+            _convertFunction = convertFunction;
         }
 
         public Subject<T> InsertStream { get; set; }
@@ -21,19 +26,17 @@ namespace LandauMedia.Notifications
 
         public void OnDelete(INotificationSetup notificationSetup, string id, AditionalNotificationInformation addtionalInformation)
         {
-            DeleteStream.OnNext(ConvertTo(id, addtionalInformation));
+            DeleteStream.OnNext(_convertFunction(id, addtionalInformation));
         }
 
         public void OnInsert(INotificationSetup notificationSetup, string id, AditionalNotificationInformation addtionalInformation)
         {
-            InsertStream.OnNext(ConvertTo(id, addtionalInformation));
+            InsertStream.OnNext(_convertFunction(id, addtionalInformation));
         }
 
         public void OnUpdate(INotificationSetup notificationSetup, string id, AditionalNotificationInformation addtionalInformation)
         {
-            UpdateStream.OnNext(ConvertTo(id, addtionalInformation));
+            UpdateStream.OnNext(_convertFunction(id, addtionalInformation));
         }
-
-        public abstract T ConvertTo(string id, AditionalNotificationInformation aditionalNotification);
     }
 }
