@@ -21,8 +21,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <NUnitToolPath>$(PackagePath)\NUnit.2.5.10.11092\tools</NUnitToolPath>
-    <MSpecToolPath>$(PackagePath)\Machine.Specifications.0.5.2.0\tools</MSpecToolPath>
+    <MSpecToolPath>$(PackagePath)\Machine.Specifications.0.5.11\tools</MSpecToolPath>
     <MSpecToJUnitPath>$(PackagePath)\MSpecToJUnit\MSpecToJUnit.xlt</MSpecToJUnitPath>
     <SVNToolPath>$(PackagePath)\Subversion\</SVNToolPath>
     <StyleCopyToolPath>$(PackagePath)\StyleCop</StyleCopyToolPath>
@@ -94,50 +93,6 @@
   <Target Name="Clean">
     <RemoveDir Directories="$(BinaryOutputPath)" />
     <RemoveDir Directories="$(ArtifactDirectory)" />
-  </Target>
-
-
-  <Target Name="Deploy_Production">
-    <MSBuild Projects="$(MSBuildProjectFile)"
-         Targets="Deploy"
-         Properties="Deploy_ConfigurationSystem=Production;Deploy_to=\\Social01\Daten\Services\Production\" />
-  </Target>
-
-  <Target Name="Deploy_Testing">
-    <MSBuild Projects="$(MSBuildProjectFile)"
-         Targets="Deploy"
-         Properties="Deploy_ConfigurationSystem=Testing;SendDeploymentMail=false;Deploy_to=\\Web20Testing01\Daten\Services\Testing\" />
-  </Target>
-
-  <Target Name="Deploy_Staging">
-    <MSBuild Projects="$(MSBuildProjectFile)"
-         Targets="Deploy"
-         Properties="Deploy_ConfigurationSystem=Staging;Deploy_to=\\Web20Staging01\Daten\Services\Staging\" />
-  </Target>
-
-  <Target Name="Deploy" DependsOnTargets="Clean;BuildService_Release" Condition="$(Deploy_ConfigurationSystem) != ''">
-
-    <CreateItem Include="$(BinaryOutputRelease)\**\*" Exclude="$(BinaryOutputRelease)\App*.config" >
-      <Output TaskParameter="Include" ItemName="DeploymentFiles" />
-    </CreateItem>
-
-    <Copy SourceFiles="@(DeploymentFiles)"
-					DestinationFolder="$(Deploy_To)CommandCenter.Searcher\%(RecursiveDir)">
-    </Copy>
-
-    <MSBuild.ExtensionPack.Framework.Assembly TaskAction="GetInfo" NetAssembly="$(BinaryOutputRelease)\$(AssemblyName)">
-      <Output TaskParameter="OutputItems" ItemName="Info"/>
-    </MSBuild.ExtensionPack.Framework.Assembly>
-
-    <Copy SourceFiles="$(BinaryOutputRelease)\App.$(Deploy_ConfigurationSystem).config"
-        DestinationFiles="$(Deploy_To)\$(AssemblyName).config" />
-
-    <Mail SmtpServer="dev.local"
-        Condition="$(SendDeploymentMail)!='false'"
-				To="$(Deploy_InformationMailRecipients)"
-				Subject="Command Center Searcher (Version: %(Info.Version))"
-				Body ="Configuration: System:$(Deploy_ConfigurationSystem)"
-				From="Web20Sender@landaumedia.de"/>
   </Target>
 
 

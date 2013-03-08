@@ -20,7 +20,7 @@ namespace LandauMedia
             _connectionString = "SERVER=Localhost;DATABASE=NotificationTest;User=Guest";
     }
 
-
+    [Tags("LocalDatabase")]
     public class With_express_database : WithFakes
     {
         protected static string _connectionstring;
