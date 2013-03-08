@@ -15,14 +15,15 @@ namespace LandauMedia.Notifications
             _subject.DeleteStream.Subscribe(s => _deletionList.Add(s));
             _subject.UpdateStream.Subscribe(s => _updateList.Add(s));
             _subject.InsertStream.Subscribe(s => _insertList.Add(s));
+            _subject.Stream.Subscribe(s => _allList.Add(s));
         };
             
-
         protected static StreamingNotification<string> _subject;
 
         protected static List<string> _deletionList = new List<string>();
         protected static List<string> _updateList = new List<string>();
         protected static List<string> _insertList = new List<string>();
+        protected static List<string> _allList = new List<string>();
     }
 
     [Subject(typeof(StreamingNotification<>))]
@@ -36,6 +37,9 @@ namespace LandauMedia.Notifications
 
         It should_have_an_item_with_string_1 = () =>
             _insertList[0].ShouldEqual("insert");
+
+        It should_have_an_item_in_allstream = () =>
+            _allList[0].ShouldEqual("insert");
     }
 
     [Subject(typeof(StreamingNotification<>))]
@@ -49,8 +53,11 @@ namespace LandauMedia.Notifications
 
         It should_have_an_item_with_string_1 = () =>
             _deletionList[0].ShouldEqual("delete");
+
+        It should_have_an_item_in_allstream = () =>
+            _allList[0].ShouldEqual("delete");
     }
-    
+
     [Subject(typeof(StreamingNotification<>))]
     public class when_have_one_update : with_StreamingNotification
     {
@@ -62,6 +69,8 @@ namespace LandauMedia.Notifications
 
         It should_have_an_item_with_string_1 = () =>
             _updateList[0].ShouldEqual("update");
-    }
 
+        It should_have_an_item_in_allstream = () =>
+            _allList[0].ShouldEqual("update");
+    }
 }
