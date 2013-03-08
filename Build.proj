@@ -113,7 +113,7 @@
     </CreateItem>
 
     <PropertyGroup>
-      <AdditionalSettings>--xml "$(ArtifactDirectory)\mspec-results.xml" --html "$(ArtifactDirectory)\mspec-results.html"</AdditionalSettings>
+      <AdditionalSettings>-x "LocalDatabase" --xml "$(ArtifactDirectory)\mspec-results.xml" --html "$(ArtifactDirectory)\mspec-results.html"</AdditionalSettings>
       <MSpecCommand>
         $(MSpecToolPath)\mspec-x86-clr4.exe $(AdditionalSettings) @(TestAssembly,' ')
       </MSpecCommand>

@@ -8,8 +8,6 @@ using Machine.Specifications;
 // ReSharper disable InconsistentNaming
 // ReSharper disable UnusedMember.Local
 // ReSharper disable UnusedMember.Global
-// ReSharper disable PublicMembersMustHaveComments
-
 namespace LandauMedia
 {
     public class With_local_SqlStandardDatabase
@@ -64,8 +62,3 @@ namespace LandauMedia
         };
     }
 }
-
-// ReSharper restore UnusedMember.Global
-// ReSharper restore UnusedMember.Local
-// ReSharper restore InconsistentNaming
-// ReSharper restore PublicMembersMustHaveComments
