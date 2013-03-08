@@ -30,7 +30,7 @@ namespace LandauMedia.Tracker.TimestampBased
         readonly ILookupTable _lookup = new SortedArrayLookupTable();
 
         public INotificationSetup NotificationSetup { get; internal set; }
-        
+
         public INotification Notification { get; internal set; }
 
         public IPerformanceCounter PerformanceCounter { get; set; }
@@ -153,6 +153,7 @@ namespace LandauMedia.Tracker.TimestampBased
                         AdditionalColumns = addionalData[entry],
                         Rowversion = ulong.Parse(addionalData[entry]["RowVersion"].ToString())
                     });
+                    _lookup.Add(entry);
                 }
             }
 
