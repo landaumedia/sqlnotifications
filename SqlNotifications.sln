@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlNotifications", "Source\SqlNotifications\SqlNotifications.csproj", "{8542644A-A780-41D7-84CE-2664EB4488A3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlNotifications.Tests", "Source\SqlNotifications.Tests\SqlNotifications.Tests.csproj", "{A6CA81EF-AB8C-4A23-8AB8-40B24592A288}"
