@@ -21,7 +21,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <MSpecToolPath>$(PackagePath)\Machine.Specifications.0.5.11\tools</MSpecToolPath>
+    <MSpecToolPath>$(PackagePath)\Machine.Specifications.0.6.2\tools</MSpecToolPath>
     <MSpecToJUnitPath>$(PackagePath)\MSpecToJUnit\MSpecToJUnit.xlt</MSpecToJUnitPath>
     <SVNToolPath>$(PackagePath)\Subversion\</SVNToolPath>
     <StyleCopyToolPath>$(PackagePath)\StyleCop</StyleCopyToolPath>
