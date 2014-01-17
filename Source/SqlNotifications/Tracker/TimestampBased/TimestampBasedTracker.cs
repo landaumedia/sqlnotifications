@@ -210,7 +210,7 @@ namespace LandauMedia.Tracker.TimestampBased
         private ulong GetLastTimestamp()
         {
             NotifyDatabaseExecution();
-            return (ulong)_connection.ExecuteSkalar<long>("SELECT CONVERT(bigint, @@dbts)", TimeSpan.FromSeconds(15));
+            return (ulong)_connection.ExecuteSkalar<long>("SELECT CONVERT(bigint, MIN_ACTIVE_ROWVERSION())", TimeSpan.FromSeconds(15)) - 1;
         }
 
         private void InitializeHashTable(ulong intializeToRowVersion)
