@@ -1,0 +1,5 @@
+!repositories.config
+!MSBuild
+!MsBuild.Extension
+!MSpecToJUnit
+!LandauMedia.CommandCenter.Deploy.Provisioning
