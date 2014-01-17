@@ -25,7 +25,7 @@ namespace LandauMedia.Tracker.TimestampBased
             existTimestampField = existTimestampField.Replace("@TableName", tableName);
             existTimestampField = existTimestampField.Replace("@Schema", schemaName);
 
-            return _connection.ExecuteSkalar<string>(existTimestampField);
+            return _connection.ExecuteSkalar<string>(existTimestampField, TimeSpan.FromSeconds(15));
         }
     }
 }

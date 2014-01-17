@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Security.Cryptography.X509Certificates;
 
 namespace LandauMedia.Infrastructure.SqlTasks
 {
     public static class Sql
     {
-         public static bool HasSchema(this SqlConnection connection, string schemaName)
-         {
-             return new SqlObjectExistenceChecker(connection).ExistSchema(schemaName);
-         }
+        public static bool HasSchema(this SqlConnection connection, string schemaName)
+        {
+            return new SqlObjectExistenceChecker(connection).ExistSchema(schemaName);
+        }
 
         public static void CreateSchema(this SqlConnection connection, string schemaName)
         {
@@ -29,12 +30,12 @@ namespace LandauMedia.Infrastructure.SqlTasks
 
         public static void ExecuteCommand(this SqlConnection connection, string statement)
         {
-            connection.EnsureIsOpen();
+            new SqlTasksBase(connection, TimeSpan.FromSeconds(15)).ExecuteCommand(statement);
+        }
 
-            using (SqlCommand command = new SqlCommand(statement, connection))
-            {
-                command.ExecuteNonQuery();
-            }
+        public static void ExecuteCommand(this SqlConnection connection, string statement, TimeSpan commandTimeout)
+        {
+            new SqlTasksBase(connection, commandTimeout).ExecuteCommand(statement);
         }
 
         public static void EnsureIsOpen(this SqlConnection connection)
@@ -46,36 +47,32 @@ namespace LandauMedia.Infrastructure.SqlTasks
         public static void TryClose(this SqlConnection connection)
         {
             if (connection.State == ConnectionState.Open)
-            {
                 connection.Close();
-            }
         }
 
-
-
-        public static T ExecuteSkalar<T>(this SqlConnection connection, string statement)
+        public static T ExecuteSkalar<T>(this SqlConnection connection, string statement, TimeSpan commandTimeout)
         {
-            return new SqlTasksBase(connection).SkalarRead<T>(statement);
+            return new SqlTasksBase(connection, commandTimeout).SkalarRead<T>(statement);
         }
 
-        public static IEnumerable<T> ExecuteList<T>(this SqlConnection connection, string statement)
+        public static IEnumerable<T> ExecuteList<T>(this SqlConnection connection, string statement, TimeSpan commandTimeout)
         {
-            return new SqlTasksBase(connection).ListRead<T>(statement);
+            return new SqlTasksBase(connection, commandTimeout).ListRead<T>(statement);
         }
 
-        public static IEnumerable<T> ExecuteList<T>(this SqlConnection connection, string statement, Action<IDataRecord> onRead)
+        public static IEnumerable<T> ExecuteList<T>(this SqlConnection connection, string statement, Action<IDataRecord> onRead, TimeSpan commandTimeout)
         {
-            return new SqlTasksBase(connection).ListRead<T>(statement, onRead);
+            return new SqlTasksBase(connection, commandTimeout).ListRead<T>(statement, onRead);
         }
 
 
         public static object ReadFromReader(this IDataRecord reader, int ordinal)
         {
-            Type t = reader.GetFieldType(ordinal);
+            var t = reader.GetFieldType(ordinal);
 
             if (reader.IsDBNull(ordinal))
             {
-                if (t == typeof (DateTime))
+                if (t == typeof(DateTime))
                     return null;
 
                 return t.IsValueType ? Activator.CreateInstance(t) : null;

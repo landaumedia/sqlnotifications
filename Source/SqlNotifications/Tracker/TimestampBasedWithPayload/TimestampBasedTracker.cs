@@ -121,7 +121,7 @@ namespace LandauMedia.Tracker.TimestampBasedWithPayload
                     {
                         maxTimestamp = Math.Max(maxTimestamp, Convert.ToUInt64(reader.GetInt64(1)));
                         addionalData.Add(reader.GetValue(0), ExtractAddionalData(reader, Convert.ToUInt64(reader.GetInt64(1))));
-                    })
+                    }, _options.SqlCommandTimeout)
                 .ToList();
             NotifyDatabaseExecution();
 
@@ -227,7 +227,7 @@ namespace LandauMedia.Tracker.TimestampBasedWithPayload
         private ulong GetLastTimestamp()
         {
             NotifyDatabaseExecution();
-            return (ulong)_connection.ExecuteSkalar<long>("SELECT CONVERT(bigint, @@dbts)");
+            return (ulong)_connection.ExecuteSkalar<long>("SELECT CONVERT(bigint, @@dbts)", _options.SqlCommandTimeout);
         }
 
         private void InitializeHashTable(ulong intializeToRowVersion)
@@ -254,7 +254,7 @@ namespace LandauMedia.Tracker.TimestampBasedWithPayload
                 }
 
                 entries.Add(record.ReadFromReader(0), payload);
-            }).ToList();
+            }, _options.SqlCommandTimeout).ToList();
 
             _lookupWithPayload.AddRange(entries.Keys, entries);
             NotifyDatabaseExecution();

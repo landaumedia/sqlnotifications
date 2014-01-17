@@ -81,7 +81,7 @@ namespace LandauMedia.Tracker.ChangeOnlyTimestampBased
 
             // check for Index on Timestamp
             if (!new SqlIndexChecker(_connection).Exists(NotificationSetup.Schema, NotificationSetup.Table, _timestampField))
-                Logger.Warn("The timestamp-Field has no index - this result in bad performance");
+                Logger.Warn("The timestamp-Field has no index - this will result in bad performance (Field:{0} Table:{1})", _timestampField, NotificationSetup.Table);
 
             ulong keyToStore = 0;
 
@@ -112,15 +112,16 @@ namespace LandauMedia.Tracker.ChangeOnlyTimestampBased
 
             var maxTimestamp = ulong.MinValue;
 
-            string statement = BuildTrackerStatement(bucketSize, fromTimestamp, toTimestamp);
+            var statement = BuildTrackerStatement(bucketSize, fromTimestamp, toTimestamp);
 
-            IDictionary<object, IDictionary<string, object>> addionalData = new Dictionary<object, IDictionary<string, object>>();
+            IDictionary<object, IDictionary<string, object>> additionalData = new Dictionary<object, IDictionary<string, object>>();
             var changedIds = _connection.ExecuteList<object>(statement,
                 reader =>
                 {
                     maxTimestamp = Math.Max(maxTimestamp, Convert.ToUInt64(reader.GetInt64(1)));
-                    addionalData.Add(reader.GetValue(0), ExtractAddionalData(reader, Convert.ToUInt64(reader.GetInt64(1))));
-                }).ToList();
+                    additionalData.Add(reader.GetValue(0), ExtractAddionalData(reader, Convert.ToUInt64(reader.GetInt64(1))));
+                }, 
+                _options.SqlCommandTimeout).ToList();
 
             NotifyDatabaseExecution();
 
@@ -132,8 +133,8 @@ namespace LandauMedia.Tracker.ChangeOnlyTimestampBased
                 entry.ToString(),
                 new AditionalNotificationInformation
                 {
-                    AdditionalColumns = addionalData[entry],
-                    Rowversion = ulong.Parse(addionalData[entry]["RowVersion"].ToString())
+                    AdditionalColumns = additionalData[entry],
+                    Rowversion = ulong.Parse(additionalData[entry]["RowVersion"].ToString())
                 }));
 
             _versionStorage.Store(_key, maxTimestamp);
@@ -173,7 +174,7 @@ namespace LandauMedia.Tracker.ChangeOnlyTimestampBased
                 customWhereStatement = " AND (" + NotificationSetup.CustomWhereStatement + ")";
             }
 
-            string statement = string.Format("SELECT TOP {6} {0}, Convert(bigint,{3}) {7} FROM [{1}].[{2}] WHERE CONVERT(bigint, {3}) > {4} AND CONVERT(bigint, {3}) <= {5} {8} ORDER BY {3} ASC ",
+            string statement = string.Format("SELECT TOP {6} {0}, Convert(bigint,{3}) {7} FROM [{1}].[{2}] WITH (UPDLOCK) WHERE CONVERT(bigint, {3}) > {4} AND CONVERT(bigint, {3}) <= {5} {8} ORDER BY {3} ASC ",
                 NotificationSetup.KeyColumn,
                 NotificationSetup.Schema,
                 NotificationSetup.Table,
@@ -190,7 +191,7 @@ namespace LandauMedia.Tracker.ChangeOnlyTimestampBased
         private ulong GetLastTimestamp()
         {
             NotifyDatabaseExecution();
-            return (ulong)_connection.ExecuteSkalar<long>("SELECT CONVERT(bigint, @@dbts)");
+            return (ulong)_connection.ExecuteSkalar<long>("SELECT CONVERT(bigint, @@dbts)", TimeSpan.FromSeconds(15));
         }
 
         private void NotifyDatabaseExecution()

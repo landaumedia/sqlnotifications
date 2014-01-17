@@ -14,7 +14,7 @@ namespace SqlNotifications.Demo.Scenarios
             DictionaryCounter counter = new DictionaryCounter();
 
             var connectionstring =
-                "Data Source=Web20TestingDB;Initial Catalog=_testing_Web20;User ID=Web20User;Password=2s1DOmUqSdF1Isq8cXmG";
+                "Data Source=Web20stagingDB;Initial Catalog=_staging_Web20;User ID=Web20User;Password=2s1DOmUqSdF1Isq8cXmG";
 
             var notificationTracker = Notify.For()
                 .Database(connectionstring)
