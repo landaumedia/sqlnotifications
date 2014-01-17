@@ -62,8 +62,6 @@
 
   <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets" />
   <Import Project="$(ExtensionTasksPath)MSBuild.ExtensionPack.tasks" />
-  <Import Project="$(PackagePath)\Landaumedia.CodeAnalysis\Tools\Landaumedia.CodeAnalysis.Targets" />
-  <UsingTask AssemblyFile="$(StyleCopyToolPath)\Microsoft.StyleCop.dll" TaskName="StyleCopTask"/>
 
 
   <Target Name="Run_Hudson" DependsOnTargets="Rebuild;Test" />
@@ -172,20 +170,6 @@
   </Target>
 
 
-  <Target Name="UpdateDeployEnvironment">
-    <Exec Command='Packages\Nuget\NuGet.exe install LandauMedia.CommandCenter.Deploy.Provisioning /source http://nuget.dev.local /OutputDirectory Packages /ExcludeVersion' />
-  </Target>
-
-  <Target Name="Coverage" DependsOnTargets="Build_Tests; Prepare">
-    <CreateItem Include="$(BinaryOutputTests)\*.Tests.dll">
-      <Output TaskParameter="Include" ItemName="TestAssembly" />
-    </CreateItem>
-
-    <Exec Command="$(dotCoverRunnerPath) analyse coverageFilters.xml /TargetExecutable=$(MSpecToolPath)\mspec-x86-clr4.exe /TargetArguments=@(TestAssembly,' ') /TargetWorkingDir=$(DotCoverWorkingDir) /Output=$(dotCoverOuput)"
-          IgnoreExitCode ="true" />
-
-    <Exec Command='$(dotCover2Emma) "$(dotCoverOuput)" "$(dotCoverOutputEmma)"' />
-  </Target>
 
   <Target Name="GetVersion" DependsOnTargets="Build" >
     <GetAssemblyIdentity AssemblyFiles="$(BinaryOutputDebug)\CommandCenter.SqlNotifications.dll">
@@ -195,14 +179,6 @@
     <CreateProperty Value="%(AssemblyInfo.Version)">
       <Output TaskParameter="Value" PropertyName="Version" />
     </CreateProperty>
-  </Target>
-
-  <Target Name="Sonar" DependsOnTargets="Build;GetVersion">
-    <Exec Command='"java.exe" -classpath "$(SonarRunnerPath)\lib\sonar-runner.jar";"$(SonarRunnerPath)\lib\sonar-batch-bootstrapper.jar" "-Drunner.home=$(SonarRunnerPath)" "-Dproject.home=$(MSBuildProjectDirectory)" org.sonar.runner.Main' />
-  </Target>
-
-  <Target Name="UpdateCodeAnalysisEnvironment">
-    <Exec Command='Packages\Nuget\NuGet.exe install LandauMedia.CodeAnalysis /source "\\artus\8 EDV\8-2 Entwicklung\NuGet" /OutputDirectory Packages /ExcludeVersion' />
   </Target>
 </Project>
 
