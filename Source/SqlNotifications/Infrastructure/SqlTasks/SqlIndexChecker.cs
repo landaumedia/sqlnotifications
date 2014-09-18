@@ -37,7 +37,6 @@ namespace LandauMedia.Infrastructure.SqlTasks
                 join sys.columns co on co.object_id = i.object_id and co.column_id = ic.column_id
                 join sys.schemas s on s.schema_id = o.schema_id
             where i.[type] = 2 
-            and i.is_unique = 0 
             and i.is_primary_key = 0
             and o.[type] = 'U'
             and co.name = @columnName
