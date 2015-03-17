@@ -86,12 +86,10 @@ namespace LandauMedia.Tracker
         private ITracker BuildAndPrepareTracker(INotificationSetup notificationSetup)
         {
             // validate the Setup
-
-
-            ITracker tracker = TrackerFactory.BuildByName(
+            var tracker = TrackerFactory.BuildByName(
                 string.IsNullOrWhiteSpace(notificationSetup.TrackingType) ? _defaultTrackingType : notificationSetup.TrackingType);
 
-            TrackerOptions options = _defaultTrackerOptions ?? new TrackerOptions();
+            var options = _defaultTrackerOptions ?? new TrackerOptions();
 
             tracker.Prepare(_connectionString, notificationSetup, _factory(notificationSetup.Notification), _storage, options);
 
