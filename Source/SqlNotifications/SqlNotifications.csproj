@@ -99,11 +99,9 @@
     <Compile Include="Tracker\ChangeOnlyTimestampBased\ChangeOnlyTimestampBasedTracker.cs" />
     <Compile Include="Tracker\InitializationOptions.cs" />
     <Compile Include="Tracker\ITracker.cs" />
-    <Compile Include="Tracker\TimestampBased\HashbasedLookupWithPayload.cs" />
-    <Compile Include="Tracker\TimestampBased\ILookupTable.cs" />
-    <Compile Include="Tracker\TimestampBased\ILookupTableWithData.cs" />
-    <Compile Include="Tracker\TimestampBased\SortedArrayLookupTable.cs" />
-    <Compile Include="Tracker\TimestampBased\TableFinder.cs" />
+    <Compile Include="Infrastructure\IdLookup\ILookupTable.cs" />
+    <Compile Include="Infrastructure\IdLookup\SortedArrayLookupTable.cs" />
+    <Compile Include="Infrastructure\SqlTasks\TableFinder.cs" />
     <Compile Include="Tracker\TimestampBased\TimestampFieldFinder.cs" />
     <Compile Include="Tracker\TrackerFactory.cs" />
     <Compile Include="Tracker\TrackerOptions.cs" />
@@ -123,9 +121,7 @@
     <Compile Include="Tracker\ITrackerSetup.cs" />
     <Compile Include="Tracker\StandardTrackerSetup.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Infrastructure\Databases\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
