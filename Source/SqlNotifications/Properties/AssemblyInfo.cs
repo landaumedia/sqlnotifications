@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("CommandCenter.SqlNotifications")]
@@ -17,3 +18,6 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyVersion("2.1.0")]
 [assembly: AssemblyFileVersion("2.1.0")]
+
+// for testing purpose
+[assembly: InternalsVisibleTo("SqlNotifications.Tests", AllInternalsVisible = true)]
