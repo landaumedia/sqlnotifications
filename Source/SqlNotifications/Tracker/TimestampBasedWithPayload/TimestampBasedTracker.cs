@@ -134,7 +134,7 @@ namespace LandauMedia.Tracker.TimestampBasedWithPayload
                 if (_lookupWithPayload.Contains(entry))
                 {
                     // update was found
-                    Notification.OnUpdate(NotificationSetup, entry.ToString(), new AditionalNotificationInformation
+                    Notification.OnUpdate(NotificationSetup, entry.ToString(), new AdditionalNotificationInformation
                     {
                         AdditionalColumns = addionalData[entry],
                         Rowversion = ulong.Parse(addionalData[entry]["RowVersion"].ToString()),
@@ -147,7 +147,7 @@ namespace LandauMedia.Tracker.TimestampBasedWithPayload
                 else
                 {
                     // insert was found
-                    Notification.OnInsert(NotificationSetup, entry.ToString(), new AditionalNotificationInformation
+                    Notification.OnInsert(NotificationSetup, entry.ToString(), new AdditionalNotificationInformation
                     {
                         AdditionalColumns = addionalData[entry],
                         Rowversion = ulong.Parse(addionalData[entry]["RowVersion"].ToString())

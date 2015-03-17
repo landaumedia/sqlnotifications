@@ -4,6 +4,6 @@ namespace LandauMedia.Wire
 {
     public interface INotifyDelete
     {
-        void OnDelete(INotificationSetup notificationSetup, string id, AditionalNotificationInformation addtionalInformation);
+        void OnDelete(INotificationSetup notificationSetup, string id, AdditionalNotificationInformation addtionalInformation);
     }
 }

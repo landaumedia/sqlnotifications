@@ -103,17 +103,17 @@ namespace LandauMedia.Tracker.TimestampBased
         public int CountUpdates { get; set; }
         public int CountDeletes { get; set; }
 
-        public void OnInsert(INotificationSetup notificationSetup, string id, AditionalNotificationInformation information)
+        public void OnInsert(INotificationSetup notificationSetup, string id, AdditionalNotificationInformation information)
         {
             CountInserts++;
         }
 
-        public void OnUpdate(INotificationSetup notificationSetup, string id, AditionalNotificationInformation information)
+        public void OnUpdate(INotificationSetup notificationSetup, string id, AdditionalNotificationInformation information)
         {
             CountUpdates++;
         }
 
-        public void OnDelete(INotificationSetup notificationSetup, string id, AditionalNotificationInformation information)
+        public void OnDelete(INotificationSetup notificationSetup, string id, AdditionalNotificationInformation information)
         {
             CountDeletes++;
         }

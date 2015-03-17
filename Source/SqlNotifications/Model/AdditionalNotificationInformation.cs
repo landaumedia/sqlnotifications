@@ -3,35 +3,25 @@ using System.Linq;
 
 namespace LandauMedia.Model
 {
-    public class AditionalNotificationInformation
+    public class AdditionalNotificationInformation
     {
-        public AditionalNotificationInformation()
+        public AdditionalNotificationInformation()
         {
             UpdatedColumns = Enumerable.Empty<string>();
             AdditionalColumns = new Dictionary<string, object>();
             ColumnOldValue = new Dictionary<string, object>();
         }
 
-        /// <summary>
-        /// gibt die Spalten an, in denen Updates stattgefunden haben
-        /// </summary>
+        /// <summary> gibt die Spalten an, in denen Updates stattgefunden haben </summary>
         public IEnumerable<string> UpdatedColumns { get; set; }
 
-
-        /// <summary>
-        /// wenn im Setup zusätzliche Daten geladen werden sollten, tauchen diese hier auf
-        /// </summary>
+        /// <summary> wenn im Setup zusätzliche Daten geladen werden sollten, tauchen diese hier auf </summary>
         public IDictionary<string, object> AdditionalColumns { get; set; }
 
-
-        /// <summary>
-        /// beinhaltet den alten Wert der spalte
-        /// </summary>
+        /// <summary> beinhaltet den alten Wert der spalte </summary>
         public IDictionary<string, object> ColumnOldValue { get; set; } 
 
-        /// <summary>
-        /// Rowversion of this Notification
-        /// </summary>
+        /// <summary> Rowversion of this Notification </summary>
         public ulong Rowversion { get; set; }
     }
 }

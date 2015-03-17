@@ -8,13 +8,13 @@ namespace LandauMedia.Notifications
 {
     public sealed class StreamingNotification<T> : INotification
     {
-        readonly Func<string, AditionalNotificationInformation, T> _convertFunction;
+        readonly Func<string, AdditionalNotificationInformation, T> _convertFunction;
         readonly Subject<T> _insertSubject = new Subject<T>();
         readonly Subject<T> _updateSubject = new Subject<T>();
         readonly Subject<T> _deleteSubject = new Subject<T>();
 
 
-        public StreamingNotification(Func<string, AditionalNotificationInformation, T> convertFunction)
+        public StreamingNotification(Func<string, AdditionalNotificationInformation, T> convertFunction)
         {
             // buildup all stream
             Stream = InsertStream
@@ -41,17 +41,17 @@ namespace LandauMedia.Notifications
 
         public IObservable<T> Stream { get; set; }
 
-        public void OnDelete(INotificationSetup notificationSetup, string id, AditionalNotificationInformation addtionalInformation)
+        public void OnDelete(INotificationSetup notificationSetup, string id, AdditionalNotificationInformation addtionalInformation)
         {
             _deleteSubject.OnNext(_convertFunction(id, addtionalInformation));
         }
 
-        public void OnInsert(INotificationSetup notificationSetup, string id, AditionalNotificationInformation addtionalInformation)
+        public void OnInsert(INotificationSetup notificationSetup, string id, AdditionalNotificationInformation addtionalInformation)
         {
             _insertSubject.OnNext(_convertFunction(id, addtionalInformation));
         }
 
-        public void OnUpdate(INotificationSetup notificationSetup, string id, AditionalNotificationInformation addtionalInformation)
+        public void OnUpdate(INotificationSetup notificationSetup, string id, AdditionalNotificationInformation addtionalInformation)
         {
             _updateSubject.OnNext(_convertFunction(id, addtionalInformation));
         }

@@ -131,7 +131,7 @@ namespace LandauMedia.Tracker.ChangeOnlyTimestampBased
             changedIds.ForEach(entry =>
                 Notification.OnUpdate(NotificationSetup,
                 entry.ToString(),
-                new AditionalNotificationInformation
+                new AdditionalNotificationInformation
                 {
                     AdditionalColumns = additionalData[entry],
                     Rowversion = ulong.Parse(additionalData[entry]["RowVersion"].ToString())

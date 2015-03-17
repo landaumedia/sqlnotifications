@@ -8,17 +8,17 @@ namespace LandauMedia.Notifications
     {
         static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public void OnDelete(INotificationSetup notificationSetup, string id, AditionalNotificationInformation addtionalInformation)
+        public void OnDelete(INotificationSetup notificationSetup, string id, AdditionalNotificationInformation addtionalInformation)
         {
             Logger.Debug(string.Format("Delete Row for Id:{0}", id));
         }
 
-        public void OnInsert(INotificationSetup notificationSetup, string id, AditionalNotificationInformation addtionalInformation)
+        public void OnInsert(INotificationSetup notificationSetup, string id, AdditionalNotificationInformation addtionalInformation)
         {
             Logger.Debug(string.Format("Insert Row for Id:{0}", id));
         }
 
-        public void OnUpdate(INotificationSetup notificationSetup, string id, AditionalNotificationInformation addtionalInformation)
+        public void OnUpdate(INotificationSetup notificationSetup, string id, AdditionalNotificationInformation addtionalInformation)
         {
             Logger.Debug(string.Format("Update Row for Id:{0}", id));
         }
