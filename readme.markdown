@@ -1,3 +1,5 @@
+![](https://ci.appveyor.com/api/projects/status/u68ha9an9px5gdjt?svg=true)
+
 # Sql Notifications
 
 Projekt dient dazu eine Überwachung auf Datenbankebene zu aktivieren.
