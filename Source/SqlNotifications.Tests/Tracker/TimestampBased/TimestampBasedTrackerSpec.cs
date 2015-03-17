@@ -21,7 +21,6 @@ namespace LandauMedia.Tracker.TimestampBased
             _sut = new TimestampBasedTracker();
         };
 
-
         Because of = () =>
             _exception = Catch.Exception(() => _sut.Prepare(_connectionstring, new GenericTableSetup("nonExisting", "dbo", "id"), _notification, new InMemoryVersionStorage(), TrackerOptions.Default));
 
@@ -57,8 +56,6 @@ namespace LandauMedia.Tracker.TimestampBased
         It should_have_message_with_tableName = () =>
             _exception.Message.ShouldContain("User");
 
-        It should_have_message_with_schemaName = () =>
-            _exception.Message.ShouldContain("Testing");
 
 
         static TimestampBasedTracker _sut;

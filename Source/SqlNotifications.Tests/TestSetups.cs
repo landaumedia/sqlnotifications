@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Data.SqlClient;
+using System.Data.SqlServerCe;
 using System.IO;
-using LandauMedia.Infrastructure.SqlTasks;
+using LandauMedia.TestHelper;
 using Machine.Fakes;
 using Machine.Specifications;
 
@@ -10,14 +10,6 @@ using Machine.Specifications;
 // ReSharper disable UnusedMember.Global
 namespace LandauMedia
 {
-    public class With_local_SqlStandardDatabase
-    {
-        protected static string _connectionString;
-
-        Establish context = () =>
-            _connectionString = "SERVER=Localhost;DATABASE=NotificationTest;User=Guest";
-    }
-
     [Tags("LocalDatabase")]
     public class With_express_database : WithFakes
     {
@@ -26,39 +18,66 @@ namespace LandauMedia
         Establish context = () =>
         {
             var pathtodb = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Sample.mdf");
-            
+
             _connectionstring =
                 string.Format(@"Data Source=(local);AttachDbFilename={0};Integrated Security=True;User Instance=True", pathtodb);
         };
     }
 
-    public class With_database_with_table_user_on_schema_testing : With_express_database
+    public class with_new_compact_database : WithFakes
     {
+        protected static string _connectionstring;
+        protected static SqlCeConnection _connection;
+
         Establish context = () =>
         {
-            new SqlConnection(_connectionstring).ExecuteCommand(@"CREATE SCHEMA Testing");
-            new SqlConnection(_connectionstring).ExecuteCommand(@"CREATE TABLE Testing.[User] (	Id int NOT NULL	)");
+            _connectionstring = string.Format("DataSource=\"{0}\"; Password='{1}'", "test.sdf", "test");
+
+            if (File.Exists("test.sdf"))
+                File.Delete("test.sdf");
+
+            var en = new SqlCeEngine(_connectionstring);
+            en.CreateDatabase();
+
+            _connection = new SqlCeConnection(_connectionstring);
+            _connection.Open();
         };
 
-        Cleanup removeobjects = () =>
-        {
-            new SqlConnection(_connectionstring).ExecuteCommand(@"DROP TABLE Testing.[User]");
-            new SqlConnection(_connectionstring).ExecuteCommand(@"DROP SCHEMA Testing");
-        };
+
+        Cleanup clean = () => _connection.Close();
     }
 
-    public class With_database_with_table_user_on_schema_testing_with_timestampfield : With_express_database
+    public class WhenCreateingTable : with_new_compact_database
     {
         Establish context = () =>
         {
-            new SqlConnection(_connectionstring).ExecuteCommand(@"CREATE SCHEMA Testing");
-            new SqlConnection(_connectionstring).ExecuteCommand(@"CREATE TABLE Testing.[User] (	Id int NOT NULL, ts timestamp NOT NULL)");
+            var command = _connection.CreateCommand();
+            command.CommandText = "CREATE TABLE [User] (	Id int NOT NULL	)";
+            command.ExecuteNonQuery();
         };
 
-        Cleanup removeobjects = () =>
+        Because of = () =>
         {
-            new SqlConnection(_connectionstring).ExecuteCommand(@"DROP TABLE Testing.[User]");
-            new SqlConnection(_connectionstring).ExecuteCommand(@"DROP SCHEMA Testing");
+            var command = _connection.CreateCommand();
+            command.CommandText = "SELECT Count(*) From [User]";
+            _result = (int)command.ExecuteScalar();
         };
+
+        It should_be_zero = () =>
+            _result.ShouldEqual(0);
+
+        static int _result;
+    }
+
+    public class With_database_with_table_user_on_schema_testing : with_new_compact_database
+    {
+        Establish context = () => _connection.ExecuteCommand(@"CREATE TABLE [User] (	Id int NOT NULL	)");
+        Cleanup removeobjects = () => _connection.ExecuteCommand(@"DROP TABLE [User]");
+    }
+
+    public class With_database_with_table_user_on_schema_testing_with_timestampfield : with_new_compact_database
+    {
+        Establish context = () => _connection.ExecuteCommand(@"CREATE TABLE [User] (	Id int NOT NULL, ts timestamp NOT NULL)");
+        Cleanup removeobjects = () => _connection.ExecuteCommand(@"DROP TABLE [User]");
     }
 }

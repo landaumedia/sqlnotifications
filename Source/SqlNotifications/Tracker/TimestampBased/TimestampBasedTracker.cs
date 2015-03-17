@@ -186,7 +186,7 @@ namespace LandauMedia.Tracker.TimestampBased
                 additionalColumnsStatement = "," + additionalColumnsStatement;
             }
 
-            string customWhereStatement = string.Empty;
+            var customWhereStatement = string.Empty;
 
             if (!string.IsNullOrEmpty(NotificationSetup.CustomWhereStatement))
             {
