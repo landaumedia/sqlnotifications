@@ -3,12 +3,12 @@ using System.Data;
 using System.Data.SqlClient;
 using NLog;
 
-namespace SqlNotifications.Demo.Infrastcture
+namespace SqlNotifications.Demo.Infrastructure
 {
     public class TestDataArticleGenerator
     {
         static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        string _connectionString;
+        readonly string _connectionString;
 
         public TestDataArticleGenerator(string connectionString)
         {
@@ -21,8 +21,8 @@ namespace SqlNotifications.Demo.Infrastcture
 
             Logger.Info("Start Generating");
 
-            using (SqlConnection connection = new SqlConnection(_connectionString))
-            using (SqlCommand command = GenerateCommand(connection))
+            using (var connection = new SqlConnection(_connectionString))
+            using (var command = GenerateCommand(connection))
             {
                 connection.Open();
 

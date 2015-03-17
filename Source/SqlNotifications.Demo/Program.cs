@@ -1,5 +1,4 @@
-﻿using SqlNotifications.Demo.Infrastcture;
-using SqlNotifications.Demo.Scenarios;
+﻿using SqlNotifications.Demo.Scenarios;
 using SqlNotifications.Demo.Scenarios.ArticleTable;
 using SqlNotifications.Demo.Scenarios.BigTable;
 
