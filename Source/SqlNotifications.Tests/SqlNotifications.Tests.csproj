@@ -52,24 +52,20 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\ConstructorTester.1.1.1.0\lib\net40\ConstructorTester.dll</HintPath>
     </Reference>
-    <Reference Include="Machine.Fakes, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Machine.Fakes.2.0.0\lib\net40\Machine.Fakes.dll</HintPath>
+    <Reference Include="Machine.Fakes">
+      <HintPath>..\..\packages\Machine.Fakes.2.5.0\lib\net40\Machine.Fakes.dll</HintPath>
     </Reference>
-    <Reference Include="Machine.Fakes.Adapters.RhinoMocks, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Machine.Fakes.RhinoMocks.2.0.0\lib\net40\Machine.Fakes.Adapters.RhinoMocks.dll</HintPath>
+    <Reference Include="Machine.Fakes.Adapters.RhinoMocks">
+      <HintPath>..\..\packages\Machine.Fakes.RhinoMocks.2.5.0\lib\net40\Machine.Fakes.Adapters.RhinoMocks.dll</HintPath>
     </Reference>
-    <Reference Include="Machine.Specifications, Version=0.6.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Machine.Specifications.0.6.2\lib\net40\Machine.Specifications.dll</HintPath>
+    <Reference Include="Machine.Specifications">
+      <HintPath>..\..\packages\Machine.Specifications.0.9.1\lib\net40\Machine.Specifications.dll</HintPath>
     </Reference>
-    <Reference Include="Machine.Specifications.Clr4, Version=0.6.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Machine.Specifications.0.6.2\lib\net40\Machine.Specifications.Clr4.dll</HintPath>
+    <Reference Include="Machine.Specifications.Clr4">
+      <HintPath>..\..\packages\Machine.Specifications.0.9.1\lib\net40\Machine.Specifications.Clr4.dll</HintPath>
     </Reference>
     <Reference Include="Machine.Specifications.Should">
-      <HintPath>..\..\packages\Machine.Specifications.0.6.2\lib\net40\Machine.Specifications.Should.dll</HintPath>
+      <HintPath>..\..\packages\Machine.Specifications.Should.0.7.2\lib\net40\Machine.Specifications.Should.dll</HintPath>
     </Reference>
     <Reference Include="Rhino.Mocks, Version=3.6.0.0, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -109,6 +105,7 @@
     <Compile Include="Version\FilebasedVersionStorageSpec.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

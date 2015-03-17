@@ -26,7 +26,7 @@ task Prepare {
 }
 
 
-task Rebuild -depends Clean {
+task Rebuild -depends Clean,Prepare {
 	exec { msbuild /nologo /v:minimal /t:rebuild /p:"Configuration=Release;OutputPath=$bindir/SqlNotifications/;SolutionDir=$solution/" "Source/SqlNotifications/SqlNotifications.csproj" }
 }
 
