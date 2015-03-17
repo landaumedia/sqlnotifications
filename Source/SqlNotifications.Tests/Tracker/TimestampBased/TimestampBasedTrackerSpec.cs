@@ -26,7 +26,7 @@ namespace LandauMedia.Tracker.TimestampBased
             _exception = Catch.Exception(() => _sut.Prepare(_connectionstring, new GenericTableSetup("nonExisting", "dbo", "id"), _notification, new InMemoryVersionStorage(), TrackerOptions.Default));
 
         It should_throw_an_invalidOperation_Exeception = () =>
-            _exception.ShouldBeOfType<TableNotExistException>();
+            _exception.ShouldBeAssignableTo<TableNotExistException>();
 
         It should_have_an_exception_with_tablename = () =>
             ((TableNotExistException)_exception).TableName.ShouldEqual("nonExisting");
@@ -52,7 +52,7 @@ namespace LandauMedia.Tracker.TimestampBased
             _exception = Catch.Exception(() => _sut.Prepare(_connectionstring, new GenericTableSetup("User", "Testing", "id"), _notification, new InMemoryVersionStorage(), TrackerOptions.Default));
 
         It should_throw_an_invalidOperation_Exeception = () =>
-            _exception.ShouldBeOfType<InvalidOperationException>();
+            _exception.ShouldBeAssignableTo<InvalidOperationException>();
 
         It should_have_message_with_tableName = () =>
             _exception.Message.ShouldContain("User");
