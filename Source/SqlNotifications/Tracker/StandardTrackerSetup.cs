@@ -27,7 +27,6 @@ namespace LandauMedia.Tracker
             return this;
         }
 
-
         public ITrackerSetup WithNotificationsOfAssembly(Assembly assembly)
         {
             _souceAssembly = assembly;

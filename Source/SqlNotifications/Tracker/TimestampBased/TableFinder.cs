@@ -4,7 +4,7 @@ using LandauMedia.Infrastructure.SqlTasks;
 
 namespace LandauMedia.Tracker.TimestampBased
 {
-    public class TableFinder
+    internal class TableFinder
     {
         readonly SqlConnection _connection;
 
@@ -19,7 +19,7 @@ namespace LandauMedia.Tracker.TimestampBased
         {
             _connection.EnsureIsOpen();
 
-            string existTimestampField = @"SELECT Count(*) FROM INFORMATION_SCHEMA.TABLES
+            var existTimestampField = @"SELECT Count(*) FROM INFORMATION_SCHEMA.TABLES
                 WHERE TABLE_SCHEMA='@Schema' AND TABLE_NAME='@TableName'";
 
             existTimestampField = existTimestampField.Replace("@TableName", tableName);
