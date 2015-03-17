@@ -1,24 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlNotifications", "Source\SqlNotifications\SqlNotifications.csproj", "{8542644A-A780-41D7-84CE-2664EB4488A3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlNotifications.Tests", "Source\SqlNotifications.Tests\SqlNotifications.Tests.csproj", "{A6CA81EF-AB8C-4A23-8AB8-40B24592A288}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlNotifications.Demo", "Source\SqlNotifications.Demo\SqlNotifications.Demo.csproj", "{36E7940E-4044-48F7-A982-CB0F676AE486}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EA112BE3-1EE8-433D-BCA7-05139B48E68A}"
-	ProjectSection(SolutionItems) = preProject
-		Build.proj = Build.proj
-		SqlNotifications.nuspec = SqlNotifications.nuspec
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{0EBE233E-3434-44BE-861E-C279422E7886}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
