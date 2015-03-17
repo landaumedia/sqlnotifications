@@ -12,7 +12,6 @@ using Machine.Specifications;
 namespace LandauMedia.Tracker.TimestampBased
 {
     [Subject(typeof(TimestampBasedTracker))]
-
     public class When_prepare_a_tracker_for_non_existing_Table : With_express_database
     {
         Establish context = () =>

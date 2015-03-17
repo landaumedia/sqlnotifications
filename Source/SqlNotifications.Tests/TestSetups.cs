@@ -23,7 +23,8 @@ namespace LandauMedia
                 string.Format(@"Data Source=(local);AttachDbFilename={0};Integrated Security=True;User Instance=True", pathtodb);
         };
     }
-
+    
+    [Tags("CompactDatabase")]
     public class with_new_compact_database : WithFakes
     {
         protected static string _connectionstring;
@@ -45,28 +46,6 @@ namespace LandauMedia
 
 
         Cleanup clean = () => _connection.Close();
-    }
-
-    public class WhenCreateingTable : with_new_compact_database
-    {
-        Establish context = () =>
-        {
-            var command = _connection.CreateCommand();
-            command.CommandText = "CREATE TABLE [User] (	Id int NOT NULL	)";
-            command.ExecuteNonQuery();
-        };
-
-        Because of = () =>
-        {
-            var command = _connection.CreateCommand();
-            command.CommandText = "SELECT Count(*) From [User]";
-            _result = (int)command.ExecuteScalar();
-        };
-
-        It should_be_zero = () =>
-            _result.ShouldEqual(0);
-
-        static int _result;
     }
 
     public class With_database_with_table_user_on_schema_testing : with_new_compact_database
