@@ -6,6 +6,7 @@ properties {
     $outdir = (join-path $location "Build");
     $artifactsdir = (join-path $outdir "Artifacts");
     $bindir = (join-path $outdir "Bin");
+	$lmNuget = "\\artus\8 EDV\8-2 Entwicklung\NuGet";
 }
 
 task ci -depends rebuild
@@ -49,4 +50,14 @@ task Test -depends Clean {
 	$xslt = New-Object System.Xml.Xsl.XslCompiledTransform;
   $xslt.Load("Packages\MSpecToJUnit\MSpecToJUnit.xlt");
   $xslt.Transform("$artifactsdir\mspec-results.xml", "$artifactsdir\junit-results.xml");
+}
+
+task Deploy {
+    exec { msbuild /nologo /v:minimal /t:rebuild /p:"Configuration=Release;OutputPath=$bindir/SqlNotifications/;SolutionDir=$solution/" "Source/SqlNotifications/SqlNotifications.csproj" }
+    push-location "$bindir/"
+    copy "$location/Deploy/SqlNotifications.nuspec" $bindir
+    $version = ([System.Diagnostics.FileVersionInfo]::GetVersionInfo("$bindir\SqlNotifications\CommandCenter.SqlNotifications.dll").productVersion);
+    exec { ..\..\.NuGet\NuGet.exe pack "$bindir\SqlNotifications.nuspec" /version "$version" }
+	move "$bindir\LandauMedia.CommandCenter.SqlNotifications.*.nupkg" $lmNuget
+    pop-location
 }

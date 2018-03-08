@@ -17,7 +17,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="build\nuget\lib\net40\CommandCenter.SqlNotifications.dll" target="lib" />
-    <file src="build\nuget\lib\net40\CommandCenter.SqlNotifications.pdb" target="lib" />
+    <file src="SqlNotifications\CommandCenter.SqlNotifications.dll" target="lib" />
+    <file src="SqlNotifications\CommandCenter.SqlNotifications.pdb" target="lib" />
   </files>
 </package>
