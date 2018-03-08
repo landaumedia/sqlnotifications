@@ -1,5 +1,9 @@
 ![](https://ci.appveyor.com/api/projects/status/u68ha9an9px5gdjt?svg=true)
 
+# Achtung: veraltet und im Umbau!
+Stabile Version hier
+https://github.com/CKrowiorsch/sqlnotifications
+
 # Sql Notifications
 
 Projekt dient dazu eine Überwachung auf Datenbankebene zu aktivieren.
