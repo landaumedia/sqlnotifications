@@ -82,6 +82,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Exceptions\TableNotExistException.cs" />
+    <Compile Include="GenericStorage\DatabaseGenericVersionStorage.cs" />
+    <Compile Include="GenericStorage\FilebasedGenericVersionStorage.cs" />
+    <Compile Include="GenericStorage\IGenericVersionStorage.cs" />
     <Compile Include="Infrastructure\DictionaryCounter.cs" />
     <Compile Include="Infrastructure\IPerformanceCounter.cs" />
     <Compile Include="Infrastructure\SqlTasks\SqlIndexChecker.cs" />
