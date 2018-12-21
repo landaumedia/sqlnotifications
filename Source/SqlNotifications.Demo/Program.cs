@@ -8,7 +8,7 @@ namespace SqlNotifications.Demo
     {
         static void Main(string[] args)
         {
-            string connectionString = @"SERVER=(local)\SQLExpress;Database=testing_sqlnotifications;user=sqlnotifications;password=test";
+            //string connectionString = @"SERVER=(local)\SQLExpress;Database=testing_sqlnotifications;user=sqlnotifications;password=test";
 
             //new TestDataArticleGenerator(connectionString).Generate(2000000);
             //new SimpleArticleTableScenario().Start();

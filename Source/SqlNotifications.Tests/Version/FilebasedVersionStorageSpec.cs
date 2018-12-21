@@ -43,7 +43,7 @@ namespace LandauMedia.Version
             _exception = Catch.Exception(() => _sut.Store("KeyWithEqualSign=", 1));
 
         It should_throw_a_argument_Exception = () =>
-            _exception.ShouldBeOfType<ArgumentException>();
+            _exception.ShouldBeOfExactType<ArgumentException>();
 
         static Exception _exception;
     }
@@ -55,7 +55,7 @@ namespace LandauMedia.Version
             _exception = Catch.Exception(() => _sut.Load("KeyWithEqualSign="));
 
         It should_throw_a_argument_Exception = () =>
-            _exception.ShouldBeOfType<ArgumentException>();
+            _exception.ShouldBeOfExactType<ArgumentException>();
 
         static Exception _exception;
     }

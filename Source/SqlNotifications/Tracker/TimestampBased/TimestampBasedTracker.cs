@@ -53,7 +53,7 @@ namespace LandauMedia.Tracker.TimestampBased
                 catch (SqlException sqlException)
                 {
                     // on error log a warning and 
-                    Logger.WarnException("Error on Tracking Database", sqlException);
+                    Logger.Warn(sqlException, "Error on Tracking Database");
                 }
             }
         }

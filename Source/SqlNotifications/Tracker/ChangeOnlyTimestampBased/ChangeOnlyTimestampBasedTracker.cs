@@ -29,22 +29,22 @@ namespace LandauMedia.Tracker.ChangeOnlyTimestampBased
         string _key;
 
         public INotificationSetup NotificationSetup { get; internal set; }
-        
+
         public INotification Notification { get; internal set; }
 
         public IPerformanceCounter PerformanceCounter { get; set; }
 
         public void TrackingChanges()
         {
-                while(true)
-                {
-                    var trackResult = Retry(() => TrackChangesForOneBucket(_options.BucketSize), 20);
-                    if(!trackResult)
-                        Thread.Sleep(_options.FetchInterval); // wait short time if no changed pending
+            while (true)
+            {
+                var trackResult = Retry(() => TrackChangesForOneBucket(_options.BucketSize), 20);
+                if (!trackResult)
+                    Thread.Sleep(_options.FetchInterval); // wait short time if no changed pending
 
-                    // set throttling for Starup and big batches
-                    Thread.Sleep(_options.Throttling);
-                }
+                // set throttling for Starup and big batches
+                Thread.Sleep(_options.Throttling);
+            }
         }
 
         /// <exception cref="TableNotExistException">Wird geworfen, wenn die die definierte Tabelle nicht existiert</exception>
@@ -113,7 +113,7 @@ namespace LandauMedia.Tracker.ChangeOnlyTimestampBased
                 {
                     maxTimestamp = Math.Max(maxTimestamp, Convert.ToUInt64(reader.GetInt64(1)));
                     additionalData.Add(reader.GetValue(0), ExtractAddionalData(reader, Convert.ToUInt64(reader.GetInt64(1))));
-                }, 
+                },
                 _options.SqlCommandTimeout).ToList();
 
             NotifyDatabaseExecution();
@@ -198,10 +198,10 @@ namespace LandauMedia.Tracker.ChangeOnlyTimestampBased
             var policyResult = Policy
                 .Handle<Exception>()
                 .WaitAndRetry(retryCount, _ => TimeSpan.FromSeconds(60),
-                (exception, span, __) => Logger.WarnException(string.Format("Fehler in der Tracking Database (naechster Versuch in {0} sekunden)", span.TotalSeconds), exception))
+                (exception, span, __) => Logger.Warn(exception, string.Format("Fehler in der Tracking Database (naechster Versuch in {0} sekunden)", span.TotalSeconds)))
                 .ExecuteAndCapture(action);
 
-            if(policyResult.Outcome == OutcomeType.Failure)
+            if (policyResult.Outcome == OutcomeType.Failure)
                 throw policyResult.FinalException;
             return policyResult.Result;
         }
