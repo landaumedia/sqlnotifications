@@ -10,10 +10,11 @@
     <description>Bibliothek zum verarbeiten von Änderungen in der Datenbank</description>
     <tags>LandauMedia CommandCenter</tags>
     <dependencies>
-      <dependency id="nlog" version="[2.0.0,)" />
-      <dependency id="Rx-Main" version="[2.0.0,)" />
-      <dependency id="C5" version="[2.2.4881.16939,)" />
-      <dependency id="newtonsoft.json" version="[4.0.8,)" />
+      <dependency id="Nlog" version="[4.5.1,)" />
+      <dependency id="System.Reactive" version="[4.1.2,)" />
+      <dependency id="C5" version="[2.5.3,)" />
+      <dependency id="Newtonsoft.Json" version="[12.0.1,)" />
+	  <dependency id="Polly" version="[6.1.2,)" />
     </dependencies>
   </metadata>
   <files>
