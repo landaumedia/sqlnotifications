@@ -18,7 +18,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="SqlNotifications\CommandCenter.SqlNotifications.dll" target="lib" />
-    <file src="SqlNotifications\CommandCenter.SqlNotifications.pdb" target="lib" />
+    <file src="SqlNotifications\CommandCenter.SqlNotifications.dll" target="lib\net472" />
+    <file src="SqlNotifications\CommandCenter.SqlNotifications.pdb" target="lib\net472" />
   </files>
 </package>

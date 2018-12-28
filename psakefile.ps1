@@ -1,4 +1,3 @@
-Framework('4.5.1')
 $erroractionpreference = "Stop"
 
 properties {
