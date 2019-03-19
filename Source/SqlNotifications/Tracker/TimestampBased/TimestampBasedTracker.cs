@@ -194,7 +194,7 @@ namespace LandauMedia.Tracker.TimestampBased
                 customWhereStatement = " AND (" + NotificationSetup.CustomWhereStatement + ") ";
             }
 
-            string statement = string.Format("SELECT TOP {6} {0}, Convert(bigint,{3}) {7} FROM [{1}].[{2}] WHERE CONVERT(bigint, {3}) > {4} AND CONVERT(bigint, {3}) <= {5} {8} ORDER BY {3} ASC ",
+            string statement = string.Format("SELECT TOP {6} {0}, Convert(bigint,{3}) {7} FROM [{1}].[{2}] WHERE {3} > CONVERT(timestamp, CONVERT(bigint, {4})) AND {3} <= CONVERT(timestamp, CONVERT(bigint, {5})) {8} ORDER BY {3} ASC ",
                 NotificationSetup.KeyColumn,
                 NotificationSetup.Schema,
                 NotificationSetup.Table,
@@ -216,7 +216,7 @@ namespace LandauMedia.Tracker.TimestampBased
 
         private void InitializeHashTable(ulong intializeToRowVersion)
         {
-            string select = string.Format("SELECT {1} FROM [{0}].[{2}] WHERE CONVERT(bigint, {3}) <= {4} ",
+            string select = string.Format("SELECT {1} FROM [{0}].[{2}] WHERE {3} <= CONVERT(timestamp, CONVERT(bigint, {4})) ",
                 NotificationSetup.Schema,
                 NotificationSetup.KeyColumn,
                 NotificationSetup.Table,
